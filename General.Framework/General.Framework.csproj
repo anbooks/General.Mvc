@@ -1,21 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\General.Core\General.Core.csproj" />
     <ProjectReference Include="..\General.Entities\General.Entities.csproj" />
-    <ProjectReference Include="..\General.Framework\General.Framework.csproj" />
     <ProjectReference Include="..\General.Services\General.Services.csproj" />
   </ItemGroup>
 
