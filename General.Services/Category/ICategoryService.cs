@@ -4,13 +4,14 @@ using System.Text;
 
 namespace General.Services.Category
 {
+    //操作表的服务
     public interface ICategoryService
     {
         /// <summary>
         /// 初始化保存方法
         /// </summary>
         /// <param name="list"></param>
-        void initCategory(List<Entities.Category> list);
+        //void initCategory(List<Entities.Category> list);
 
         /// <summary>
         /// 获取所有并缓存

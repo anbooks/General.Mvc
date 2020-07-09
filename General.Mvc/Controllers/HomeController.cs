@@ -14,9 +14,31 @@ using General.Core.Data;
 namespace General.Mvc.Controllers
 { 
     public class HomeController : Controller
-    { 
+    {
+
+        //private GeneralDbContext _generalDbContext;
+
+        //public HomeController(GeneralDbContext generalDbContext)
+        //{
+        //    this._generalDbContext = generalDbContext;
+        //}
+
+        private ICategoryService _categoryService;
+
+        //public HomeController(ICategoryService categoryService)
+        //{
+        //    this._categoryService = categoryService;
+        //}
+
+
+
+
         public IActionResult Index()
-        { 
+        {
+            //var list= _generalDbContext.Categories.ToList();
+            //var list= _categoryService.getAll();
+            _categoryService = EnginContext.Current.Resolve<ICategoryService>();
+            var list = _categoryService.getAll();
             return View();
         }
          

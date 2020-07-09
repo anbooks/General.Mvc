@@ -7,6 +7,7 @@ using System.Text;
 
 namespace General.Entities
 {
+    //实现IRepository 
     public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         private GeneralDbContext _dbContext;
