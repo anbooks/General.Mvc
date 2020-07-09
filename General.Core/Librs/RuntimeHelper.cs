@@ -9,7 +9,7 @@ namespace General.Core.Librs
     public class RuntimeHelper
     {
         /// <summary>
-        /// 通过程序集的名称加载程序集
+        /// 通过程序集的名称加载程序集   运行时的辅助类
         /// </summary>
         /// <param name="assemblyName"></param>
         /// <returns></returns>

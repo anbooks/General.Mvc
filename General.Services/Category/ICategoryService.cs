@@ -19,5 +19,13 @@ namespace General.Services.Category
         /// <returns></returns>
         List<Entities.Category> getAll();
     }
+
+
+
+    ///还可以再定义一个接口
+    public interface IGeneralService
+    {
+
+    }
      
 }

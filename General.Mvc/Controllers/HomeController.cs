@@ -30,13 +30,25 @@ namespace General.Mvc.Controllers
         //    this._categoryService = categoryService;
         //}
 
-        private IRepository<Category> _categoryRepository;
-        private IRepository<SysUser> _sysUserRepository;
+        //private IRepository<Category> _categoryRepository;
+        //private IRepository<SysUser> _sysUserRepository;
+        //private IRepository<SysUser> _userRepository;
 
-        public HomeController(IRepository<Category> categoryRepository,IRepository<SysUser> sysUserRepository)
+        //public HomeController(IRepository<Category> categoryRepository,IRepository<SysUser> sysUserRepository, IRepository<SysUser> userRepository)
+        //{
+        //    this._categoryRepository = categoryRepository;
+        //    this._sysUserRepository = sysUserRepository;
+        //    this._userRepository = userRepository;
+        //}
+
+        //------------------------------------------------------------------------------
+        //构造方法集的形式
+        //-------------------------------------------------------------------------
+        private ICategoryService _categoryService;
+
+        public HomeController(ICategoryService categoryService)
         {
-            this._categoryRepository = categoryRepository;
-            this._sysUserRepository = sysUserRepository;
+            this._categoryService = categoryService;
         }
 
 
@@ -47,9 +59,10 @@ namespace General.Mvc.Controllers
             //_categoryService = EnginContext.Current.Resolve<ICategoryService>();
             //var list = _categoryService.getAll();
 
-            bool b = Object.ReferenceEquals(_categoryRepository.DbContext,_sysUserRepository.DbContext);
+            //bool b = Object.ReferenceEquals(_categoryRepository.DbContext,_sysUserRepository.DbContext);
+            //bool s = Object.ReferenceEquals(_userRepository.DbContext, _sysUserRepository.DbContext);    //同一请求区域相同
             //  b= 
-
+            var list = _categoryService.getAll();
 
             return View();
         }

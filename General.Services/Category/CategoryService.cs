@@ -8,7 +8,7 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace General.Services.Category
 {
-    public class CategoryService : ICategoryService
+    public class CategoryService : ICategoryService,IGeneralService
     {
          //private readonly GeneralDbContext _generalDbContext;
         //private const string MODEL_KEY = "General.services.category";
