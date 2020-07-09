@@ -23,22 +23,34 @@ namespace General.Mvc.Controllers
         //    this._generalDbContext = generalDbContext;
         //}
 
-        private ICategoryService _categoryService;
+        //private ICategoryService _categoryService;
 
         //public HomeController(ICategoryService categoryService)
         //{
         //    this._categoryService = categoryService;
         //}
 
+        private IRepository<Category> _categoryRepository;
+        private IRepository<SysUser> _sysUserRepository;
 
+        public HomeController(IRepository<Category> categoryRepository,IRepository<SysUser> sysUserRepository)
+        {
+            this._categoryRepository = categoryRepository;
+            this._sysUserRepository = sysUserRepository;
+        }
 
 
         public IActionResult Index()
         {
             //var list= _generalDbContext.Categories.ToList();
             //var list= _categoryService.getAll();
-            _categoryService = EnginContext.Current.Resolve<ICategoryService>();
-            var list = _categoryService.getAll();
+            //_categoryService = EnginContext.Current.Resolve<ICategoryService>();
+            //var list = _categoryService.getAll();
+
+            bool b = Object.ReferenceEquals(_categoryRepository.DbContext,_sysUserRepository.DbContext);
+            //  b= 
+
+
             return View();
         }
          
