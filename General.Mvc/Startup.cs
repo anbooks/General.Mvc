@@ -7,6 +7,9 @@ using General.Core.Data;
 using General.Core.Extensions;
 using General.Core.Librs;
 using General.Entities;
+using General.Framework;
+using General.Framework.Infrastructure;
+using General.Framework.Security.Admin;
 using General.Services.Category;
 using General.Services.Setting;
 using Microsoft.AspNetCore.Builder;
@@ -80,6 +83,9 @@ namespace General.Mvc
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
 
+            services.AddScoped<IWorkContext, WorkContext>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+
             EnginContext.Initialize(new GeneralEngine(services.BuildServiceProvider()));
             //new GeneralEngine(services.BuildServiceProvider());
 
@@ -109,7 +115,7 @@ namespace General.Mvc
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");   //默认路由
             });
 
             //app.UseMvc(routes =>

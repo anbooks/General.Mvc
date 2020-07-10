@@ -7,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Area("Admin")]
+    //[Area("Admin")]
     //public class MainController : AdminAreaController
     public class MainController : PublicAdminController  //需要登录才可以查看，后台管理的主页面
     {
         public IActionResult Index()
         {
+            var user = WorkContext.CurrentUser;
             return View();
         }
     }

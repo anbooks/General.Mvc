@@ -12,9 +12,10 @@ using General.Core.Data;
 using General.Framework.Controllers;
 
 namespace General.Mvc.Controllers
-{ 
+{
+    //[Route("home")]
     //public class HomeController : Controller
-         public class HomeController : BaseContoller
+    public class HomeController : BaseContoller
     {
 
         //private GeneralDbContext _generalDbContext;
@@ -45,14 +46,14 @@ namespace General.Mvc.Controllers
         //------------------------------------------------------------------------------
         //构造方法集的形式
         //-------------------------------------------------------------------------
-        private ICategoryService _categoryService;
+        //private ICategoryService _categoryService;
 
-        public HomeController(ICategoryService categoryService)
-        {
-            this._categoryService = categoryService;
-        }
+        //public HomeController(ICategoryService categoryService)
+        //{
+        //    this._categoryService = categoryService;
+        //}
 
-
+        //[Route("")]   //这样后系统的默认的路由就失效了
         public IActionResult Index()
 
         {
@@ -64,7 +65,7 @@ namespace General.Mvc.Controllers
             //bool b = Object.ReferenceEquals(_categoryRepository.DbContext,_sysUserRepository.DbContext);
             //bool s = Object.ReferenceEquals(_userRepository.DbContext, _sysUserRepository.DbContext);    //同一请求区域相同
             //  b= 
-            var list = _categoryService.getAll();
+            //var list = _categoryService.getAll();
 
             return View();
         }
