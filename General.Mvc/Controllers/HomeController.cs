@@ -9,11 +9,12 @@ using General.Entities;
 using General.Services.Category;
 using General.Core;
 using General.Core.Data;
-
+using General.Framework.Controllers;
 
 namespace General.Mvc.Controllers
 { 
-    public class HomeController : Controller
+    //public class HomeController : Controller
+         public class HomeController : BaseContoller
     {
 
         //private GeneralDbContext _generalDbContext;
@@ -53,6 +54,7 @@ namespace General.Mvc.Controllers
 
 
         public IActionResult Index()
+
         {
             //var list= _generalDbContext.Categories.ToList();
             //var list= _categoryService.getAll();

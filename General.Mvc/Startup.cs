@@ -38,7 +38,13 @@ namespace General.Mvc
             services.AddDbContextPool<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
-            services.AddAuthentication();   //权限过滤
+            //services.AddAuthentication();   //权限过滤
+
+            services.AddAuthentication("General").AddCookie(o =>
+            {
+                o.LoginPath = "/Admin/Login/index";
+
+            });
 
             //程序集依赖注入
             //var assembly =RuntimeHelper.GetAssemblyByName("General.Services");
@@ -106,6 +112,14 @@ namespace General.Mvc
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //      name: "areas",
+            //      template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+            //    );
+            //});
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -113,6 +127,7 @@ namespace General.Mvc
                   template: "{area:exists}/{controller=Login}/{action=Index}/{id?}"
                 );
             });
+
         }
     }
 }
