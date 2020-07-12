@@ -8,6 +8,11 @@ namespace General.Framework.Security.Admin
     {
 
         void signIn(string token, string name);
+
+
+       
+        void signOut();
+
         /// <summary>
         /// 
         /// </summary>

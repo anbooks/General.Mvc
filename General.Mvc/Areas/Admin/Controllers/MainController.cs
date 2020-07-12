@@ -10,6 +10,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 {
     //[Area("Admin")]
     //public class MainController : AdminAreaController
+    [Route("admin/main")]
     public class MainController : PublicAdminController  //需要登录才可以查看，后台管理的主页面
     {
         private IAdminAuthService _adminAuthService;
@@ -19,6 +20,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._adminAuthService = adminAuthService;
         }
 
+        [Route("",Name ="mainIndex")]
         public IActionResult Index()
         {
             //var user = WorkContext.CurrentUser;
@@ -26,5 +28,14 @@ namespace General.Mvc.Areas.Admin.Controllers
             _adminAuthService.getCurrentUser();
             return View();
         }
+
+        [Route("out", Name = "signOut")]
+        public IActionResult SignOut()
+        {
+            _adminAuthService.signOut();
+            return RedirectToRoute("adminLogin");
+        }
+
+
     }
 }

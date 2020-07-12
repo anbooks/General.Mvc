@@ -111,7 +111,7 @@
                         password = $.md5(password + r);
                         $.post('@Url.RouteUrl("adminLogin")', { "Account": account, "Password": password }, function (data) {
                             if (data.status) {
-                                alert("chenggong");
+                               // alert("chenggong");
 
                                 $('#error_msg').html('登陆成功，正在进入系统...');
                                 window.location.href = '@Url.RouteUrl("mainIndex")';

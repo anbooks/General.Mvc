@@ -34,8 +34,9 @@ namespace General.Framework.Security.Admin
 
             var user = _sysUserService.getLogged(token);
 
-            return _sysUserService.getLogged(token);
-           // return new SysUser { Id = Guid.NewGuid(), Name = "李四" };
+            //return _sysUserService.getLogged(token);
+            return _sysUserService.getLogged(token ?? "");
+            // return new SysUser { Id = Guid.NewGuid(), Name = "李四" };
         }
 
         public void signIn(string token, string name)
@@ -49,5 +50,14 @@ namespace General.Framework.Security.Admin
             _httpContextAccessor.HttpContext.SignInAsync(CookieAdminAuthInfo.AuthenticationScheme, claimsPrincipal);
 
         }
+
+        public void signOut()
+        {
+
+            _httpContextAccessor.HttpContext.SignOutAsync(CookieAdminAuthInfo.AuthenticationScheme);
+
+        }
+
+
     }
 }
