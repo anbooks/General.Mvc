@@ -17,19 +17,19 @@ namespace General.Services.SysUser
         ///// <returns></returns>
         //(bool Status,string Message ,string Token ,Entities.SysUser User) validateUser(string account, string password, string r);
 
-        ///// <summary>
-        ///// 通过账号获取用户
-        ///// </summary>
-        ///// <param name="account"></param>
-        ///// <returns></returns>
-        //Entities.SysUser getByAccount(string account);
+        /// <summary>
+        /// 通过账号获取用户
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        Entities.SysUser getByAccount(string account);
 
-        ///// <summary>
-        ///// 通过当前登录用户的token 获取用户信息，并缓存
-        ///// </summary>
-        ///// <param name="token"></param>
-        ///// <returns></returns>
-        //Entities.SysUser getLogged(string token);
+        /// <summary>
+        /// 通过当前登录用户的token 获取用户信息，并缓存
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        Entities.SysUser getLogged(string token);
 
         ///// <summary>
         ///// 搜索数据
@@ -127,7 +127,8 @@ namespace General.Services.SysUser
         /// <param name="password"></param>
         /// <param name="r"></param>
         /// <returns></returns>
-        (bool ,string ,string ,Entities.SysUser ) validateUser(string account, string password, string r);
+       // (bool ,string ,string ,Entities.SysUser ) validateUser(string account, string password, string r);
+        (bool Status,string Message ,string Token ,Entities.SysUser User) validateUser(string account, string password, string r);
 
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace General.Entities
 {
-    [Serializable]
+    [Serializable]  //可序列化，能转成二进制
     [Table("SysUserToken")]
     public partial class SysUserToken
     {
