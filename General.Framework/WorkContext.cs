@@ -10,9 +10,9 @@ namespace General.Framework
 {
     public class WorkContext : IWorkContext
     {
-        private IAuthenticationService _authenticationService;
+        private IAdminAuthService _authenticationService;
 
-        public WorkContext(IAuthenticationService authenticationService)
+        public WorkContext(IAdminAuthService authenticationService)
         {
             this._authenticationService = authenticationService;
         }

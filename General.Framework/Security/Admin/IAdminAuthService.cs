@@ -4,8 +4,10 @@ using System.Text;
 
 namespace General.Framework.Security.Admin
 {
-   public  interface IAuthenticationService
+   public  interface IAdminAuthService
     {
+
+        void signIn(string token, string name);
         /// <summary>
         /// 
         /// </summary>

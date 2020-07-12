@@ -74,16 +74,17 @@
 
                                         <form asp-route="adminLogin" method="post">
                                             <fieldset>
+
                                                 <label class="block clearfix">
                                                     <span class="block input-icon input-icon-right">
-                                                        <input type="text" class="form-control" placeholder="用户名" />
+                                                        @Html.TextBoxFor(m => m.Account, new { @class = "form-control", placeholder = "用户名" })
                                                         <i class="ace-icon fa fa-user"></i>
                                                     </span>
                                                 </label>
 
                                                 <label class="block clearfix">
                                                     <span class="block input-icon input-icon-right">
-                                                        <input type="password" class="form-control" placeholder="密码" />
+                                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "密码" })
                                                         <i class="ace-icon fa fa-lock"></i>
                                                     </span>
                                                 </label>
@@ -97,9 +98,9 @@
                                                     </label>
 
                                                     @*<button type="button" class="width-35 pull-right btn btn-sm btn-primary">
-                                                        <i class="ace-icon fa fa-key"></i>
-                                                        <span class="bigger-110">登录</span>
-                                                    </button>*@
+                <i class="ace-icon fa fa-key"></i>
+                <span class="bigger-110">登录</span>
+            </button>*@
                                                     <button type="submit" class="width-35 pull-right btn btn-sm btn-primary">
                                                         <i class="ace-icon fa fa-key"></i>
                                                         <span class="bigger-110">登录</span>

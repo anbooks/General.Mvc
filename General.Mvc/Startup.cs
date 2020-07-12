@@ -14,6 +14,7 @@ using General.Services.Category;
 using General.Services.Setting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -43,9 +44,17 @@ namespace General.Mvc
 
             //services.AddAuthentication();   //权限过滤
 
-            services.AddAuthentication("General").AddCookie(o =>
+            services.AddAuthentication(o=> {
+                //o.DefaultAuthenticateScheme = CookieAdminAuthInfo.AuthenticationScheme;
+                //o.DefaultChallengeScheme = CookieAdminAuthInfo.AuthenticationScheme;
+                o.DefaultAuthenticateScheme ="General";
+                o.DefaultChallengeScheme = "General";
+                o.DefaultSignInScheme= "General";
+                o.DefaultSignOutScheme= "General";
+            }).AddCookie("General",o =>
             {
-                o.LoginPath = "/Admin/Login/index";
+               // o.LoginPath = "/Admin/Login/index";
+                o.LoginPath = "/admin/login";
 
             });
 
@@ -84,7 +93,7 @@ namespace General.Mvc
 
 
             services.AddScoped<IWorkContext, WorkContext>();
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAdminAuthService, AdminAuthService>();
 
             EnginContext.Initialize(new GeneralEngine(services.BuildServiceProvider()));
             //new GeneralEngine(services.BuildServiceProvider());
@@ -92,6 +101,7 @@ namespace General.Mvc
             //泛型注入到DI里面
             //services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
