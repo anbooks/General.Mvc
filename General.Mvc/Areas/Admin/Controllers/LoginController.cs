@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using General.Core.Librs;
 using General.Entities;
 using General.Framework.Controllers.Admin;
 using General.Framework.Security.Admin;
 using General.Services.SysUser;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
@@ -17,6 +19,7 @@ namespace General.Mvc.Areas.Admin.Controllers
     [Route("admin")]
     public class LoginController : AdminAreaController
     {
+        private const string R_KEY = "R_KEY";
         private ISysUserService _sysUserService;
         private IAdminAuthService _authenticationService;
 
@@ -31,13 +34,21 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("login", Name = "adminLogin")]
         public IActionResult LoginIndex()
         {
-            return View();
+            string r = EncryptorHelper.GetMD5(Guid.NewGuid().ToString());
+            HttpContext.Session.SetString(R_KEY, r);
+            LoginModel loginModel = new LoginModel() { R = r };
+            return View(loginModel);
+
+            //return View();
         }
 
         [HttpPost]
         [Route("login")]
         public IActionResult LoginIndex(LoginModel model)
         {
+            string r = HttpContext.Session.GetString(R_KEY);
+            r = r ?? "";
+
             //admin abc123
             if (!ModelState.IsValid)
             {
@@ -45,7 +56,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return Json(AjaxData);
             }
 
-           var result= _sysUserService.validateUser(model.Account,model.Password,"");
+           //var result= _sysUserService.validateUser(model.Account,model.Password,"");
+            var result = _sysUserService.validateUser(model.Account, model.Password, r);
             AjaxData.Status = result.Item1;
             AjaxData.Message = result.Item2;
             if (result.Item1)
@@ -63,6 +75,21 @@ namespace General.Mvc.Areas.Admin.Controllers
 
 
             return Json(AjaxData);
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        [Route("getSalt", Name = "getSalt")]
+        public IActionResult getSalt(string account)
+        {
+            //http://localhost:50491/admin/getsalt?account=admin
+            var user = _sysUserService.getByAccount(account);
+            return Content(user?.Salt);
         }
 
 

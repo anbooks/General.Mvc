@@ -342,7 +342,7 @@ namespace General.Services.SysUser
                        Message = "登录：密码错误"
                    });
                     user.LoginFailedNum++;
-                    if (user.LoginFailedNum > 5)
+                    if (user.LoginFailedNum > 999)
                     {
                        user.LoginLock = true;
                        user.AllowLoginTime = DateTime.Now.AddHours(2);

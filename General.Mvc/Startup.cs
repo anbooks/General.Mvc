@@ -89,6 +89,8 @@ namespace General.Mvc
             services.AddAssembly("General.Services");
             //services.AddAssembly("abc");
 
+            services.AddSession();
+
             //泛型注入到DI里面
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
@@ -122,6 +124,8 @@ namespace General.Mvc
             app.UseStaticFiles();
 
             app.UseAuthentication();
+
+            app.UseSession();
 
             app.UseMvc(routes =>
             {
