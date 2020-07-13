@@ -8,10 +8,39 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    //[Area("Admin")]
-    //public class MainController : AdminAreaController
+    //    //[Area("Admin")]
+    //    //public class MainController : AdminAreaController
+    //    [Route("admin/main")]
+    //    public class MainController : PublicAdminController  //需要登录才可以查看，后台管理的主页面
+    //    {
+    //        private IAdminAuthService _adminAuthService;
+
+    //        public MainController(IAdminAuthService adminAuthService)
+    //        {
+    //            this._adminAuthService = adminAuthService;
+    //        }
+
+    //        [Route("",Name ="mainIndex")]
+    //        public IActionResult Index()
+    //        {
+    //            //var user = WorkContext.CurrentUser;
+
+    //            _adminAuthService.getCurrentUser();
+    //            return View();
+    //        }
+
+    //        [Route("out", Name = "signOut")]
+    //        public IActionResult SignOut()
+    //        {
+    //            _adminAuthService.signOut();
+    //            return RedirectToRoute("adminLogin");
+    //        }
+
+
+    //    }
+    //}
     [Route("admin/main")]
-    public class MainController : PublicAdminController  //需要登录才可以查看，后台管理的主页面
+    public class MainController : PublicAdminController
     {
         private IAdminAuthService _adminAuthService;
 
@@ -20,12 +49,9 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._adminAuthService = adminAuthService;
         }
 
-        [Route("",Name ="mainIndex")]
+        [Route("", Name = "mainIndex")]
         public IActionResult Index()
         {
-            //var user = WorkContext.CurrentUser;
-
-            _adminAuthService.getCurrentUser();
             return View();
         }
 
@@ -35,7 +61,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             _adminAuthService.signOut();
             return RedirectToRoute("adminLogin");
         }
-
 
     }
 }

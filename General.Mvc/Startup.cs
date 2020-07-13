@@ -9,6 +9,7 @@ using General.Core.Librs;
 using General.Entities;
 using General.Framework;
 using General.Framework.Infrastructure;
+using General.Framework.Register;
 using General.Framework.Security.Admin;
 using General.Services.Category;
 using General.Services.Setting;
@@ -99,6 +100,8 @@ namespace General.Mvc
             services.AddScoped<IAdminAuthService, AdminAuthService>();
             services.AddSingleton<IMemoryCache, MemoryCache>();
 
+            services.AddSingleton<IRegisterApplicationService, RegisterApplicationService>();
+
             EnginContext.Initialize(new GeneralEngine(services.BuildServiceProvider()));
             //new GeneralEngine(services.BuildServiceProvider());
 
@@ -149,6 +152,10 @@ namespace General.Mvc
                   template: "{area:exists}/{controller=Login}/{action=Index}/{id?}"
                 );
             });
+
+
+            //初始化菜单
+            EnginContext.Current.Resolve<IRegisterApplicationService>().initRegister();
 
         }
     }

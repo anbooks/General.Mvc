@@ -1,0 +1,95 @@
+﻿@using Microsoft.AspNetCore.Html
+@using General.Framework.Menu
+@using General.Entities
+
+@{
+    var workContext = Html.GetWorkContext();
+
+}
+
+@functions {
+    public HtmlString RenderMenuItem(Category item, List<Category> aa)
+    {
+        string href = string.Empty;
+        if (!String.IsNullOrEmpty(item.RouteName))
+        {
+            href = Url.RouteUrl(item.RouteName);
+        }
+        if (!String.IsNullOrEmpty(item.Controller) && !String.IsNullOrEmpty(item.Action))
+        {
+            href = Url.Action(item.Action, item.Controller);
+        }
+
+        string s = @"<li id=" + item.ResouceID + " " + (Context.Request.Path.Value.Equals(href, StringComparison.InvariantCultureIgnoreCase) ? "class=active" : "") + ">";
+        var childNodes = aa.Where(o => o.FatherResource == item.SysResource && o.IsMenu).OrderBy(o => o.Sort).ThenBy(o => o.Name).ToList();
+        s += @"<a href =" + (!String.IsNullOrEmpty(href) ? href : "javascript: ") + " " + (childNodes.Any() ? "class=dropdown-toggle" : "") + ">" +
+                "<i class=\"" + item.CssClass + "\"></i><span class=menu-text>" + item.Name + "</span>";
+        if (childNodes.Any())
+        {
+            s += @"<b class='arrow fa fa-angle-down'></b>";
+        }
+        s += @"</a>";
+        s += @"<b class=aarro></b>";
+        if (childNodes.Any())
+        {
+            s += @"<ul class=submenu>";
+
+            foreach (var childItem in childNodes)
+            {
+                s += RenderMenuItem(childItem, aa);
+            }
+            s += @"</ul>";
+        }
+        s += @"</li>";
+        if (Context.Request.Path.Value.Equals(href, StringComparison.InvariantCultureIgnoreCase))
+        {
+            s += @"<script>$('#" + item.FatherID + "').addClass('open active').parents('li').addClass('open active')</script>";
+        }
+        return new HtmlString(s);
+    }
+}
+
+<div id="sidebar" class="sidebar responsive sidebar-fixed">
+
+    @{
+        List<Category> list = workContext.Categories;
+        if (list != null)
+        {
+            var nodes = list.Where(o => String.IsNullOrEmpty(o.FatherResource)).Where(o => o.IsMenu).OrderBy(o => o.Sort).ThenBy(o => o.Name).ToList();
+
+            <ul class="nav nav-list"> 
+                @if (nodes != null)
+                {
+                    foreach (var item in nodes)
+                    {
+                        @RenderMenuItem(item, list)
+                    }
+                }
+            </ul>
+            string controller = ViewContext.RouteData.Values["controller"].ToString();
+            string action = ViewContext.RouteData.Values["action"].ToString();
+            //当前
+            var current = list.FirstOrDefault(o => o.Action == action && o.Controller == controller);
+            if (current != null && !current.IsMenu)
+            {
+                <script>
+                 $('#@(current.FatherID)').addClass('active').parents('li').addClass('open active')
+                </script>
+            }
+        }
+    }
+    <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+        <i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+

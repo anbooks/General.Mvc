@@ -11,7 +11,7 @@ namespace General.Services.Category
         /// 初始化保存方法
         /// </summary>
         /// <param name="list"></param>
-        //void initCategory(List<Entities.Category> list);
+        void initCategory(List<Entities.Category> list);
 
         /// <summary>
         /// 获取所有并缓存
