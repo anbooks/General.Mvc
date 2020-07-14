@@ -9,6 +9,7 @@ using General.Framework.Security.Admin;
 using General.Services.SysUser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -23,10 +24,13 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysUserService _sysUserService;
         private IAdminAuthService _authenticationService;
 
-        public LoginController(ISysUserService sysUserService,IAdminAuthService authenticationService)
+        private IMemoryCache _memoryCache;
+
+        public LoginController(ISysUserService sysUserService,IAdminAuthService authenticationService, IMemoryCache memoryCache)
         {
             this._sysUserService = sysUserService;
             this._authenticationService = authenticationService;
+            this._memoryCache = memoryCache;
         }
 
 

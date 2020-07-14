@@ -427,5 +427,110 @@ namespace General.Services.SysUser
         }
 
 
+        /// <summary>
+        /// 获取用户详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Entities.SysUser getById(Guid id)
+        {
+            return _sysUserRepository.getById(id);
+        }
+
+        /// <summary>
+        /// 新增，插入
+        /// </summary>
+        /// <param name="model"></param>
+        public void insertSysUser(Entities.SysUser model)
+        {
+            if (existAccount(model.Account))
+                return;
+            _sysUserRepository.insert(model);
+        }
+
+        /// <summary>
+        /// 更新修改
+        /// </summary>
+        /// <param name="model"></param>
+        void updateSysUser(Entities.SysUser model)
+        {
+            _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
+            _sysUserRepository.DbContext.Entry(model).Property("Name").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("Sex").IsModified = true;
+            _sysUserRepository.DbContext.SaveChanges();
+        }
+
+        /// <summary>
+        /// 重置密码。默认重置成账号一样
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="modifer"></param>
+        public void resetPassword(Guid id, Guid modifer)
+        {
+
+        }
+
+        /// <summary>
+        /// 验证账号是否已经存在
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public bool existAccount(string account)
+        {
+            return _sysUserRepository.Table.Any(o => o.Account == account && !o.IsDeleted);
+        }
+
+        void ISysUserService.updateSysUser(Entities.SysUser model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void enabled(Guid id, bool enabled, Guid modifer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void loginLock(Guid id, bool ulock, Guid modifer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void deleteUser(Guid id, Guid modifer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void addAvatar(Guid id, byte[] avatar)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void changePassword(Guid id, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void lastActivityTime(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// 移除缓存用户
+        /// </summary>
+        /// <param name="userId"></param>
+        private void removeCacheUser(Guid userId)
+        {
+            _memoryCache.Remove(String.Format(MODEL_KEY, userId));
+        }
+
+
+
+
+
+
     }
 }

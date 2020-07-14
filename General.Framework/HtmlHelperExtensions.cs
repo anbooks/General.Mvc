@@ -41,10 +41,10 @@ namespace General.Framework
         /// </summary>
         /// <param name="htmlHelper"></param>
         /// <returns></returns>
-        //public static HtmlString RequiredSpan(this IHtmlHelper htmlHelper)
-        //{ 
-        //    return new HtmlString(@"<span class=required-span>*</span>");
-        //}
+        public static HtmlString RequiredSpan(this IHtmlHelper htmlHelper)
+        {
+            return new HtmlString(@"<span class=required-span>*</span>");
+        }
 
     }
 }

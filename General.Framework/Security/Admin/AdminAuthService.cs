@@ -102,7 +102,15 @@ namespace General.Framework.Security.Admin
 
         }
 
-
+        ///// <summary>
+        ///// 获取我的权限数据
+        ///// </summary>
+        ///// <returns></returns>
+        //public List<Entities.Category> getMyCategories()
+        //{
+        //    var user = getCurrentUser();
+        //    return getMyCategories(user);
+        //}
         /// <summary>
         /// 私有方法，获取当前用户的方法数据
         /// </summary>

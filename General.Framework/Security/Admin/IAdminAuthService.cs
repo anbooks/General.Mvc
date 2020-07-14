@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -32,5 +33,13 @@ namespace General.Framework.Security.Admin
         /// <param name="routeName"></param> 
         /// <returns></returns>
         bool authorize(string routeName);
+
+
+        /// <summary>
+        /// 权限验证
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        bool authorize(ActionExecutingContext context);
     }
 }
