@@ -1,0 +1,41 @@
+﻿@*@{
+        ViewData["Title"] = "RenderItem";
+    }
+
+    <h2>RenderItem</h2>*@
+@model ValueTuple<General.Entities.Category, List<General.Entities.Category>, List<General.Entities.SysPermission>>
+
+
+<li>
+    <label @(Model.Item3 != null && Model.Item3.Any(o => o.CategoryId == Model.Item1.Id) ? "class=text-danger" : "")>
+        @if (Model.Item3 != null && Model.Item3.Any(o => o.CategoryId == Model.Item1.Id))
+        {
+            <input type="checkbox" name="sysResource" value="@Model.Item1.Id" checked="checked" />
+        }
+        else
+        {
+            <input type="checkbox" name="sysResource" value="@Model.Item1.Id" />
+        }
+        @Model.Item1.Name
+    </label>
+    @if (Model.Item2.Any())
+    {
+        var childNodes = Model.Item2.Where(o => o.FatherResource == Model.Item1.SysResource).ToList();
+        <ul>
+            @foreach (var child in childNodes)
+            {
+                Html.RenderPartial("RenderItem", ValueTuple.Create(child, childNodes, Model.Item3));
+            }
+        </ul>
+    }
+</li>
+
+
+
+
+
+
+
+
+
+

@@ -16,14 +16,14 @@ namespace General.Framework.Filters
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
     public class PermissionActionFilter :Attribute, IActionFilter
     {
-        private readonly bool _dontValidate;
+        private readonly bool _dontValidate;  //#Kevin 留存功能-不会使用
 
-        //public PermissionActionFilterAttribute() : this(false)
+        //public PermissionActionFilterAttribute() : this(false)//#Kevin 留存功能-不会使用
         //{
-
+        //#Kevin 留存功能-不会使用
         //}
 
-        //public PermissionActionFilterAttribute(bool dontValidate)
+        //public PermissionActionFilterAttribute(bool dontValidate)//#Kevin 留存功能-不会使用
         //{
         //    this._dontValidate = dontValidate;
         //}

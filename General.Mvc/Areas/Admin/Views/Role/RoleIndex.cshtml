@@ -1,0 +1,87 @@
+﻿@*@{
+        ViewData["Title"] = "RoleIndex";
+    }
+
+    <h2>RoleIndex</h2>*@
+
+@model IEnumerable<General.Entities.SysRole>
+    @{
+    ViewData["Title"] = "角色列表";
+    }
+
+    <div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon fa fa-home home-icon"></i>
+                <a href="@Url.RouteUrl("mainIndex")">首页</a>
+            </li>
+            <li class="active">@ViewBag.Title</li>
+        </ul>
+    </div>
+    <div class="page-content">
+        <h1>@ViewBag.Title</h1>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <a asp-route="editRole" class="btn btn-sm btn-pink "><i class="glyphicon glyphicon-plus"></i>添加角色</a>
+            </div>
+        </div>
+        <div class="space-2"></div>
+        @if (Model != null)
+    {
+        int i = 1;
+        <div class="row">
+            <div class="col-sm-12">
+                <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th width="100px"></th>
+                            <th width="300px">名称</th>
+                            <th width="200px">时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>@(i++)</td>
+                            <td>@item.Name</td>
+                            <td>@item.CreationTime.ToString("F")</td>
+                            <td>
+                                <a href="@Url.RouteUrl("editRole",new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
+                                <a href="@Url.RouteUrl("deleteRole",new { id = item.Id })" class="btn btn-xs btn-danger"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                                <a href="@Url.RouteUrl("rolePermission",new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>设置权限</a>
+                                @*@PermissionRouteLinkIcon("", "editRole", new RouteValueDictionary(new { id = item.Id }), new { @class = "btn btn-xs btn-info", title = "修改" }, new { @class = "glyphicon glyphicon-pencil" })
+                                    @PermissionRouteLinkIcon("", "deleteRole", new RouteValueDictionary(new { id = item.Id }), new { @class = "btn btn-xs btn-danger btnDelete", title = "删除" }, new { @class = "glyphicon glyphicon-trash" })
+                                    @PermissionRouteLinkIcon("权限", "rolePermission", new RouteValueDictionary(new { id = item.Id }), new { @class = "btn btn-xs btn-purple", title = "设置权限" }, new { @class = "fa fa-bolt" })*@
+
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+                $(function () {
+
+                    $(".btnDelete").click(function (e) {
+                        e.preventDefault();
+                        var url = $(this).attr('href');
+                        $.modal.confirm('删除后将不可恢复，您确定要删除此角色？', function () {
+                            $.get(url, function (data) {
+                                $.modal.alert(data);
+                            });
+                        });
+                    });
+                });
+        </script>
+    }
+    </div>
+
+
+
+
+
+
