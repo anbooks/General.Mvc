@@ -31,14 +31,14 @@ namespace General.Services.SysUser
         /// <returns></returns>
         Entities.SysUser getLogged(string token);
 
-        ///// <summary>
-        ///// 搜索数据
-        ///// </summary>
-        ///// <param name="arg"></param>
-        ///// <param name="page"></param>
-        ///// <param name="size"></param>
-        ///// <returns></returns>
-        //IPagedList<Entities.SysUser> searchUser(SysUserSearchArg arg, int page, int size);
+        /// <summary>
+        /// 搜索数据
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        IPagedList<Entities.SysUser> searchUser(SysUserSearchArg arg, int page, int size);
 
         ///// <summary>
         ///// 获取用户详情

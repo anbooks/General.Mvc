@@ -401,5 +401,31 @@ namespace General.Services.SysUser
 
 
 
+        /// <summary>
+        /// 搜索数据
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <param name="page"></param>
+        /// <param name="size"></param>
+        /// <returns></returns>
+        public IPagedList<Entities.SysUser> searchUser(SysUserSearchArg arg, int page, int size)
+        {
+            var query = _sysUserRepository.Table.Where(o => !o.IsDeleted);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.q))
+                    query = query.Where(o => o.Account.Contains(arg.q) || o.MobilePhone.Contains(arg.q) || o.Email.Contains(arg.q) || o.Name.Contains(arg.q));
+                if (arg.enabled.HasValue)
+                    query = query.Where(o => o.Enabled == arg.enabled);
+                if (arg.unlock.HasValue)
+                    query = query.Where(o => o.LoginLock == arg.unlock);
+                if (arg.roleId.HasValue)
+                    query = query.Where(o => o.SysUserRoles.Any(r => r.RoleId == arg.roleId));
+            }
+            query = query.OrderBy(o => o.Account).ThenBy(o => o.Name).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.SysUser>(query, page, size);
+        }
+
+
     }
 }

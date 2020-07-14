@@ -25,5 +25,12 @@ namespace General.Framework.Security.Admin
         /// </summary>
         /// <returns></returns>
         List<Entities.Category> getMyCategories();
+
+        /// <summary>
+        /// 权限验证
+        /// </summary>
+        /// <param name="routeName"></param> 
+        /// <returns></returns>
+        bool authorize(string routeName);
     }
 }
