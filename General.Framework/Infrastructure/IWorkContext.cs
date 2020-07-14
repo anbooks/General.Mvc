@@ -14,6 +14,6 @@ namespace General.Framework.Infrastructure
         /// <summary>
         /// 当前登录用户的菜单
         /// </summary>
-        //List<Entities.Category> Categories { get; }
+        List<Entities.Category> Categories { get; }
     }
 }

@@ -9,7 +9,7 @@ namespace General.Services.SysUserRole
 {
     public class SysUserRoleService : ISysUserRoleService
     {
-        private IMemoryCache _memoryCache;
+        private IMemoryCache _memoryCache;  //不用每次去数据库里面筛选
 
         private const string MODEL_KEY = "General.services.userRole";
 

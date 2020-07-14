@@ -7,6 +7,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Linq;
 using General.Services.SysUser;
+using General.Services.Category;
+using General.Services.SysUserRole;
+using General.Services.SysPermission;
 
 namespace General.Framework.Security.Admin
 {
@@ -14,11 +17,17 @@ namespace General.Framework.Security.Admin
     {
         private IHttpContextAccessor _httpContextAccessor;
         private ISysUserService _sysUserService;
+        private ICategoryService _categoryService;
+        private ISysUserRoleService _sysUserRoleService;
+        private ISysPermissionService _sysPermissionServices;
 
-        public AdminAuthService(IHttpContextAccessor httpContextAccessor, ISysUserService sysUserService)
+        public AdminAuthService(IHttpContextAccessor httpContextAccessor, ISysUserService sysUserService, ICategoryService categoryService, ISysUserRoleService sysUserRoleService, ISysPermissionService sysPermissionServices)
         {
             this._httpContextAccessor = httpContextAccessor;
             this._sysUserService = sysUserService;
+            this._categoryService = categoryService;
+            this._sysUserRoleService = sysUserRoleService;
+            this._sysPermissionServices = sysPermissionServices;
         }
 
         public SysUser getCurrentUser()
@@ -55,6 +64,44 @@ namespace General.Framework.Security.Admin
         {
 
             _httpContextAccessor.HttpContext.SignOutAsync(CookieAdminAuthInfo.AuthenticationScheme);
+
+        }
+
+        /// <summary>
+        /// 获取我的权限数据
+        /// </summary>
+        /// <returns></returns>
+        public List<Entities.Category> getMyCategories()
+        {
+            //var user = getCurrentUser();
+            // return getMyCategories(user);
+            //return _categoryService.getAll();
+            var list = _categoryService.getAll();
+            var user = getCurrentUser();
+            if (user == null) return null;
+            if (user.IsAdmin) return list;
+
+
+
+            //获取权限数据
+
+           var userRoles= _sysUserRoleService.getAll();
+            if (userRoles == null) return null;
+            if (userRoles == null || !userRoles.Any()) return null;
+            var roleIds = userRoles.Where(o => o.UserId == user.Id).Select(x => x.RoleId).Distinct().ToList();
+
+            var permissionList = _sysPermissionServices.getAll();
+            if (permissionList == null || !permissionList.Any()) return null;
+
+            var categoryIds = permissionList.Where(o => roleIds.Contains(o.RoleId)).Select(x => x.CategoryId).Distinct().ToList();
+            if (!categoryIds.Any())
+                return null;
+            list = list.Where(o => categoryIds.Contains(o.Id)).ToList();
+            return list;
+
+
+
+
 
         }
 

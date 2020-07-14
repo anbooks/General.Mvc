@@ -11,7 +11,7 @@ namespace General.Services.Category
     public class CategoryService : ICategoryService,IGeneralService
     {
          //private readonly GeneralDbContext _generalDbContext;
-        //private const string MODEL_KEY = "General.services.category";
+        private const string MODEL_KEY = "General.services.category";
 
         private IMemoryCache _memoryCache;
         private IRepository<Entities.Category> _categoryRepository;
@@ -102,7 +102,16 @@ namespace General.Services.Category
             //return list;
 
             //return _generalDbContext.Categories.ToList();
-            return _categoryRepository.Table.ToList();
+
+            List<Entities.Category> list = null;
+            _memoryCache.TryGetValue<List<Entities.Category>>(MODEL_KEY, out list);
+            if (list != null)
+                return list;
+            list = _categoryRepository.Table.ToList();
+            _memoryCache.Set(MODEL_KEY, list, DateTimeOffset.Now.AddDays(1));
+            return list;
+
+           // return _categoryRepository.Table.ToList();
         }
 
 

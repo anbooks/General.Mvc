@@ -5,6 +5,7 @@ using System.Text;
 using General.Entities;
 using General.Framework.Security.Admin;
 using System.Linq;
+using General.Framework.Menu;
 
 namespace General.Framework
 {
@@ -32,11 +33,27 @@ namespace General.Framework
         /// <summary>
         /// 当前登录用户菜单
         /// </summary>
-        //public List<Category> Categories {
-        //    get
-        //    {
-        //      return _authenticationService.getMyCategories();
-        //    }
-        //}
+        public List<Category> Categories
+        {
+            get
+            {
+                //return _authenticationService.getMyCategories();
+
+                return _authenticationService.getMyCategories();
+                //return FunctionManager.getFunctionLists().Select(item => new Category {
+                //    Name = item.Name,
+                //    Action=item.Action,
+                //    Controller=item.Controller,
+                //    CssClass=item.CssClass,
+                //    FatherID=item.FatherID,
+                //    FatherResource=item.FatherResource,
+                //    IsMenu=item.IsMenu,
+                //    ResouceID=item.ResouceID,
+                //    RouteName=item.RouteName,
+                //    Sort=item.Sort,
+                //    SysResource=item.SysResource
+                //}).ToList();
+            }
+        }
     }
 }

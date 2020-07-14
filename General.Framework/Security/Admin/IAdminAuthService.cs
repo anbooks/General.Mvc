@@ -18,5 +18,12 @@ namespace General.Framework.Security.Admin
         /// </summary>
         /// <returns></returns>
         Entities.SysUser getCurrentUser();
+
+
+        /// <summary>
+        /// 获取我的权限数据
+        /// </summary>
+        /// <returns></returns>
+        List<Entities.Category> getMyCategories();
     }
 }
