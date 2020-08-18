@@ -15,7 +15,7 @@ namespace General.Core
         /// </summary>
         /// <param name="engine"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.Synchronized)]
+        [MethodImpl(MethodImplOptions.Synchronized)]   //异步执行的
         public static IEngine Initialize(IEngine engine)
         {
             if (_engine == null)
