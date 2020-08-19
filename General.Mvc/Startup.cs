@@ -38,7 +38,7 @@ namespace General.Mvc
             services.AddMvc();   //MVC的服务
 
             //services.AddDbContextPool<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //一个实例
 
             //services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")),ServiceLifetime.Transient); //两个对象
             //services.AddDbContextPool<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -68,21 +68,21 @@ namespace General.Mvc
 
 
             //services.AddScoped<ICategoryService, CategoryService>();
-            //services.AddScoped<ISettingService, SettingService>();  //也不能写100多个吧？
+            //services.AddScoped<ISettingService, SettingService>();  //也不能写100多个吧？  服务+类名的度一应
 
             //services.BuildServiceProvider().GetService<ICategoryService>();
 
             // var assembly= RuntimeHelper.GetAssemblyByName("General.Services");
 
             //  var types = assembly.GetTypes();
-            //var list =  types.Where(o => o.IsClass && !o.IsAbstract && !o.IsGenericType).ToList();
+            //var list =  types.Where(o => o.IsClass && !o.IsAbstract && !o.IsGenericType).ToList();  //把这里的类筛选出来
             //  foreach (var type in list)
             //  {
-            //    var interfacesList=  type.GetInterfaces();
+            //    var interfacesList=  type.GetInterfaces();  //找接口
             //      if (interfacesList.Any())
             //      {
             //          var inter = interfacesList.First();
-            //          services.AddScoped(inter,type);
+            //          services.AddScoped(inter,type);  //把services里面的类  就是那两个Category、Setting获取出来
             //      }
             //  }
 

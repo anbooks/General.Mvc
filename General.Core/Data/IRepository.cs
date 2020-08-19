@@ -23,7 +23,7 @@ namespace General.Core.Data
         DbSet<TEntity> Entities { get; }
 
         /// <summary>
-        /// 
+        /// 查询表的方法
         /// </summary>
         IQueryable<TEntity> Table { get; }
 

@@ -27,8 +27,6 @@ namespace General.Services.Category
         //}
 
 
-
-
         public CategoryService(IRepository<Entities.Category> categoryRepository, IRepository<Entities.SysPermission> permissionRepository, IMemoryCache memoryCache)
         {
             this._categoryRepository = categoryRepository;
