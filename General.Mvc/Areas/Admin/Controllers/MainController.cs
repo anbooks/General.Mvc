@@ -40,7 +40,7 @@ namespace General.Mvc.Areas.Admin.Controllers
     //    }
     //}
     [Route("admin/main")]
-    public class MainController : PublicAdminController
+    public class MainController : PublicAdminController   //这样Controller一集成就得登录后才能用了
     {
         private IAdminAuthService _adminAuthService;
 

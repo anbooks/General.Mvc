@@ -18,7 +18,7 @@ namespace General.Mvc.Areas.Admin.Controllers
     /// </summary>
     //[Route("admin/login")]
     [Route("admin")]
-    public class LoginController : AdminAreaController
+    public class LoginController : AdminAreaController    //这里引用的就是上面framework中的AdminAreaController
     {
         private const string R_KEY = "R_KEY";
         private ISysUserService _sysUserService;

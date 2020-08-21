@@ -11,10 +11,10 @@ using System.Text;
 namespace General.Framework.Filters
 {
     /// <summary>
-    /// 权限判断过滤器
+    /// 权限判断过滤器    
     /// </summary>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]
-    public class PermissionActionFilter :Attribute, IActionFilter
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true, Inherited = true)]  //什么允许多个、允许集成啥的
+    public class PermissionActionFilter :Attribute, IActionFilter     //方法执行之前弄过滤器
     {
         private readonly bool _dontValidate;  //#Kevin 留存功能-不会使用
 
