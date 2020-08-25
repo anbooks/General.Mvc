@@ -48,7 +48,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("login")]
-        public IActionResult LoginIndex(LoginModel model)
+        public IActionResult LoginIndex(LoginModel model)    //loginModel处理登录的事
         {
             string r = HttpContext.Session.GetString(R_KEY);
             r = r ?? "";
@@ -61,7 +61,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
 
            //var result= _sysUserService.validateUser(model.Account,model.Password,"");
-            var result = _sysUserService.validateUser(model.Account, model.Password, r);
+            var result = _sysUserService.validateUser(model.Account, model.Password, r);  //这里成功后就写入了
             AjaxData.Status = result.Item1;
             AjaxData.Message = result.Item2;
             if (result.Item1)
@@ -69,6 +69,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 //_authenticationService.signIn(result.Item3, result.Item4.Name);
                 //保存登录状态  ClasimsIdentity,ClaimsPrincipal
                 //HttpContext.SignInAsync()
+
+                //登录成功后需要写入token表中
                 _authenticationService.signIn(result.Item3, result.Item4.Name);
 
             }

@@ -13,7 +13,7 @@ namespace General.Framework
     {
         private IAdminAuthService _authenticationService;
 
-        public WorkContext(IAdminAuthService authenticationService)
+        public WorkContext(IAdminAuthService authenticationService)   //引入安全类
         {
             this._authenticationService = authenticationService;
         }
