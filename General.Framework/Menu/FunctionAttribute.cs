@@ -5,6 +5,9 @@ using System.Text;
 
 namespace General.Framework.Menu
 {
+    /// <summary>
+    /// 通过这个方法可以生成fatherid啥的
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
     public class FunctionAttribute : Attribute
     {

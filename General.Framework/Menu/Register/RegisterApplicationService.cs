@@ -27,7 +27,9 @@ namespace General.Framework.Register
         public void initRegister()
         {
             List<Entities.Category> list = new List<Entities.Category>();
-            FunctionManager.getFunctionLists().ForEach(item =>
+            //这个FunctionManager就是下面的那个文件啦
+
+            FunctionManager.getFunctionLists().ForEach(item => 
             {
                 list.Add(new Entities.Category()
                 {

@@ -156,7 +156,7 @@ namespace General.Mvc
 
 
             //初始化菜单
-            EnginContext.Current.Resolve<IRegisterApplicationService>().initRegister();
+            EnginContext.Current.Resolve<IRegisterApplicationService>().initRegister();  //这个是头啊
 
         }
     }

@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace General.Mvc.Areas.Admin.Controllers
 {
     [Route("admin/users")]
+    // public class UserController :Controller   初始的时候是这个样子的，下面的才是有权限的用户才能对这个表操作
     public class UserController : AdminPermissionController
     {
 

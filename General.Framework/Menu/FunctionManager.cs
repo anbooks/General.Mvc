@@ -49,6 +49,7 @@ namespace General.Framework.Menu
                         {
                             foreach (var m in members)
                             {
+                                //什么什么得添加特性的  20200826
                                 var funs = m.GetCustomAttributes<FunctionAttribute>(false);
                                 foreach (var fun in funs)
                                 {
