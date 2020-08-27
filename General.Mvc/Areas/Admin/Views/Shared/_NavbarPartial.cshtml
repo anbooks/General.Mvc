@@ -52,7 +52,7 @@
 <div id="sidebar" class="sidebar responsive sidebar-fixed">
 
     @{
-        List<Category> list = workContext.Categories;
+        List<Category> list = workContext.Categories;  //先从这里获取菜单
         if (list != null)
         {
             var nodes = list.Where(o => String.IsNullOrEmpty(o.FatherResource)).Where(o => o.IsMenu).OrderBy(o => o.Sort).ThenBy(o => o.Name).ToList();

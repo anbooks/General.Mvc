@@ -24,7 +24,7 @@ namespace General.Framework.Filters
             var user = _adminAuthService.getCurrentUser();
             if (user == null || !user.Enabled)
                 context.Result = new RedirectToRouteResult("adminLogin", new { returnUrl = context.HttpContext.Request.Path });
-
+            //跳转到这里adminLogin
 
             //throw new NotImplementedException();
             //防止不登录就使用系统

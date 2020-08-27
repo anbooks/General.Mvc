@@ -19,5 +19,7 @@ namespace General.Entities
         public DbSet<SysUserRole> SysUserRoles { get; set; }
         public DbSet<SysPermission> SysPermissions { get; set; }
 
+        //用到的表都要在这里注册
+
     }
 }
