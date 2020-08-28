@@ -69,7 +69,7 @@ namespace General.Mvc.Controllers
 
             return View();
         }
-         
+
 
         //public IActionResult Contact()
         //{
@@ -77,6 +77,16 @@ namespace General.Mvc.Controllers
 
         //    return View();
         //}
+
+        public IActionResult Contact()
+        {
+            return Redirect("/admin/login");  //临时重定向
+        }
+
+        public IActionResult Contact_ordinary()
+        {
+            return Redirect("/admin/login");  //临时重定向
+        }
 
         //public IActionResult Error()
         //{
