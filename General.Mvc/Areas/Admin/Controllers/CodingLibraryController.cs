@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace General.Mvc.Areas.Admin.Controllers
 {
     [Function("资料库", true, "menu-icon fa fa-pencil-square-o")]
-    public class StyleLibraryController : AdminPermissionController
+    public class CodingLibraryController : AdminPermissionController
     {
         // GET: StyleLibrary
         

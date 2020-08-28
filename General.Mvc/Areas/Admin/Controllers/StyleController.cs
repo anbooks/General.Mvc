@@ -16,7 +16,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// </summary>
         /// <returns></returns>
         [Route("", Name = "styleIndex")]
-        [Function("样式列表", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.StyleLibraryController", Sort = 1)]
+        [Function("样式列表", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.CodingLibraryController", Sort = 1)]
 
         public IActionResult StyleIndex()
         {
@@ -27,5 +27,9 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect("/ace-master/index.html");
             // return View();
         }
+
+
+
+
     }
 }
