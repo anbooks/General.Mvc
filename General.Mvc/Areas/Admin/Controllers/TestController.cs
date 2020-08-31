@@ -26,12 +26,41 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// 
         /// </summary>
         /// <returns></returns>
-        [Route("test", Name = "testFr")]
+        [Route("testFr", Name = "testFr")]  
         [Function("测试Finereport", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.TestIndex")]
         public IActionResult TestFr()
         {
             return View();
         }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Route("testWebservice", Name = "testWebservice")]
+        [Function("测试Webservice", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.TestIndex")]
+        public IActionResult TestWebservice()
+        {
+            return View();
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Route("nonparam", Name = "nonparamReport")]
+       // [Function("新增、修改角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.RoleController.RoleIndex")]
+        public IActionResult NonparamReport()
+        {
+            // http://localhost:8075/WebReport/ReportServer?reportlet=SysUser.cpt
+
+         //  return Redirect("http://192.168.14.107:8075/WebReport/ReportServer?reportlet=SysUser.cpt");  //临时重定向
+            return Content("来了老弟");
+          
+        }
+
 
 
     }

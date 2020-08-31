@@ -3,5 +3,41 @@
     ViewData["Title"] = "TestFr";
 }
 
-<h2>TestFr</h2>
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li class="active">@ViewBag.Title</li>
+    </ul>
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+         @*<a asp-route="nonparamReport" class="btn btn-sm btn-pink "><i class="glyphicon glyphicon-plus"></i>无参数报表</a>*@
+        <button type="button" id="nonparamReportButton">
+            无参数报表
+        </button>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $('#nonparamReportButton').click(function () {
+           // alert("OK");  弹窗测试
+
+           //利用js打开新页面（在另外新建窗口中打开窗口）
+            //window.open("http://192.168.14.107:8075/WebReport/ReportServer?reportlet=SysUser.cpt","_blank");  
+
+            //保留当前页面，打开一个非tab页面
+            window.open("http://192.168.14.107:8075/WebReport/ReportServer?reportlet=SysUser.cpt", "_blank", "scrollbars=yes,resizable=1,modal=false,alwaysRaised=yes");
+
+
+        });
+    });
+</script>
+
 

@@ -44,6 +44,7 @@ namespace General.Mvc
             //services.AddDbContextPool<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContextPool<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.UseRowNumberForPaging()));  //解决低版本数据库不支持offset next的问题
 
+            var test= Configuration.GetValue<string>("FR_ConnectionStrings");
 
             //services.AddAuthentication();   //权限过滤
 
