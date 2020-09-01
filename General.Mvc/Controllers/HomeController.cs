@@ -80,12 +80,14 @@ namespace General.Mvc.Controllers
 
         public IActionResult Contact()
         {
+            string test = "1";
             return Redirect("/admin/login");  //临时重定向
         }
 
         public IActionResult Contact_ordinary()
         {
-            return Redirect("/admin/login");  //临时重定向
+            string test = "hi";
+            return Redirect("/ordinary/login");  //临时重定向
         }
 
         //public IActionResult Error()
