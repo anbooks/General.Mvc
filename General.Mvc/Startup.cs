@@ -179,6 +179,7 @@ namespace General.Mvc
             //初始化菜单
             EnginContext.Current.Resolve<IRegisterApplicationService>().initRegister();  //这个是头啊
 
+            //我提交了  20200921
         }
     }
 }
