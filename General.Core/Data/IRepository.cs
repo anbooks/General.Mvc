@@ -7,7 +7,7 @@ using System.Text;
 namespace General.Core.Data
 {
     /// <summary>
-    /// 
+    /// phc
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     public interface IRepository<TEntity> where TEntity : class
