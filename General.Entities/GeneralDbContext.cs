@@ -20,6 +20,6 @@ namespace General.Entities
         public DbSet<SysPermission> SysPermissions { get; set; }
 
         //用到的表都要在这里注册
-
+        public DbSet<Setting> Settings { get; set; }
     }
 }
