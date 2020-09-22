@@ -101,7 +101,53 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
 
+        [HttpGet]
+        [Route("role", Name = "roleUser")]
+        [Function("编辑用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+        public IActionResult RoleUser(Guid? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex");
+            if (id != null)
+            {
+                var model = _sysUserService.getById(id.Value);
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
+        [HttpPost]
+        [Route("role")]
+        public ActionResult RoleUser(Entities.SysUser model, string returnUrl = null)
+        {
+            ModelState.Remove("Id");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex");
+            if (!ModelState.IsValid)
+                return View(model);
+            if (!String.IsNullOrEmpty(model.MobilePhone))
+                model.MobilePhone = StringUitls.toDBC(model.MobilePhone);
+            model.Name = model.Name.Trim();
 
+            if (model.Id == Guid.Empty)
+            {
+                model.Id = Guid.NewGuid();
+                model.CreationTime = DateTime.Now;
+                model.Salt = EncryptorHelper.CreateSaltKey();
+                model.Account = StringUitls.toDBC(model.Account.Trim());
+                model.Enabled = true;
+                model.IsAdmin = false;
+                model.Password = EncryptorHelper.GetMD5(model.Account + model.Salt);
+                model.Creator = WorkContext.CurrentUser.Id;
+                _sysUserService.insertSysUser(model);
+            }
+            else
+            {
+                model.ModifiedTime = DateTime.Now;
+                model.Modifier = WorkContext.CurrentUser.Id;
+                _sysUserService.updateSysUser(model);
+            }
+            return Redirect(ViewBag.ReturnUrl);
+        }
         /// <summary>
         /// 设置启用与禁用账号
         /// </summary>

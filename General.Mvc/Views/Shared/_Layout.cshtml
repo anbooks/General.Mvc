@@ -36,20 +36,20 @@
                     @*<li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>*@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">关于我们</a></li>
                     @*<li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
-                    <li><a asp-area="ordinary" asp-controller="Home" asp-action="Contact_ordinary">普通用户登录</a></li>
+                    @*li><a asp-area="ordinary" asp-controller="Home" asp-action="Contact_ordinary">普通用户登录</a></li>*@
                     <li><a asp-area="admin" asp-controller="Home" asp-action="Contact">管理员登录</a></li>
                 </ul>
+                </div>
             </div>
-        </div>
-    </nav>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            @*<p>&copy; 2020 - General.Mvc</p>*@
-            <p>Copyright © 2019 中航沈飞民用飞机有限责任公司 All Rights Reserved</p>
-        </footer>
-    </div>
+        </nav>
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                @*<p>&copy; 2020 - General.Mvc</p>*@
+                    <p>Copyright © 2019 中航沈飞民用飞机有限责任公司 All Rights Reserved</p>
+                    </footer>
+</div>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

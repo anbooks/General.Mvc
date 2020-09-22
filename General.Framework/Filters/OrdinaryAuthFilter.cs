@@ -23,7 +23,7 @@ namespace General.Framework.Filters
             var _ordinaryAuthService = EnginContext.Current.Resolve<IOrdinaryAuthService>();
             var user = _ordinaryAuthService.getCurrentUser();
             if (user == null || !user.Enabled)
-                context.Result = new RedirectToRouteResult("adminLogin", new { returnUrl = context.HttpContext.Request.Path });
+                context.Result = new RedirectToRouteResult("ordinaryLogin", new { returnUrl = context.HttpContext.Request.Path });
             //跳转到这里adminLogin
 
             //throw new NotImplementedException();

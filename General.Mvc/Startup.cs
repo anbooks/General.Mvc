@@ -11,7 +11,7 @@ using General.Framework;
 using General.Framework.Infrastructure;
 using General.Framework.Register;
 using General.Framework.Security.Admin;
-using General.Framework.Security.Ordinary;
+//using General.Framework.Security.Ordinary;
 using General.Services.Category;
 using General.Services.Setting;
 using Microsoft.AspNetCore.Builder;
@@ -64,19 +64,19 @@ namespace General.Mvc
             });
 
 
-            services.AddAuthentication(o => {
-                o.DefaultAuthenticateScheme = CookieOrdinaryAuthInfo.AuthenticationScheme;
-                o.DefaultChallengeScheme = CookieOrdinaryAuthInfo.AuthenticationScheme;
+            //.AddAuthentication(o => {
+            //    o.DefaultAuthenticateScheme = CookieOrdinaryAuthInfo.AuthenticationScheme;
+           //     o.DefaultChallengeScheme = CookieOrdinaryAuthInfo.AuthenticationScheme;
                 //o.DefaultAuthenticateScheme ="General";
                 //o.DefaultChallengeScheme = "General";
                 // o.DefaultSignInScheme= "General";
                 // o.DefaultSignOutScheme= "General";
-            }).AddCookie(CookieOrdinaryAuthInfo.AuthenticationScheme, o =>
-            {
+           // }).AddCookie(CookieOrdinaryAuthInfo.AuthenticationScheme, o =>
+           // {
                 // o.LoginPath = "/Admin/Login/index";
-                o.LoginPath = "/ordinary/login";
+           //     o.LoginPath = "/ordinary/login";
 
-            });
+           // });
 
             //程序集依赖注入
             //var assembly =RuntimeHelper.GetAssemblyByName("General.Services");
@@ -116,7 +116,7 @@ namespace General.Mvc
 
             services.AddScoped<IWorkContext, WorkContext>();
             services.AddScoped<IAdminAuthService, AdminAuthService>();
-            services.AddScoped<IOrdinaryAuthService, OrdinaryAuthService>();
+           // services.AddScoped<IOrdinaryAuthService, OrdinaryAuthService>();
             services.AddSingleton<IMemoryCache, MemoryCache>();
 
             services.AddSingleton<IRegisterApplicationService, RegisterApplicationService>();

@@ -8,7 +8,7 @@ namespace General.Framework.Controllers.Ordinary
     /// <summary>
     /// 需要权限验证的控制器 继承
     /// </summary>
-    [PermissionActionFilter]
+    [PermissionActionFiltero]
     public class OrdinaryPermissionController : PublicOrdinaryController
     {
 

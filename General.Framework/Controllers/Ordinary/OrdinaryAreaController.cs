@@ -5,7 +5,7 @@ using System.Text;
 
 namespace General.Framework.Controllers.Ordinary
 {
-    [Area("admin")]
+    [Area("ordinary")]
     //[Route("admin")]
     public class OrdinaryAreaController : BaseContoller
     {

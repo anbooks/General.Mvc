@@ -23,7 +23,7 @@ namespace General.Entities
         /// 
         /// </summary>
         [Required(ErrorMessage ="请输入账号，支持5~18位数字、字母组合")]
-        [RegularExpression("^[1-9a-zA-Z]{5,18}$",ErrorMessage ="5~18数字、字母组合")]
+        //[RegularExpression("^[1-9a-zA-Z]{5,18}$",ErrorMessage ="5~18数字、字母组合")]
         public string Account { get; set; }
 
         /// <summary>

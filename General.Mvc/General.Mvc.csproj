@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Areas\Ordinary\**" />
+    <Content Remove="Areas\Ordinary\**" />
+    <EmbeddedResource Remove="Areas\Ordinary\**" />
+    <None Remove="Areas\Ordinary\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
   </ItemGroup>
@@ -22,8 +29,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Ordinary\Data\" />
-    <Folder Include="Areas\Ordinary\Models\" />
     <Folder Include="Data\" />
   </ItemGroup>
 
@@ -207,6 +212,15 @@
     <None Include="wwwroot\ace-master\widgets.html" />
     <None Include="wwwroot\ace-master\www.jq22.com.txt" />
     <None Include="wwwroot\ace-master\wysiwyg.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="Areas\Admin\Views\UserRole\UserRole.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\User\RoleUser.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
   </ItemGroup>
 
 </Project>
