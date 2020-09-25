@@ -12,8 +12,8 @@ namespace General.Mvc.Areas.Admin.Controllers
     [Route("admin/itShipmentCreate")]
     public class ITShipmentCreateController : AdminPermissionController
     {
-        [Route("", Name = "itShipmentCreateIndex")]
-        [Function("订单数据导入", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Route("", Name = "itShipmentCreate")]
+        [Function("创建发运条目", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
 
         public IActionResult ITShipmentCreateIndex()
         {
