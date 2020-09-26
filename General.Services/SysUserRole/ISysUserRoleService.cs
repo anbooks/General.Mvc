@@ -12,6 +12,14 @@ namespace General.Services.SysUserRole
         /// <returns></returns>
         List<Entities.SysUserRole> getAll();
 
+        Entities.SysUserRole getById(Guid id);
+
+        /// <summary>
+        /// 新增，插入
+        /// </summary>
+        /// <param name="model"></param>
+        void insertSysUserRole(Entities.SysUserRole model);
+        void updateSysUserRole(Entities.SysUserRole model);
         /// <summary>
         /// 移除缓存
         /// </summary>

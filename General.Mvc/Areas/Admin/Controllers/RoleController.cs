@@ -29,7 +29,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysPermissionService = sysPermissionService;
         }
 
-
+     
         /// <summary>
         /// 角色列表
         /// </summary>

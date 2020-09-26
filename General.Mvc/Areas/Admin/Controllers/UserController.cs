@@ -9,6 +9,8 @@ using General.Framework.Datatable;
 using General.Framework.Filters;
 using General.Framework.Menu;
 using General.Services.SysUser;
+using General.Services.SysUserRole;
+using General.Services.SysRole;
 using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
@@ -19,12 +21,142 @@ namespace General.Mvc.Areas.Admin.Controllers
     {
 
         private ISysUserService _sysUserService;
-
-        public UserController(ISysUserService sysUserService)
+        private ISysUserRoleService _sysUserRoleService;
+        private ISysRoleService _sysRoleService;
+        public UserController(ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService)
         {
             this._sysUserService = sysUserService;
+            this._sysUserRoleService = sysUserRoleService;
+            this._sysRoleService = sysRoleService;
+        }
+        [Route("roledetail", Name = "roleDetail")]
+        [Function("用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+        [HttpGet]
+        public ActionResult RoleDetail(Guid id)
+        {
+            UserRoleViewModel model = new UserRoleViewModel();
+            model.RoleList = _sysRoleService.getAllRoles();
+            ViewBag.Userid = id;
+            var roleList = _sysUserRoleService.getAll();
+            if (roleList != null && roleList.Any())
+            {
+                model.User = _sysUserService.getById(id); ;
+                model.UserRoleList = roleList;
+                //model.Permissions = _sysPermissionService.getByRoleId(id);
+            }
+            return View(model);
         }
 
+        [HttpPost]
+        [Route("roledetail")]
+        public JsonResult RoleDetail(Guid id, Guid userid)
+        {
+            var model = _sysUserRoleService.getById(userid);
+            //var model = "";
+            var modelab = 0;
+            if (model == null)
+            {
+                Guid gv = new Guid("4baaba32-e96b-4a16-8cad-e7bf6d004449");
+                //gv = new Guid();
+                model = _sysUserRoleService.getById(gv);
+                modelab = 1;
+            }
+            //  _sysPermissionService.saveRolePermission(id, sysResource, WorkContext.CurrentUser.Id);
+            if (modelab == 1)
+            {
+                model.Id = Guid.NewGuid();
+                model.UserId = WorkContext.CurrentUser.Id;
+                model.RoleId = id;
+                _sysUserRoleService.insertSysUserRole(model);
+            }
+            else
+            {
+                model.RoleId = id;
+
+                _sysUserRoleService.updateSysUserRole(model);
+            }
+            AjaxData.Status = true;
+            AjaxData.Message = "角色权限设置成功";
+            return Json(AjaxData);
+        }
+      //  [Route("roledetail", Name = "roleDetail")]
+      //  [Function("用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+
+      //  public IActionResult RoleDetail(Guid? id, string returnUrl = null)
+     //   {
+    //       ViewBag.Userid = id;
+    //        ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("roleDetail");
+     //       return View(_sysRoleService.getAllRoles());
+     //   }
+        [HttpGet]
+        [Route("roleUser", Name = "roleUser")]
+        [Function("编辑用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+
+        public IActionResult RoleUser(Guid id, Guid userid, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex");
+            if (id != null)
+            {
+                var model = _sysUserRoleService.getById(userid);
+                //var model = "";
+                var modelab = 0;
+                if (model == null) {
+                    Guid gv = new Guid("4baaba32-e96b-4a16-8cad-e7bf6d004449");
+                    //gv = new Guid();
+                    model = _sysUserRoleService.getById(gv);
+                     modelab =1;
+                }
+                //ModelState.Remove("Id");
+                // ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("roleDetail");
+                // if (!String.IsNullOrEmpty(model.MobilePhone))
+                //     model.MobilePhone = StringUitls.toDBC(model.MobilePhone);
+                //  model.Name = model.Name.Trim();
+
+                if (modelab == 1)
+                {
+                    model.Id = Guid.NewGuid();
+                    model.UserId = userid;
+                    model.RoleId = id;
+                    _sysUserRoleService.insertSysUserRole(model);
+                }
+                else
+                {
+                    model.UserId = userid;
+                    model.RoleId = id;
+
+                    _sysUserRoleService.updateSysUserRole(model);
+                }
+                return Redirect(ViewBag.ReturnUrl);
+            }
+            return Redirect(ViewBag.ReturnUrl);
+        }
+        [HttpPost]
+        [Route("roleUser")]
+        public ActionResult RoleUser(Entities.SysUserRole model, Guid id,int modelab,string returnUrl = null)
+        {
+            ModelState.Remove("Id");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("roleDetail");
+            if (!ModelState.IsValid)
+                return View(model);
+            // if (!String.IsNullOrEmpty(model.MobilePhone))
+            //     model.MobilePhone = StringUitls.toDBC(model.MobilePhone);
+            //  model.Name = model.Name.Trim();
+
+            if (modelab == 1)
+            {
+                model.Id = Guid.NewGuid();
+                model.UserId = WorkContext.CurrentUser.Id;
+                model.RoleId = id;
+                _sysUserRoleService.insertSysUserRole(model);
+            }
+            else
+            {
+                model.RoleId = id;
+
+                 _sysUserRoleService.updateSysUserRole(model);
+            }
+            return Redirect(ViewBag.ReturnUrl);
+        }
         //[Function("系统用户", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.SystemManageController", Sort = 0)]
         //[Route("", Name = "userIndex")]
         //public IActionResult UserIndex()
@@ -45,7 +177,9 @@ namespace General.Mvc.Areas.Admin.Controllers
         
             return View(dataSource);
         }
+ 
 
+ 
 
         /// <summary>
         /// 编辑用户
@@ -101,53 +235,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
 
-        [HttpGet]
-        [Route("role", Name = "roleUser")]
-        [Function("编辑用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
-        public IActionResult RoleUser(Guid? id, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex");
-            if (id != null)
-            {
-                var model = _sysUserService.getById(id.Value);
-                if (model == null)
-                    return Redirect(ViewBag.ReturnUrl);
-                return View(model);
-            }
-            return View();
-        }
-        [HttpPost]
-        [Route("role")]
-        public ActionResult RoleUser(Entities.SysUser model, string returnUrl = null)
-        {
-            ModelState.Remove("Id");
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex");
-            if (!ModelState.IsValid)
-                return View(model);
-            if (!String.IsNullOrEmpty(model.MobilePhone))
-                model.MobilePhone = StringUitls.toDBC(model.MobilePhone);
-            model.Name = model.Name.Trim();
-
-            if (model.Id == Guid.Empty)
-            {
-                model.Id = Guid.NewGuid();
-                model.CreationTime = DateTime.Now;
-                model.Salt = EncryptorHelper.CreateSaltKey();
-                model.Account = StringUitls.toDBC(model.Account.Trim());
-                model.Enabled = true;
-                model.IsAdmin = false;
-                model.Password = EncryptorHelper.GetMD5(model.Account + model.Salt);
-                model.Creator = WorkContext.CurrentUser.Id;
-                _sysUserService.insertSysUser(model);
-            }
-            else
-            {
-                model.ModifiedTime = DateTime.Now;
-                model.Modifier = WorkContext.CurrentUser.Id;
-                _sysUserService.updateSysUser(model);
-            }
-            return Redirect(ViewBag.ReturnUrl);
-        }
         /// <summary>
         /// 设置启用与禁用账号
         /// </summary>
@@ -219,7 +306,10 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Function("重置用密码", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
         public JsonResult ResetPassword(Guid id)
         {
-            _sysUserService.resetPassword(id, WorkContext.CurrentUser.Id);
+            var modelpass = _sysUserService.getById(id);
+            modelpass.Password = EncryptorHelper.GetMD5("Sacc2020" + modelpass.Salt);
+            modelpass.Modifier = WorkContext.CurrentUser.Id;
+            _sysUserService.resetPassword(modelpass);
             AjaxData.Status = true;
             AjaxData.Message = "用户密码已重置为原始密码";
             return Json(AjaxData);

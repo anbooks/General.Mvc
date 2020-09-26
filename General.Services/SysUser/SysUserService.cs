@@ -467,9 +467,13 @@ namespace General.Services.SysUser
         /// </summary>
         /// <param name="id"></param>
         /// <param name="modifer"></param>
-        public void resetPassword(Guid id, Guid modifer)
+        public void resetPassword(Entities.SysUser modelpass)
         {
-
+           // _sysUserRepository.DbContext.Entry(modelpass).State = EntityState.Unchanged;
+            _sysUserRepository.DbContext.Entry(modelpass).Property("Password").IsModified = true;
+            _sysUserRepository.DbContext.Entry(modelpass).Property("Modifier").IsModified = true;
+           
+            _sysUserRepository.DbContext.SaveChanges();
         }
 
         /// <summary>

@@ -64,7 +64,7 @@ namespace General.Services.SysUser
         /// </summary>
         /// <param name="id"></param>
         /// <param name="modifer"></param>
-        void resetPassword(Guid id, Guid modifer);
+        void resetPassword(Entities.SysUser modelpass);
 
         /// <summary>
         /// 验证账号是否已经存在

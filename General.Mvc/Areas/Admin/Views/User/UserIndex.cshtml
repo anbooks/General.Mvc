@@ -150,7 +150,7 @@
                                         <a href="@Url.RouteUrl("deleteUser", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="glyphicon glyphicon-trash"></i>删除</a>
                                     }
                                 }
-
+                                <a href="@Url.RouteUrl("roleDetail",new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>设置权限</a>
                             </td>
                         </tr>
                     }

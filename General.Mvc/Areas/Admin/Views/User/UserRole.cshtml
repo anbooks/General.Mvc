@@ -6,11 +6,11 @@
 
 
 @{
-    ViewData["Title"] = "角色权限设置";
+    ViewData["Title"] = "人员角色分配";
 }
 @using General.Entities
 @using General.Framework.Menu
-@model RolePermissionViewModel
+@model UserRoleViewModel
 @{
     ViewBag.Title = "角色权限设置";
 }
@@ -33,24 +33,7 @@
 
                 @Html.AntiForgeryToken()
                 @Html.Hidden("Id", Model.Role.Id)
-                <div class="form-group">
-                    <div class="col-sm-4">
-                        <div class="btn-group">
-                            <button data-toggle="dropdown" class="btn dropdown-toggle">
-                                @Model.Role.Name
-                                <span class="ace-icon fa fa-caret-down icon-on-right"></span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-default">
-                                @foreach (var item in Model.RoleList)
-                                {
-                                    <li>
-                                        <a href="@Url.RouteUrl("rolePermission",new { id = item.Id })">@item.Name</a>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="form-group">
                     @{
                         var nodes = Model.CategoryList.Where(o => String.IsNullOrEmpty(o.FatherResource)).OrderBy(o => o.Name).ToList();

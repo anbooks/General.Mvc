@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Admin\Views\UserRole\" />
     <Folder Include="Data\" />
   </ItemGroup>
 
@@ -215,7 +216,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Areas\Admin\Views\UserRole\UserRole.cshtml">
+    <Content Update="Areas\Admin\Views\User\RoleDetail.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\User\UserRole.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\User\RoleUser.cshtml">
