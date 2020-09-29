@@ -213,9 +213,46 @@
     <None Include="wwwroot\ace-master\widgets.html" />
     <None Include="wwwroot\ace-master\www.jq22.com.txt" />
     <None Include="wwwroot\ace-master\wysiwyg.html" />
+    <None Include="wwwroot\logindemo\img\Detector.js" />
+    <None Include="wwwroot\logindemo\img\puff.svg" />
+    <None Include="wwwroot\logindemo\img\RequestAnimationFrame.js" />
+    <None Include="wwwroot\logindemo\img\ThreeExtras.js" />
+    <None Include="wwwroot\logindemo\img\ThreeWebGL.js" />
+    <None Include="wwwroot\logindemo\js\jquery-ui.min.js" />
+    <None Include="wwwroot\logindemo\js\jquery.min.js" />
+    <None Include="wwwroot\logindemo\js\jquery.mockjax.js" />
+    <None Include="wwwroot\logindemo\js\Particleground.js" />
+    <None Include="wwwroot\logindemo\js\stopExecutionOnTimeout.js" />
+    <None Include="wwwroot\logindemo\js\Treatment.js" />
+    <None Include="wwwroot\logindemo\layui\layui.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\code.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\element.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\flow.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\form.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\laydate.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\layedit.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\layer.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\laypage.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\laytpl.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\mobile.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\tree.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\upload.js" />
+    <None Include="wwwroot\logindemo\layui\lay\modules\util.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Areas\Admin\Views\CustomizedList\CustomizedListIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\CustomizedList\EditList.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\User\EditPassword.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\User\Usermessages.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\User\RoleDetail.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

@@ -18,7 +18,7 @@ namespace General.Entities
         public DbSet<SysUserLoginLog> SysUserLoginLogs { get; set; }
         public DbSet<SysUserRole> SysUserRoles { get; set; }
         public DbSet<SysPermission> SysPermissions { get; set; }
-
+        public DbSet<SysCustomizedList> SysCustomizedList { get; set; }
         //用到的表都要在这里注册
         public DbSet<Setting> Settings { get; set; }
     }

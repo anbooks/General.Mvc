@@ -43,6 +43,7 @@ namespace General.Services.SysUserRole
             if (existUserId(model.UserId))
                 return;
             _sysUserRoleRepository.insert(model);
+            removeCache();
         }
 
   
@@ -72,6 +73,7 @@ namespace General.Services.SysUserRole
             _sysUserRoleRepository.DbContext.Entry(model).Property("UserId").IsModified = true;
             _sysUserRoleRepository.DbContext.Entry(model).Property("RoleId").IsModified = true;
             _sysUserRoleRepository.DbContext.SaveChanges();
+            removeCache();
         }
         /// <summary>
         /// 移除缓存

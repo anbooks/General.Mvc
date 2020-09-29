@@ -55,7 +55,18 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             return View();
         }
-
+        [Route("pas", Name = "passworda")]
+        public IActionResult password()
+        {
+            //_adminAuthService.signOut();
+            return RedirectToRoute("password");
+        }
+        [Route("userme", Name = "usermessage")]
+        public IActionResult usermessage()
+        {
+            //_adminAuthService.signOut();
+            return RedirectToRoute("usermessages");
+        }
         [Route("out", Name = "signOut")]
         public IActionResult SignOut()
         {

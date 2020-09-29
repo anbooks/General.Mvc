@@ -56,6 +56,7 @@
                     <form asp-route="userIndex" method="get" class="form-inline">
                         <label>关键字</label>
                         <input type="text" class="form-control" name="q" style="width:220px;" value="@Model.Paging.RouteArg.q" placeholder="账号、姓名、邮箱、手机号" />
+                        <input type="text" class="form-control" name="unlock" style="width:220px;" value="@Model.Paging.RouteArg.unlock" placeholder="密码锁" />
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -113,7 +114,7 @@
                                 @if (item.LoginLock)
                                 {
                                     <label>
-                                        <input name="lock" value="@item.Id" class="ace ace-switch ace-switch-5 user_lock" type="checkbox" checked="checked" />
+                                        <input name="LoginLock" value="@item.Id" class="ace ace-switch ace-switch-5 user_lock" type="checkbox" checked="checked" />
                                         <span class="lbl"></span>
                                     </label>
                                     if (item.AllowLoginTime.HasValue && item.AllowLoginTime > DateTime.Now)
@@ -124,7 +125,7 @@
                                 else
                                 {
                                     <label data-toggle="tooltip" data-placement="left" title="Tooltip on left">
-                                        <input name="lock" value="@item.Id" class="ace ace-switch ace-switch-5 user_lock" type="checkbox" />
+                                        <input name="LoginLock" value="@item.Id" class="ace ace-switch ace-switch-5 user_lock" type="checkbox" />
                                         <span class="lbl"></span>
                                     </label>
                                 }

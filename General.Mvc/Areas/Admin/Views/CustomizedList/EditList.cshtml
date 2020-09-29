@@ -1,0 +1,69 @@
+﻿@*@{
+        ViewData["Title"] = "EditUser";
+    }
+
+    <h2>EditUser</h2>*@
+
+@using General.Entities
+@model SysCustomizedList
+@{
+    ViewData["Title"] = "编辑下拉列表";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li><a href="@ViewBag.ReturnUrl">系统用户列表</a></li>
+        <li class="active">@ViewBag.Title</li>
+    </ul>
+</div>
+
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form asp-route="editList" method="post" class="form-horizontal">
+                @Html.HiddenFor(m => m.Id)
+                <div asp-validation-summary="All"></div>z
+              
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">自定义项类别 @Html.RequiredSpan()</label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" asp-for="CustomizedClassify" placeholder="自定义项类别" />
+                        </div>
+                        <span class="inline text-danger" asp-validation-for="CustomizedClassify"></span>
+                    </div>
+      
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()自定义值</label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" asp-for="CustomizedValue" placeholder="自定义值" />
+                    </div>
+                    <span class="inline text-danger" asp-validation-for="CustomizedValue"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">描述</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Description" class="form-control" placeholder="描述" />
+                    </div>
+                    <span asp-validation-for="Description" class="inline text-danger "></span>
+                </div>
+               
+
+                
+                <div class="col-md-offset-2 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

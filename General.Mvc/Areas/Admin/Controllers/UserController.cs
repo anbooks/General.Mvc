@@ -177,9 +177,6 @@ namespace General.Mvc.Areas.Admin.Controllers
         
             return View(dataSource);
         }
- 
-
- 
 
         /// <summary>
         /// 编辑用户
@@ -187,6 +184,88 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <param name="id"></param>
         /// <param name="returnUrl"></param>
         /// <returns></returns>
+        [HttpGet]
+        [Route("password", Name = "password")]
+        public IActionResult EditPassword(Guid? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
+            if (id != null)
+            {
+                var model = _sysUserService.getById(id.Value);
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
+        [HttpPost]
+        [Route("password")]
+        public ActionResult EditPassword(Entities.ModifyModel modela, string returnUrl = null)
+        {
+            ModelState.Remove("Id");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
+            if (!ModelState.IsValid)
+                return View(modela);
+            var model = _sysUserService.getById(WorkContext.CurrentUser.Id);
+
+            if (model.Password == EncryptorHelper.GetMD5(modela.OriginalPassword.Trim() + model.Salt))
+            {
+                model.Password = EncryptorHelper.GetMD5(modela.ConfirmedPassword.Trim() + model.Salt); //model.Name.Trim();;
+                //model.Modifier = WorkContext.CurrentUser.Id;
+                _sysUserService.updatePassword(model);
+            }
+            return Redirect(ViewBag.ReturnUrl);
+        }
+
+
+        /// <summary>
+        /// 编辑用户
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("message", Name = "usermessages")]
+        [Function("编辑系统用户", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+        public IActionResult Usermessages(Guid? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
+            if (id != null)
+            {
+                var model = _sysUserService.getById(id.Value);
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
+        [HttpPost]
+        [Route("message")]
+        public ActionResult Usermessages(Entities.SysUserMessage modela, string returnUrl = null)
+        {
+            ModelState.Remove("Id");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
+            var model = _sysUserService.getById(WorkContext.CurrentUser.Id);
+            if (!ModelState.IsValid)
+                return View(modela);
+            if (!String.IsNullOrEmpty(modela.MobilePhone))
+                model.MobilePhone = StringUitls.toDBC(modela.MobilePhone);
+            if (!String.IsNullOrEmpty(modela.Email))
+                model.Email = StringUitls.toDBC(modela.Email);
+            //model.Name = model.Name.Trim();
+
+            if (model.Id == Guid.Empty)
+            {
+                return Redirect(ViewBag.ReturnUrl);
+            }
+            else
+            {
+                model.ModifiedTime = DateTime.Now;
+                model.Modifier = WorkContext.CurrentUser.Id;
+                _sysUserService.updateUsermessage(model);
+            }
+            return Redirect(ViewBag.ReturnUrl);
+        }
         [HttpGet]
         [Route("edit", Name = "editUser")]
         [Function("编辑系统用户", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
@@ -234,7 +313,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Redirect(ViewBag.ReturnUrl);
         }
-
         /// <summary>
         /// 设置启用与禁用账号
         /// </summary>
@@ -314,9 +392,5 @@ namespace General.Mvc.Areas.Admin.Controllers
             AjaxData.Message = "用户密码已重置为原始密码";
             return Json(AjaxData);
         }
-
-
-
-
     }
 }
