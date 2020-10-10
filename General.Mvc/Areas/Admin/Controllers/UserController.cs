@@ -226,7 +226,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("message", Name = "usermessages")]
-        [Function("编辑系统用户", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+        [Function("个人信息", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
         public IActionResult Usermessages(Guid? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
@@ -381,7 +381,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [Route("resetPwd/{id}", Name = "resetPassword")]
-        [Function("重置用密码", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
+        [Function("重置密码", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
         public JsonResult ResetPassword(Guid id)
         {
             var modelpass = _sysUserService.getById(id);

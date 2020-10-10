@@ -25,8 +25,8 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
  
             this._sysCustomizedListService = sysCustomizedListService;
-        }
-        [Function("下拉列表", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.SystemManageController", Sort = 0)]
+        }  
+        [Function("下拉列表", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.SystemManageController", Sort = 4)]
         [Route("", Name = "customizedListIndex")]
         public IActionResult CustomizedListIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
