@@ -43,10 +43,10 @@ namespace General.Services.ImportTrans_main_record
         /// <param name="role"></param>
         public void updateImportTransmain(Entities.ImportTrans_main_record model)
         {
-            var item = _importTrans_main_recordRepository.getById(model.Gid);
+            var item = _importTrans_main_recordRepository.getById(model.Id);
             if (item == null)
                 return;
-              item.Incoterms = model.Incoterms;
+             // item.Name = model.Name;
             //  item.CustomizedValue = model.CustomizedValue;
             //  item.Description = model.Description;
             //  item.ModifiedTime = model.ModifiedTime;
@@ -56,11 +56,11 @@ namespace General.Services.ImportTrans_main_record
         }
         public IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => !o.IsDeleted);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.Incoterms!=null);
             if (arg != null)
             {
-                //if (!String.IsNullOrEmpty(arg.gjz))
-                    //query = query.Where(o => o.CustomizedClassify.Contains(arg.gjz) || o.CustomizedValue.Contains(arg.gjz) || o.Description.Contains(arg.gjz));
+                if (!String.IsNullOrEmpty(arg.gjz))
+                    query = query.Where(o => o.Incoterms.Contains(arg.gjz) || o.Invamou.Contains(arg.gjz));
           
             }
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);

@@ -21,6 +21,6 @@ namespace General.Entities
         //用到的表都要在这里注册
         public DbSet<Setting> Settings { get; set; }
 
-        //public DbSet<ImportTrans_main_record> ImportTrans_main_records { get; set; }
+        public DbSet<ImportTrans_main_record> ImportTrans_main_record { get; set; }
     }
 }
