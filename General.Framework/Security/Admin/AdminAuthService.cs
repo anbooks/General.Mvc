@@ -169,8 +169,7 @@ namespace General.Framework.Security.Admin
             if (user.IsAdmin) return true;
             var list = getMyCategories(user);
             if (list == null) return false;
-            return list.Any(o => o.Controller != null && o.Action != null ||
-            o.Controller.Equals(controller, StringComparison.InvariantCultureIgnoreCase)
+            return list.Any(o => o.Controller != null && o.Action != null 
             && o.Action.Equals(action, StringComparison.InvariantCultureIgnoreCase));
         }
 

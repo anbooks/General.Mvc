@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Function("系统管理", true, "menu-icon fa fa-desktop")]
+    [Function("系统管理", true, "menu-icon fa fa-pencil-square-o")]
     public class SystemManageController : AdminPermissionController
     {
         public IActionResult Index()

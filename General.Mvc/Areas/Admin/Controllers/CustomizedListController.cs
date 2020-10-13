@@ -38,7 +38,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editlist")]
-        [Function("编辑下拉列表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.SysCustomizedListController.CustomizedListIndex")]
+        [Function("编辑下拉列表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.CustomizedListController.CustomizedListIndex")]
         public IActionResult EditList(Guid? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("customizedListIndex");

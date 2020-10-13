@@ -9,9 +9,8 @@ namespace General.Entities
     {
         public GeneralDbContext(DbContextOptions options) : base(options)
         {
-
         }
-
+        
         public DbSet<Category> Categories { get; set; }
         public DbSet<SysUser> SysUsers { get; set; }
         public DbSet<SysUserToken> SysUserTokenes { get; set; }
@@ -21,5 +20,7 @@ namespace General.Entities
         public DbSet<SysCustomizedList> SysCustomizedList { get; set; }
         //用到的表都要在这里注册
         public DbSet<Setting> Settings { get; set; }
+
+        //public DbSet<ImportTrans_main_record> ImportTrans_main_records { get; set; }
     }
 }

@@ -44,7 +44,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("edit", Name = "editSetting")]
-        [Function("编辑系统配置", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.SettingIndex")]
+        [Function("编辑系统配置", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.SettingController.SettingIndex")]
         public IActionResult EditSetting(Guid? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("settingIndex");
