@@ -45,6 +45,17 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        [Route("testTableJqGrid", Name = "testTableJqGrid")]
+        [Function("测试JqGrid", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.TestIndex")]
+        public IActionResult TestTableJqGrid()
+        {
+            return View();
+        }
+
 
         /// <summary>
         /// 
