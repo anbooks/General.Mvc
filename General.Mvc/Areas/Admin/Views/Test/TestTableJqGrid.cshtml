@@ -48,14 +48,15 @@
     </div><!-- /.page-header -->
     @* 在这里啊 *@
     <div class="row">
+       
+        <div><a asp-route="jqGridIndex2" class="btn btn-sm btn-green">获取json数据</a> <a asp-route="jqGridIndex" class="btn btn-sm btn-pink">跳转页面加载测试数据</a></div>
         <div class="col-xs-12">
             <!-- PAGE CONTENT BEGINS -->
 
 
-            <table id="grid-table"></table>
+            <table id="grid-table"></table>        <!--页面的表格   有的也叫list-->
 
-            <div id="grid-pager"></div>
-
+            <div id="grid-pager"></div>    <!--页面的表格   有的也叫pager-->
             <!-- PAGE CONTENT ENDS -->
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -65,6 +66,130 @@
 <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">
     <i class="ace-icon fa fa-angle-double-up icon-only bigger-300"></i>
 </a>
+
+
+
+<!-- 修改弹出层 -->
+<div id="modal-table" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header no-padding">
+                <div class="table-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        <span class="white">&times;</span>
+                    </button>
+                    测试更改的弹窗
+                </div>
+            </div>
+            <div class="modal-body no-padding">
+                <div class="hr hr-dotted"></div>
+                <form class="form-horizontal" id="validation-form" method="get" novalidate="novalidate">
+                    @*<div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="text">用户名:</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="clearfix">
+                                <input name="name" id="name" class="col-xs-12 col-sm-6" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-2"></div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="password">密码:</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="clearfix">
+                                <input name="password" id="password" class="col-xs-12 col-sm-4" type="text">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hr hr-dotted"></div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="name">邮箱:</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="clearfix">
+                                <input id="mail" name="mail" class="col-xs-12 col-sm-5" type="email">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-2"></div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="phone">电话号码:</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="ace-icon fa fa-phone"></i>
+                                </span>
+
+                                <input id="phone" name="phone" type="tel">
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="hr hr-dotted"></div>
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right">性别:</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div>
+                                <label class="line-height-1 blue">
+                                    <input name="gender" value="1" class="ace" type="radio">
+                                    <span class="lbl"> 男</span>
+                                </label>
+                            </div>
+
+                            <div>
+                                <label class="line-height-1 blue">
+                                    <input name="gender" value="2" class="ace" type="radio">
+                                    <span class="lbl"> 女</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hr hr-dotted"></div>
+
+
+                    <div class="form-group">
+                        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="comment">地址:</label>
+
+                        <div class="col-xs-12 col-sm-9">
+                            <div class="clearfix">
+                                <textarea class="input-xlarge" name="address" id="address"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>*@
+
+                </form>
+
+
+            </div>
+
+            <div class="modal-footer no-margin-top">
+                <button class="btn btn-sm btn-danger pull-left" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    Close
+                </button>
+                <button class="btn btn-success btn-next" data-last="Finish">
+                    提交
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+
+
 
 <!-- basic scripts -->
 <!--[if !IE]> -->
@@ -88,7 +213,7 @@
 
 <script src="~/assets/js/bootstrap.min.js"></script>
 @*<script src="~/assets/js/ace.min.js"></script>
-<script src="~/assets/js/ace-elements.min.js"></script>*@
+    <script src="~/assets/js/ace-elements.min.js"></script>*@
 <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
 <script src="~/assets/js/bootbox.min.js"></script>
@@ -116,7 +241,7 @@
             { id: "14", name: "Laser Printer", note: "note2", stock: "Yes", ship: "FedEx", sdate: "2007-12-03" },
             { id: "15", name: "Play Station", note: "note3", stock: "No", ship: "FedEx", sdate: "2007-12-03" },
             { id: "16", name: "Mobile Telephone", note: "note", stock: "Yes", ship: "ARAMEX", sdate: "2007-12-03" },
-            { id: "17", name: "Server", note: "note2", stock: "Yes", ship: "TNT", sdate: "2007-12-03" },                                                                                                                                                                           
+            { id: "17", name: "Server", note: "note2", stock: "Yes", ship: "TNT", sdate: "2007-12-03" },
             { id: "18", name: "Matrix Printer", note: "note3", stock: "No", ship: "FedEx", sdate: "2007-12-03" },
             { id: "19", name: "Matrix Printer", note: "note3", stock: "No", ship: "FedEx", sdate: "2007-12-03" },
             { id: "20", name: "Desktop Computer", note: "note", stock: "Yes", ship: "FedEx", sdate: "2007-12-03" },
@@ -138,7 +263,7 @@
         ];
 
     jQuery(function ($) {
-        var grid_selector = "#grid-table";
+        var grid_selector = "#grid-table";   //#的是表格table的id
         var pager_selector = "#grid-pager";
 
 
@@ -206,9 +331,11 @@
             },
 
 
+            //url: 'server.php?q=2',//请求数据的地址
 
             data: grid_data,
-            datatype: "local",
+            datatype: "local",  //数据类型
+            //datatype: "json",  //数据类型
             height: 600,
             colNames: [' ', 'ID', 'Last Sales', 'Name', 'Stock', 'Ship via', 'Notes'],
             colModel: [
@@ -231,7 +358,10 @@
                 { name: 'note', index: 'note', width: 150, sortable: false, editable: true, edittype: "textarea", editoptions: { rows: "2", cols: "10" } }
             ],
 
+            pgtext: "第 {0} 页 {1}",  //不写就是英语
             viewrecords: true,
+            recordtext: "当前 {0} - {1} 共 {2}",//不写就是英语展示
+
             rowNum: 10,
             rowList: [10, 20, 30],
             pager: pager_selector,
@@ -254,7 +384,7 @@
             },
 
             editurl: "./dummy.php",//nothing is saved
-            caption: "jqGrid with inline editing"
+            caption: "我是主表啊"
 
             //,autowidth: true,
 
@@ -298,14 +428,14 @@
         }
 
 
-        //navButtons
+        //navButtons  下侧导航栏
         jQuery(grid_selector).jqGrid('navGrid', pager_selector,
             { 	//navbar options
-                edit: true,
+                edit: true,  //
                 editicon: 'ace-icon fa fa-pencil blue',
                 add: true,
                 addicon: 'ace-icon fa fa-plus-circle purple',
-                del: true,
+                del: true,   //删除
                 delicon: 'ace-icon fa fa-trash-o red',
                 search: true,
                 searchicon: 'ace-icon fa fa-search orange',
@@ -313,6 +443,51 @@
                 refreshicon: 'ace-icon fa fa-refresh green',
                 view: true,
                 viewicon: 'ace-icon fa fa-search-plus grey',
+
+                //addfunc: openDialog4Adding,    // (1) 点击添加按钮，则调用openDialog4Adding方法  
+                //editfunc: openDialog4Updating, // (2) 点击编辑按钮，则调用openDialog4Updating方法 
+
+                /////////下面的我们先不这么写不好看
+                //editfunc: function () {//编辑按钮
+                //    ////获取选中ID（可多选）
+                //    var ids = $('#grid-table').jqGrid('getGridParam', 'selarrrow');
+                //    if (ids.length > 1) {
+                //        alert("请选择一行!");
+                //        return;
+                //    }
+                //    ////根ID据获的行的数据
+                //    var rowData = $('#grid-table').jqGrid('getRowData', ids);
+                //    ////修改页面赋值
+                //    //$('#name').val(rowData.name);
+                //    //$('#password').val(rowData.password);
+                //    //$('#mail').val(rowData.mail);
+                //    //$('#phone').val(rowData.phone);
+                //    //if (rowData.gender == '男') {
+                //    //    $('input[name=gender][value=1]').prop('checked', true);
+                //    //} else {
+                //    //    $('input[name=gender][value=2]').prop('checked', true);
+                //    //}
+                //    //$('#address').val(rowData.address);
+                //    $("#modal-table").modal("show");
+                //},
+                /////////上面的我们先不这么写，不好看-----直接选中去除注释
+
+
+                delfunc: function () { //删除按钮
+
+                    ////获取选中ID（可多选）
+                    //var ids = $('#grid-table').jqGrid('getGridParam', 'selarrrow');
+                    //var idsArr = ids.toString().split(',');
+                    //for (var i = 0; i < idsArr.length; i++) {
+                    //    $('#grid-table').jqGrid('delRowData', idsArr[i]);
+                    //}
+                    ////重新加载
+                    //$("#grid-table").jqGrid("setGridParam", {
+                    //    postData: {}
+                    //}).trigger("reloadGrid");
+                    alert("删除按钮");
+                },
+                alerttext: "请选择需要操作的数据行!"  // 当未选中任何行而点击编辑、删除，弹出的提示信息
             },
             {
                 //edit record form
@@ -351,7 +526,9 @@
                     form.data('styled', true);
                 },
                 onClick: function (e) {
-                    //alert(1);
+
+
+
                 }
             },
             {
@@ -480,6 +657,8 @@
             */
         }
 
+
+        //分页样式
         //replace icons with FontAwesome icons like above
         function updatePagerIcons(table) {
             var replacement =
