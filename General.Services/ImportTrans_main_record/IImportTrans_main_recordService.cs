@@ -8,8 +8,8 @@ namespace General.Services.ImportTrans_main_recordService
 {
     public interface IImportTrans_main_recordService
     {
-
-         Entities.ImportTrans_main_record getById(int id);
+        void saveImportTransmain(List<int> categoryIds);
+        Entities.ImportTrans_main_record getById(int id);
         IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size);
         /// <summary>
         /// 新增，插入

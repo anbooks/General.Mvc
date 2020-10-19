@@ -54,7 +54,7 @@
                 <div class="panel-body">
                     <form asp-route="customizedListIndex" method="get" class="form-inline">
                         <label>关键字</label>
-                        <input type="text" class="form-control" name="gjz" style="width:220px;" value="@Model.Paging.RouteArg.gjz" placeholder="账号、姓名、邮箱、手机号" />
+                        <input type="text" class="form-control" name="keyword" style="width:220px;" value="@Model.Paging.RouteArg.keyword" placeholder="账号、姓名、邮箱、手机号" />
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -73,8 +73,6 @@
                         <th width="100px">自定义值</th>
                         <th width="110px">描述</th>
                         <th width="110px">排序</th>
-
-
                         <th>操作</th>
                     </tr>
                 </thead>

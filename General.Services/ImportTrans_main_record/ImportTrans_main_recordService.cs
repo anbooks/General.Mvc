@@ -46,25 +46,51 @@ namespace General.Services.ImportTrans_main_record
             var item = _importTrans_main_recordRepository.getById(model.Id);
             if (item == null)
                 return;
-             // item.Name = model.Name;
-            //  item.CustomizedValue = model.CustomizedValue;
-            //  item.Description = model.Description;
-            //  item.ModifiedTime = model.ModifiedTime;
-            //  item.Modifier = model.Modifier;
+              item.RealReceivingDate = model.RealReceivingDate;
+              item.Itemno = model.Itemno;
+              item.Shipper = model.Shipper;
+              item.Invcurr = model.Invcurr;
+              item.ModifiedTime = model.ModifiedTime;
+              item.Modifier = model.Modifier;
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
         }
         public IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.Incoterms!=null);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted!=true);
             if (arg != null)
             {
-                if (!String.IsNullOrEmpty(arg.gjz))
-                    query = query.Where(o => o.Incoterms.Contains(arg.gjz) || o.Invamou.Contains(arg.gjz));
-          
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
             }
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public void saveImportTransmain( List<int> categoryIds)
+        {
+ 
+                foreach (int categoryId in categoryIds)
+                {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.ShipmentCreateflag = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+                
+        }
+      
+        public void removeCache()
+        {
+            _memoryCache.Remove(MODEL_KEY);
         }
     }
 }

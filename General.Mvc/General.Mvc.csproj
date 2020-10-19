@@ -251,6 +251,9 @@
     <Content Update="Areas\Admin\Views\CustomizedList\EditList.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITShipmentCreate\EditITShipmentCreate.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\User\EditPassword.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

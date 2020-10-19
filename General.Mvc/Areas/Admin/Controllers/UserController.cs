@@ -49,9 +49,9 @@ namespace General.Mvc.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("roledetail")]
-        public JsonResult RoleDetail(Guid id, Guid userid)
+        public JsonResult RoleDetail(Guid id,Guid sysResource)
         {
-            var model = _sysUserRoleService.getById(userid);
+            var model = _sysUserRoleService.getById(id);
             //var model = "";
             var modelab = 0;
             if (model == null)
@@ -65,13 +65,13 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (modelab == 1)
             {
                 model.Id = Guid.NewGuid();
-                model.UserId = WorkContext.CurrentUser.Id;
-                model.RoleId = id;
+                model.UserId =id;
+                model.RoleId = sysResource;
                 _sysUserRoleService.insertSysUserRole(model);
             }
             else
             {
-                model.RoleId = id;
+                model.RoleId = sysResource;
 
                 _sysUserRoleService.updateSysUserRole(model);
             }

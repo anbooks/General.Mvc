@@ -10,7 +10,7 @@ namespace General.Entities
         /// 
         /// </summary>
         public SysRole Role { get; set; }
-
+        public SysCustomizedList CustomizedList { get; set; }
         /// <summary>
         /// 角色select下拉菜单
         /// </summary>

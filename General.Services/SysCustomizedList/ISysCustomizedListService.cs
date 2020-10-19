@@ -2,6 +2,7 @@
 using General.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace General.Services.SysCustomizedList
@@ -9,7 +10,7 @@ namespace General.Services.SysCustomizedList
     public interface ISysCustomizedListService
     {
 
-        // Entities.SysCustomizedList getByAccount(string account);
+        List<Entities.SysCustomizedList> getByAccount(string account);
 
 
         /// <summary>

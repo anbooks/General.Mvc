@@ -30,6 +30,20 @@ namespace General.Services.SysCustomizedList
         {
             return _sysCustomizedListRepository.getById(id);
         }
+       // public Entities.SysCustomizedList getByAccount(string account)
+       // {
+        //    return _sysCustomizedListRepository.Table.FirstOrDefault(o => o.CustomizedClassify== account && !o.IsDeleted);
+       // }
+        public List<Entities.SysCustomizedList> getByAccount(string account)
+        {
+            List<Entities.SysCustomizedList> list = null;
+            _memoryCache.TryGetValue<List<Entities.SysCustomizedList>>(MODEL_KEY, out list);
+            if (list != null)
+                return list;
+            list = _sysCustomizedListRepository.Table.Where(o=>o.CustomizedClassify==account).ToList();
+            _memoryCache.Set(MODEL_KEY, list, DateTimeOffset.Now.AddDays(1));
+            return list;
+        }
         public void insertSysCustomized(Entities.SysCustomizedList model)
         {
             _sysCustomizedListRepository.insert(model);
@@ -57,8 +71,8 @@ namespace General.Services.SysCustomizedList
             var query = _sysCustomizedListRepository.Table.Where(o => !o.IsDeleted);
             if (arg != null)
             {
-                if (!String.IsNullOrEmpty(arg.gjz))
-                    query = query.Where(o => o.CustomizedClassify.Contains(arg.gjz) || o.CustomizedValue.Contains(arg.gjz) || o.Description.Contains(arg.gjz));
+                if (!String.IsNullOrEmpty(arg.keyword))
+                    query = query.Where(o => o.CustomizedClassify.Contains(arg.keyword) || o.CustomizedValue.Contains(arg.keyword) || o.Description.Contains(arg.keyword));
           
             }
             query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
