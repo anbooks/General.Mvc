@@ -121,12 +121,20 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        [Route("Edit", Name = "Edit")]
         public ActionResult Edit(test_JqGrid pro, string oper, int id)
         {
             if (oper == "edit")
             {
-               // _repository.Update(pro);
-               //// pro.CreateTime = DateTime.Now;
+                _itest_JqGridService.updatetest_JqGrid(pro);
+                // _repository.Update(pro);
+                //// pro.CreateTime = DateTime.Now;
+            }
+            if (oper == "del")
+            {
+                _itest_JqGridService.deletetest_JqGrid(id);
+                // _repository.Update(pro);
+                //// pro.CreateTime = DateTime.Now;
             }
             return Json(pro);
         }

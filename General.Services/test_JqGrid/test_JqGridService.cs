@@ -27,6 +27,28 @@ namespace General.Services.test_JqGrid
             return list;
         }
 
+        /// <summary>
+        /// update用来更改model的单行数据
+        /// </summary>
+        /// <param name="model"></param>
+        public void updatetest_JqGrid(Entities.test_JqGrid model)
+        {
+            var item = _test_JqGrid_recordRepository.getById(model.Id);
+            if (item == null)
+                return;
+            item.Name = model.Name;
+            _test_JqGrid_recordRepository.update(item);
+         
+        }
+
+        public void deletetest_JqGrid(int roleId)
+        {
+            var item = _test_JqGrid_recordRepository.getById(roleId);
+
+            _test_JqGrid_recordRepository.delete(item);
+            
+        }
+
 
         IPagedList<Entities.test_JqGrid> Itest_JqGridService.searchList(test_JqGridSearchArg arg, int page, int size)
         {

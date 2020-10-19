@@ -193,7 +193,7 @@
 
 <!-- basic scripts -->
 <!--[if !IE]> -->
-<script src="http://www.jq22.com/jquery/jquery-2.1.1.js"></script>
+
 
 <!-- <![endif]-->
 <!--[if IE]>
@@ -202,7 +202,7 @@
 <script type="text/javascript">
     if ('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
 </script>
-<script src="http://www.jq22.com/jquery/bootstrap-3.3.4.js"></script>
+
 
 <!-- page specific plugin scripts -->
 <script src="~/assets/js/bootstrap-datepicker.min.js"></script>
@@ -339,7 +339,7 @@
             //datatype: "local",  //数据类型   //json的时候注释
             datatype: "json",  //数据类型
             height: 600,
-            colNames: [' ', 'ID', 'Name'],
+            colNames: [' ', '序号', 'Last Sales', 'Name'],
             //colNames: [' ', 'ID', 'Last Sales', 'Name', 'Stock', 'Ship via', 'Notes'],
             colModel: [
                 {
@@ -354,7 +354,7 @@
                     }
                 },
                 { name: 'id', index: 'id', width: 60, sorttype: "int", editable: true },
-               // { name: 'sdate', index: 'sdate', width: 90, editable: true, sorttype: "date", unformat: pickDate },
+                { name: 'lastSales', index: 'lastSales', width: 90, editable: true, sorttype: "date", formatter: "date", formatoptions: { newformat: 'Y-m-d' }, unformat: pickDate },
                 { name: 'name', index: 'name', width: 150, editable: true, editoptions: { size: "20", maxlength: "30" } },
               //  { name: 'stock', index: 'stock', width: 70, editable: true, edittype: "checkbox", editoptions: { value: "Yes:No" }, unformat: aceSwitch },
                // { name: 'ship', index: 'ship', width: 90, editable: true, edittype: "select", editoptions: { value: "FE:FedEx;IN:InTime;TN:TNT;AR:ARAMEX" } },
@@ -387,9 +387,14 @@
             },
 
             //editurl: "./dummy.php",//nothing is saved
+            editurl: "/admin/test/Edit", //编辑的地址 操作栏触发的操作都会丢到这个action中响应。 add edit del
+            //serializeDelData: function (postdata) {
+            //    var rowdata = jQuery('#list2').getRowData(postdata.id);
+            //    return { id: postdata.id, oper: postdata.oper, user: rowdata };
+            //},
             caption: "我是主表啊"
 
-           //  editurl: "/Product/Edit", //编辑的地址 操作栏触发的操作都会丢到这个action中响应。 add edit del
+          
 
 
 

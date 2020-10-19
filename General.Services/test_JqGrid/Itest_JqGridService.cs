@@ -20,5 +20,13 @@ namespace General.Services.test_JqGrid
         /// <param name="size"></param>
         /// <returns></returns>
         IPagedList<Entities.test_JqGrid> searchList(test_JqGridSearchArg arg, int page, int size);
+
+        void updatetest_JqGrid(Entities.test_JqGrid model);
+
+
+        void deletetest_JqGrid(int test_JqGrid);
+
+
+
     }
 }
