@@ -263,6 +263,7 @@
         ];
 
     jQuery(function ($) {
+        
         var grid_selector = "#grid-table";   //#的是表格table的id
         var pager_selector = "#grid-pager";
 
@@ -301,7 +302,7 @@
 
 
 
-
+       
         jQuery(grid_selector).jqGrid({
             //direction: "rtl",
 
@@ -330,14 +331,16 @@
                 });
             },
 
-
+         
             //url: 'server.php?q=2',//请求数据的地址
-
-            data: grid_data,
-            datatype: "local",  //数据类型
-            //datatype: "json",  //数据类型
+            //url:"/jqGridIndex2",
+            url:"/admin/test/jqGridIndex2",
+            //data: grid_data,  //json的时候注释
+            //datatype: "local",  //数据类型   //json的时候注释
+            datatype: "json",  //数据类型
             height: 600,
-            colNames: [' ', 'ID', 'Last Sales', 'Name', 'Stock', 'Ship via', 'Notes'],
+            colNames: [' ', 'ID', 'Name'],
+            //colNames: [' ', 'ID', 'Last Sales', 'Name', 'Stock', 'Ship via', 'Notes'],
             colModel: [
                 {
                     name: 'myac', index: '', width: 80, fixed: true, sortable: false, resize: false,
@@ -351,11 +354,11 @@
                     }
                 },
                 { name: 'id', index: 'id', width: 60, sorttype: "int", editable: true },
-                { name: 'sdate', index: 'sdate', width: 90, editable: true, sorttype: "date", unformat: pickDate },
+               // { name: 'sdate', index: 'sdate', width: 90, editable: true, sorttype: "date", unformat: pickDate },
                 { name: 'name', index: 'name', width: 150, editable: true, editoptions: { size: "20", maxlength: "30" } },
-                { name: 'stock', index: 'stock', width: 70, editable: true, edittype: "checkbox", editoptions: { value: "Yes:No" }, unformat: aceSwitch },
-                { name: 'ship', index: 'ship', width: 90, editable: true, edittype: "select", editoptions: { value: "FE:FedEx;IN:InTime;TN:TNT;AR:ARAMEX" } },
-                { name: 'note', index: 'note', width: 150, sortable: false, editable: true, edittype: "textarea", editoptions: { rows: "2", cols: "10" } }
+              //  { name: 'stock', index: 'stock', width: 70, editable: true, edittype: "checkbox", editoptions: { value: "Yes:No" }, unformat: aceSwitch },
+               // { name: 'ship', index: 'ship', width: 90, editable: true, edittype: "select", editoptions: { value: "FE:FedEx;IN:InTime;TN:TNT;AR:ARAMEX" } },
+              //  { name: 'note', index: 'note', width: 150, sortable: false, editable: true, edittype: "textarea", editoptions: { rows: "2", cols: "10" } }
             ],
 
             pgtext: "第 {0} 页 {1}",  //不写就是英语
@@ -383,8 +386,13 @@
                 }, 0);
             },
 
-            editurl: "./dummy.php",//nothing is saved
+            //editurl: "./dummy.php",//nothing is saved
             caption: "我是主表啊"
+
+           //  editurl: "/Product/Edit", //编辑的地址 操作栏触发的操作都会丢到这个action中响应。 add edit del
+
+
+
 
             //,autowidth: true,
 
@@ -402,6 +410,8 @@
             */
 
         });
+
+        
         $(window).triggerHandler('resize.jqGrid');//trigger window resize to make the grid get the correct size
 
 

@@ -120,6 +120,16 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Json(jsonData);
         }
 
+        [HttpPost]
+        public ActionResult Edit(test_JqGrid pro, string oper, int id)
+        {
+            if (oper == "edit")
+            {
+               // _repository.Update(pro);
+               //// pro.CreateTime = DateTime.Now;
+            }
+            return Json(pro);
+        }
 
 
     }
