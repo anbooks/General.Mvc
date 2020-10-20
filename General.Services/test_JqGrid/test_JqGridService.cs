@@ -37,6 +37,7 @@ namespace General.Services.test_JqGrid
             if (item == null)
                 return;
             item.Name = model.Name;
+            item.Stock = model.Stock;
             _test_JqGrid_recordRepository.update(item);
          
         }
