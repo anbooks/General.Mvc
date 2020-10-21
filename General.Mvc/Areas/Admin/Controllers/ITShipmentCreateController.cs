@@ -27,7 +27,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itShipmentCreate")]
-        [Function("创建发运条目", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("创建发运条目1", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
         public IActionResult ITShipmentCreateIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -45,7 +45,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         public ActionResult ITShipmentCreateIndex(List<int> sysResource, List<string> sysResource2)
         {
             //string test = "sdasdad";
-            _importTrans_main_recordService.saveImportTransmain(sysResource);
+            _importTrans_main_recordService.saveShippingMode(sysResource);
             AjaxData.Status = true;
             AjaxData.Message = "确认创建成功";
             return Json(AjaxData);

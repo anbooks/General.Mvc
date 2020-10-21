@@ -9,20 +9,29 @@ namespace General.Services.ImportTrans_main_recordService
     public interface IImportTrans_main_recordService
     {
         void saveImportTransmain(List<int> categoryIds);
-        Entities.ImportTrans_main_record getById(int id);
+        void saveDeliveryStatus(List<int> categoryIds);
+        void saveShippingMode(List<int> categoryIds); 
+         Entities.ImportTrans_main_record getById(int id);
         IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size);
+
+        IPagedList<Entities.ImportTrans_main_record> searchListShipModel(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.ImportTrans_main_record> searchListDeliveryStatus(SysCustomizedListSearchArg arg, int page, int size);
+
         /// <summary>
         /// 新增，插入
         /// </summary>
         /// <param name="model"></param>
         void insertImportTransmain(Entities.ImportTrans_main_record model);
-
+        List<Entities.ImportTrans_main_record> getAll(); 
+        List<Entities.ImportTrans_main_record> getAllShipModel();
         /// <summary>
         /// 更新修改
         /// </summary>
         /// <param name="model"></param>
         void updateImportTransmain(Entities.ImportTrans_main_record model);
+        void updateShippingMode(Entities.ImportTrans_main_record model); 
         //void updatePassword(Entities.SysUser model);
+         void updateDeliveryStatus(Entities.ImportTrans_main_record model);
         //void updateUsermessage(Entities.SysUser model);
         /// <summary>updateUsermessage
         /// 重置密码。默认重置成账号一样

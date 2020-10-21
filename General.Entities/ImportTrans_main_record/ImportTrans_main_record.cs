@@ -33,6 +33,25 @@ namespace General.Entities
         public Guid? Requester { get; set; }
         public DateTime? RequestTime { get; set; }
         public DateTime? RequestedArrivalTime { get; set; }
-        public bool? ShipmentCreateflag { get; set; }
+        public bool? F_ShipmentCreate { get; set; }
+        public string ShippingMode { get; set; }
+        public bool? F_ArrivalTimeRequested { get; set; }
+        public bool? F_ShippingModeGiven { get; set; }
+        public DateTime? ShippingModeGivenTime { get; set; }
+
+        public Guid? ShippingModeGiver { get; set; }
+        public bool? F_DeliveryStatusInput { get; set; }
+        public Guid? DeliveryStatusInputer { get; set; }
+        public DateTime? DeliveryStatusInputTime { get; set; }
+        public string Status { get; set; }
+        public string FlighVessel { get; set; }
+        public string Origin { get; set; }
+        public string Dest { get; set; }
+        public string Mbl { get; set; }
+        public string Hbl { get; set; }
+        public string Measurement { get; set; }
+        public string Atd { get; set; }
+        public string Ata { get; set; }
+ 
     }
 }
