@@ -13,7 +13,11 @@
             <i class="ace-icon fa fa-home home-icon"></i>
             <a href="@Url.RouteUrl("mainIndex")">首页</a>
         </li>
-        <li class="active">进口运输</li>
+        <li>
+           
+            <a href="">进口运输</a>
+        </li>
+        <li class="active">发运条目</li>
     </ul>
 </div>
 <div class="page-content">
@@ -81,7 +85,9 @@
                                 <td>
                                     <input type="checkbox" name="sysResource" value="@item.Id" />
                                 </td>
-                                <td><input type="text" name="sysResource" value="@item.Itemno" /></td>
+                                <td>
+                                    <input type="text" name="sysResource" value="@item.Itemno" />
+                                </td>
                                 <td>@item.Shipper</td>
                                 <td>@item.PoNo</td>
                                 <td>@item.Incoterms</td>
@@ -90,7 +96,9 @@
                                 <td>
                                     @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, @item.Invcurr, new { @class = "form-control  input-small" })
                                 </td>
-                                <td>@item.RealReceivingDate</td>
+                                <td>
+                                    @item.RealReceivingDate
+                                </td>
                                 <td>@item.Pcs</td>
                                 <td>@item.Gw</td>
                                 <td>
@@ -123,6 +131,10 @@
             });
         });
     </script>
+    <script src="WdatePicker/WdatePicker.js"></script>
+    <link href="../../My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css" />
+    <script src="../../My97DatePicker/calendar.js" type="text/javascript"></script>
+    <script src="../../My97DatePicker/WdatePicker.js" type="text/javascript"></script>
 </div>
 
 

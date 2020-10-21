@@ -251,6 +251,12 @@
     <Content Update="Areas\Admin\Views\CustomizedList\EditList.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITDeliveryStatusInput\EditITDeliveryStatusInput.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITModeShippingGiven\EditITModeShippingGiven.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITShipmentCreate\EditITShipmentCreate.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -270,5 +276,7 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

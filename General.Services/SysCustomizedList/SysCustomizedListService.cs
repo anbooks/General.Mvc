@@ -37,11 +37,10 @@ namespace General.Services.SysCustomizedList
         public List<Entities.SysCustomizedList> getByAccount(string account)
         {
             List<Entities.SysCustomizedList> list = null;
-            _memoryCache.TryGetValue<List<Entities.SysCustomizedList>>(MODEL_KEY, out list);
-            if (list != null)
-                return list;
+            
+      
             list = _sysCustomizedListRepository.Table.Where(o=>o.CustomizedClassify==account).ToList();
-            _memoryCache.Set(MODEL_KEY, list, DateTimeOffset.Now.AddDays(1));
+            
             return list;
         }
         public void insertSysCustomized(Entities.SysCustomizedList model)

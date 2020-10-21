@@ -55,6 +55,30 @@ namespace General.Services.ImportTrans_main_record
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
         }
+        public void updateShippingMode(Entities.ImportTrans_main_record model)
+        {
+            var item = _importTrans_main_recordRepository.getById(model.Id);
+            if (item == null)
+                return;
+            item.ShippingMode = model.ShippingMode;
+            item.ShippingModeGivenTime = model.ShippingModeGivenTime;
+            item.ShippingModeGiver = model.ShippingModeGiver;
+            
+            _importTrans_main_recordRepository.update(item);
+            _memoryCache.Remove(MODEL_KEY);
+        }
+        public void updateDeliveryStatus(Entities.ImportTrans_main_record model)
+        {
+            var item = _importTrans_main_recordRepository.getById(model.Id);
+            if (item == null)
+                return;
+            item.Status = model.Status;
+            item.DeliveryStatusInputTime = model.DeliveryStatusInputTime;
+            item.DeliveryStatusInputer = model.ShippingModeGiver;
+
+            _importTrans_main_recordRepository.update(item);
+            _memoryCache.Remove(MODEL_KEY);
+        }
         public IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted!=true);
@@ -72,6 +96,40 @@ namespace General.Services.ImportTrans_main_record
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
+        public IPagedList<Entities.ImportTrans_main_record> searchListShipModel(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_ArrivalTimeRequested == true && o.F_ShippingModeGiven != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public IPagedList<Entities.ImportTrans_main_record> searchListDeliveryStatus(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_ShippingModeGiven == true && o.F_DeliveryStatusInput != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
         public void saveImportTransmain( List<int> categoryIds)
         {
  
@@ -81,13 +139,61 @@ namespace General.Services.ImportTrans_main_record
                 if (item == null)
                     return;
 
-                item.ShipmentCreateflag = true;
+                item.F_ShipmentCreate = true;
                 _importTrans_main_recordRepository.update(item);
                 _memoryCache.Remove(MODEL_KEY);
             }
                 
         }
-      
+        
+            public void saveDeliveryStatus(List<int> categoryIds)
+           {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.F_DeliveryStatusInput = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public void saveShippingMode(List<int> categoryIds)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.F_ShippingModeGiven = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public List<Entities.ImportTrans_main_record> getAll()
+        {
+            List<Entities.ImportTrans_main_record> list = null;
+
+            if (list != null)
+                return list;
+            list = _importTrans_main_recordRepository.Table.Where(o=>o.F_ShipmentCreate==true&&o.F_ArrivalTimeRequested!=true).ToList();
+            return list;
+        }
+        public List<Entities.ImportTrans_main_record> getAllShipModel()
+        {
+            List<Entities.ImportTrans_main_record> list = null;
+
+            if (list != null)
+                return list;
+            list = _importTrans_main_recordRepository.Table.Where(o => o.F_ArrivalTimeRequested == true && o.F_ShippingModeGiven != true).ToList();
+            return list;
+        }
         public void removeCache()
         {
             _memoryCache.Remove(MODEL_KEY);
