@@ -229,17 +229,19 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         [Route("message", Name = "usermessages")]
         [Function("个人信息", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.MainController.UserIndex")]
-        public IActionResult Usermessages(Guid? id, string returnUrl = null)
+        public IActionResult Usermessages(Guid? id, Entities.SysUserMessage model, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
-            if (id != null)
-            {
-                var model = _sysUserService.getById(id.Value);
-                if (model == null)
-                    return Redirect(ViewBag.ReturnUrl);
-                return View(model);
-            }
-            return View();
+
+
+            model.Email = WorkContext.CurrentUser.Email;
+            model.MobilePhone = WorkContext.CurrentUser.MobilePhone;
+            model.Avatar2 = WorkContext.CurrentUser.Avatar2;
+            if (model == null)
+                return Redirect(ViewBag.ReturnUrl);
+            return View(model);
+
+
         }
         [HttpPost]
         [Route("message")]

@@ -30,13 +30,15 @@ namespace General.Entities
         public string MobilePhone { get; set; }
 
 
+        public string Avatar2 { get; set; }
+
         /// <summary>
         /// 
         /// </summary>
-      
+
         /// <summary>
         /// 
         /// </summary>
-   
+
     }
 }
