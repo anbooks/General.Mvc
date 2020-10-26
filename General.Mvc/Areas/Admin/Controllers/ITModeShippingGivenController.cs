@@ -26,7 +26,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itModeShippingGiven")]
-        [Function("填写运输方式", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 4)]
+        [Function("填写运输方式3", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 4)]
         [HttpGet]
         public IActionResult ITModeShippingGivenIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
             {
@@ -35,7 +35,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
                 var pageList = _importTrans_main_recordService.searchListShipModel(arg, page, size);
                 ViewBag.Arg = arg;//传参数
-                var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
+                var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("iTModeShippingGiven", arg);
                 return View(dataSource);//sysImport
             }
 
@@ -79,8 +79,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // if (!String.IsNullOrEmpty(model.CustomizedValue))
-            //    model.CustomizedValue = model.CustomizedValue.Trim();
+             if (!String.IsNullOrEmpty(model.ShippingMode))
+                model.ShippingMode = model.ShippingMode.Trim();
             if (model.Id.Equals(0))
             {
                 return Redirect(ViewBag.ReturnUrl);

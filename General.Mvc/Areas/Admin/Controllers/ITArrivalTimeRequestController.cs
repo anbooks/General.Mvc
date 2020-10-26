@@ -36,17 +36,19 @@ namespace General.Mvc.Areas.Admin.Controllers
 
             List<Entities.ImportTrans_main_record> test_JqGrids = _importTrans_main_recordService.getAll();
             int count = test_JqGrids.Count();
-            // var objpros = new List<object>(pros);
+            // var objpros = new List<object>(pros);editArrivalTime
             var jsonData = JqGridModel.GridData(page, rows, count, test_JqGrids);
             return Json(jsonData);
         }
         [HttpPost]
+        [Route("editArrivalTime", Name = "editArrivalTime")]
         public ActionResult Edit(ImportTrans_main_record pro, string oper, int id)
         {
             if (oper == "edit")
             {
-                // _repository.Update(pro);
-                //// pro.CreateTime = DateTime.Now;
+                pro.Requester = WorkContext.CurrentUser.Id;
+                pro.RequestTime = DateTime.Now;
+                _importTrans_main_recordService.updateArrivalTime(pro);
             }
             return Json(pro);
         }

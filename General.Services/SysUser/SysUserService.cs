@@ -452,13 +452,14 @@ namespace General.Services.SysUser
         /// 更新修改
         /// </summary>
         /// <param name="model"></param>
-        void updateSysUser(Entities.SysUser model)
+        public void updateSysUser(Entities.SysUser model)
         {
             _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
             _sysUserRepository.DbContext.Entry(model).Property("Name").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Sex").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("Co").IsModified = true;
             _sysUserRepository.DbContext.SaveChanges();
         }
         public void updatePassword(Entities.SysUser model)
@@ -499,10 +500,10 @@ namespace General.Services.SysUser
             return _sysUserRepository.Table.Any(o => o.Account == account && !o.IsDeleted);
         }
 
-        void ISysUserService.updateSysUser(Entities.SysUser model)
-        {
-            throw new NotImplementedException();
-        }
+   //     void ISysUserService.updateSysUser(Entities.SysUser model)
+     //   {
+       //     throw new NotImplementedException();
+        //}
        
         public void enabled(Guid id, bool enabled, Guid modifer)
         {

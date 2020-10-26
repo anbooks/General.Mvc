@@ -12,6 +12,8 @@ using General.Services.SysUser;
 using General.Services.SysUserRole;
 using General.Services.SysRole;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using General.Services.SysCustomizedList;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -23,11 +25,13 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysUserService _sysUserService;
         private ISysUserRoleService _sysUserRoleService;
         private ISysRoleService _sysRoleService;
-        public UserController(ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService)
+        private ISysCustomizedListService _sysCustomizedListService;
+        public UserController(ISysCustomizedListService sysCustomizedListService, ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService)
         {
             this._sysUserService = sysUserService;
             this._sysUserRoleService = sysUserRoleService;
             this._sysRoleService = sysRoleService;
+            this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("roledetail", Name = "roleDetail")]
         [Function("用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
@@ -274,6 +278,9 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult EditUser(Guid? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex");
+            var customizedList = _sysCustomizedListService.getByAccount("运输代理");
+            ViewData["Colist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+
             if (id != null)
             {
                 var model = _sysUserService.getById(id.Value);
@@ -293,6 +300,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return View(model);
             if (!String.IsNullOrEmpty(model.MobilePhone))
                 model.MobilePhone = StringUitls.toDBC(model.MobilePhone);
+            if (!String.IsNullOrEmpty(model.Co))
+                model.Co = StringUitls.toDBC(model.Co);
             model.Name = model.Name.Trim();
 
             if (model.Id == Guid.Empty)

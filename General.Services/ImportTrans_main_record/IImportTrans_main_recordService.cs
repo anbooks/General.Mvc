@@ -9,10 +9,21 @@ namespace General.Services.ImportTrans_main_recordService
     public interface IImportTrans_main_recordService
     {
         void saveImportTransmain(List<int> categoryIds);
-        void saveDeliveryStatus(List<int> categoryIds);
-        void saveShippingMode(List<int> categoryIds); 
-         Entities.ImportTrans_main_record getById(int id);
+        void saveDeliveryStatus(List<int> categoryIds, Guid id);
+        void saveShippingMode(List<int> categoryIds); //InventoryInput
+        void saveInventoryInput(List<int> categoryIds);
+        void saveCustomsBrokerSelect(List<int> categoryIds);
+        void savePortCustomerBroker(List<int> categoryIds);
+        void saveDeliveryRequired(List<int> categoryIds);
+        Entities.ImportTrans_main_record getById(int id);
+        IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size);
+
+        IPagedList<Entities.ImportTrans_main_record> searchListDeliveryRequired(SysCustomizedListSearchArg arg, int page, int size);
+
+        IPagedList<Entities.ImportTrans_main_record> searchListCustomsBrokerSelect(SysCustomizedListSearchArg arg, int page, int size);
         IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size);
+
+        IPagedList<Entities.ImportTrans_main_record> searchListInventoryInput(SysCustomizedListSearchArg arg, int page, int size);
 
         IPagedList<Entities.ImportTrans_main_record> searchListShipModel(SysCustomizedListSearchArg arg, int page, int size);
         IPagedList<Entities.ImportTrans_main_record> searchListDeliveryStatus(SysCustomizedListSearchArg arg, int page, int size);
@@ -27,7 +38,12 @@ namespace General.Services.ImportTrans_main_recordService
         /// <summary>
         /// 更新修改
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="model"></param>InventoryInput
+        void updateInventoryInput(Entities.ImportTrans_main_record model);
+        void updateDeliveryRequired(Entities.ImportTrans_main_record model);
+        void updatePortCustomerBroker(Entities.ImportTrans_main_record model);
+        void updateArrivalTime(Entities.ImportTrans_main_record model);
+        void updateCustomsBrokerSelect(Entities.ImportTrans_main_record model);
         void updateImportTransmain(Entities.ImportTrans_main_record model);
         void updateShippingMode(Entities.ImportTrans_main_record model); 
         //void updatePassword(Entities.SysUser model);

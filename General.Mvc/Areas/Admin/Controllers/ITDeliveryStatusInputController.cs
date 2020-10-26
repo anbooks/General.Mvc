@@ -26,7 +26,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itDeliveryStatusInput")]
-        [Function("录入运输状态", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 5)]
+        [Function("录入运输状态4", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 5)]
         [HttpGet]
         public IActionResult ITDeliveryStatusInputIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -36,7 +36,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 
             var pageList = _importTrans_main_recordService.searchListDeliveryStatus(arg, page, size);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itDeliveryStatusInput", arg);
             return View(dataSource);//sysImport
         }
 
@@ -45,7 +45,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         public ActionResult ITDeliveryStatusInputIndex(List<int> sysResource, List<string> sysResource2)
         {
             //string test = "sdasdad";
-            _importTrans_main_recordService.saveDeliveryStatus(sysResource);
+            _importTrans_main_recordService.saveDeliveryStatus(sysResource, WorkContext.CurrentUser.Id);
             AjaxData.Status = true;
             AjaxData.Message = "确认创建成功";
             return Json(AjaxData);
@@ -53,7 +53,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editITDeliveryStatusInput")]
-        [Function("录入运输状态", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITDeliveryStatusInputController.ITDeliveryStatusInputIndex")]
+        [Function("录入运输状态4", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITDeliveryStatusInputController.ITDeliveryStatusInputIndex")]
         public IActionResult EditITDeliveryStatusInput(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itDeliveryStatusInput");
@@ -80,8 +80,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // if (!String.IsNullOrEmpty(model.CustomizedValue))
-            //    model.CustomizedValue = model.CustomizedValue.Trim();
+             if (!String.IsNullOrEmpty(model.Status))
+            model.Status = model.Status.Trim();
             if (model.Id.Equals(0))
             {
                 return Redirect(ViewBag.ReturnUrl);

@@ -85,7 +85,7 @@ namespace General.Entities
         public Guid? Modifier { get; set; }
 
         public Guid? Creator { get; set; }
-
+        public string Co { get; set; }
         /// <summary>
         /// 
         /// </summary>

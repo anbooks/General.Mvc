@@ -12,7 +12,7 @@ namespace General.Mvc.Areas.Admin.Controllers
     public class ITSecondCheckIsController : AdminPermissionController
     {
         [Route("", Name = "itSecondCheckIs")]
-        [Function("是否需要二检", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("是否完成二检", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
 
         public IActionResult ITSecondCheckIsIndex()
         {

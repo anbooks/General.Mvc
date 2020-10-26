@@ -251,10 +251,22 @@
     <Content Update="Areas\Admin\Views\CustomizedList\EditList.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITCustomsBrokerSelect\EditITCustomsBrokerSelect.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITDeliveryDateRequired\EditITDeliveryDateRequired.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITDeliveryStatusInput\EditITDeliveryStatusInput.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITInventoryInput\EditITInventoryInput.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITModeShippingGiven\EditITModeShippingGiven.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITPortCustomerBrokerInput\EditITPortCustomerBrokerInput.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITShipmentCreate\EditITShipmentCreate.cshtml">

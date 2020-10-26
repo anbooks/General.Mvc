@@ -80,14 +80,18 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
             
-            // if (!String.IsNullOrEmpty(model.CustomizedValue))
-            //    model.CustomizedValue = model.CustomizedValue.Trim();
+             if (!String.IsNullOrEmpty(model.Invcurr))
+                model.Invcurr = model.Invcurr.Trim();
+            if (!String.IsNullOrEmpty(model.Shipper))
+                model.Shipper = model.Shipper.Trim();
+            if (!String.IsNullOrEmpty(model.Itemno))
+                model.Itemno = model.Itemno.Trim();
             if (model.Id.Equals(0)) {
                 
-                model.Invcurr = model.Invcurr.Trim();
+                //model.Invcurr = model.Invcurr.Trim();
                 model.CreationTime = DateTime.Now;
-                model.Shipper = model.Shipper.Trim();
-                model.Itemno = model.Itemno.Trim();
+               // model.Shipper = model.Shipper.Trim();
+              //  model.Itemno = model.Itemno.Trim();
                 model.IsDeleted = false;
                 model.Modifier = null;
                 model.ModifiedTime = null;
@@ -96,10 +100,10 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             else
             {
-                 model.Invcurr = model.Invcurr.Trim();
+               //  model.Invcurr = model.Invcurr.Trim();
 
-                model.Shipper = model.Shipper.Trim();
-                model.Itemno = model.Itemno.Trim();
+             //  model.Shipper = model.Shipper.Trim();
+              //  model.Itemno = model.Itemno.Trim();
              
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;

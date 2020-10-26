@@ -72,7 +72,14 @@
                     </div>
                     <span asp-validation-for="Email" class="inline text-danger "></span>
                 </div>
-
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">运输代理</label>
+                    <div class="col-sm-5">
+                        
+                        <select asp-for="Co" class="form-control" asp-items="ViewBag.Colist"></select>
+                    </div>
+                    <span asp-validation-for="Co" class="inline text-danger "></span>
+                </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">性别</label>
                     <div class="radio">

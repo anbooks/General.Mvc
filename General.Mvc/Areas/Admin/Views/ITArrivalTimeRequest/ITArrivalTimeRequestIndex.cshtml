@@ -215,7 +215,7 @@
                 { name: 'id', index: 'id', width: 60, sorttype: "int", editable: false },
                 
                 { name: 'itemno', index: 'itemno', width: 150, editable: false, editoptions: { size: "20", maxlength: "30" } },
-                { name: 'requestedarrivaltime', index: 'requestedarrivaltime', width: 90, editable: true, sorttype: "date", unformat: pickDate },
+                { name: 'requestedArrivalTime', index: 'requestedArrivalTime', width: 90, editable: true, sorttype: "date", formatter: "date", formatoptions: { newformat: 'Y-m-d' }, unformat: pickDate },
                 //  { name: 'stock', index: 'stock', width: 70, editable: true, edittype: "checkbox", editoptions: { value: "Yes:No" }, unformat: aceSwitch },
                 // { name: 'ship', index: 'ship', width: 90, editable: true, edittype: "select", editoptions: { value: "FE:FedEx;IN:InTime;TN:TNT;AR:ARAMEX" } },
                 //  { name: 'note', index: 'note', width: 150, sortable: false, editable: true, edittype: "textarea", editoptions: { rows: "2", cols: "10" } }
@@ -246,7 +246,7 @@
                 }, 0);
             },
 
-            editurl: "./dummy.php",//nothing is saved
+            editurl: "/admin/itArrivalTimeRequest/editArrivalTime",//nothing is saved
             caption: "要求到货时间"
 
             //  editurl: "/Product/Edit", //编辑的地址 操作栏触发的操作都会丢到这个action中响应。 add edit del

@@ -32,6 +32,7 @@ namespace General.Entities
          public bool IsDeleted { get; set; }
         public Guid? Requester { get; set; }
         public DateTime? RequestTime { get; set; }
+        [DataType(DataType.Date)]
         public DateTime? RequestedArrivalTime { get; set; }
         public bool? F_ShipmentCreate { get; set; }
         public string ShippingMode { get; set; }
@@ -52,6 +53,27 @@ namespace General.Entities
         public string Measurement { get; set; }
         public string Atd { get; set; }
         public string Ata { get; set; }
- 
+        public string Forwarder { get; set; }
+        public string InventoryNo { get; set; }
+        public bool? F_InventoryInput { get; set; }
+        public Guid? InventoryInputer { get; set; }
+        public DateTime? InventoryInputTime { get; set; }
+        public bool? F_CustomsBrokerSelect { get; set; }
+        public Guid? CustomsBrokerSelecter { get; set; }
+        public DateTime? CustomsBrokerSelectTime { get; set; }
+        //public string InventoryNo { get; set; }
+        public bool? F_PortCustomerBrokerInput { get; set; }
+        public Guid? PortCustomerBrokerInputer { get; set; }
+        public DateTime? PortCustomerBrokerInputTime { get; set; }
+        public DateTime? BlDate { get; set; }
+        public DateTime? DeclarationDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
+        public string CustomsDeclarationNo { get; set; }        
+        public string InspectionLotNo { get; set; }
+        public bool? IsNeedSecondCheck { get; set; }     
+        public Guid? DeliveryDateRequirer { get; set; }
+        public DateTime? DeliveryDateRequiredTime { get; set; }        
+        public bool? F_DeliveryDateRequired { get; set; }
+        public DateTime? DeliveryRequiredDate { get; set; }
     }
 }
