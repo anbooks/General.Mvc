@@ -91,6 +91,8 @@ namespace General.Entities
         /// </summary>
         public byte[] Avatar { get; set; }
 
+        public string Avatar2 { get; set; }   //用户头像的存储位置
+
         /// <summary>
         /// 
         /// </summary>
