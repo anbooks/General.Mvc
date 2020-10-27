@@ -10,6 +10,7 @@ using General.Entities;
 using General.Framework.Datatable;
 using General.Services.SysCustomizedList;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using General.Services.ScheduleService;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -19,10 +20,11 @@ namespace General.Mvc.Areas.Admin.Controllers
     {    
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysCustomizedListService _sysCustomizedListService;
+        private IScheduleService _scheduleService;
 
-        public ITShipmentCreateController(IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        public ITShipmentCreateController(IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
-
+            this._scheduleService = scheduleService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
@@ -39,7 +41,18 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
             return View(dataSource);//sysImport
         }
-
+        [Route("schedule", Name = "itShipmentCreateSchedule")]
+        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
+        [HttpGet]
+        public IActionResult ITShipmentCreateScheduleIndex(List<int> sysResource, int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            ViewBag.Userid = id;
+            RolePermissionViewModel model = new RolePermissionViewModel();
+             var pageList = _scheduleService.searchList(arg, page, size,id);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itShipmentCreateSchedule", arg);
+            return View(dataSource);//sysImport
+        }
         [HttpPost]
         [Route("")]
         public ActionResult ITShipmentCreateIndex(List<int> sysResource, List<string> sysResource2)
@@ -100,18 +113,61 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             else
             {
-               //  model.Invcurr = model.Invcurr.Trim();
-
-             //  model.Shipper = model.Shipper.Trim();
-              //  model.Itemno = model.Itemno.Trim();
-             
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;
-                
                 _importTrans_main_recordService.updateImportTransmain(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }
-    
-}
+        [HttpGet]
+        [Route("edit2", Name = "editSchedule")]
+        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateScheduleIndex")]
+        public IActionResult EditSchedule(int? id, string returnUrl = null)
+        {//页面跳转未完成
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            if (id != null)
+            {
+                var model = _scheduleService.getById(id.Value);
+
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
+        [HttpPost]
+        [Route("edit2")]
+        public ActionResult EditSchedule(Entities.Schedule model, string returnUrl = null)
+        {//页面跳转未完成
+            ModelState.Remove("Id");
+            int a = 0;
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            if (!ModelState.IsValid)
+                return View(model);
+
+            if (!String.IsNullOrEmpty(model.InvoiceNo))
+                model.InvoiceNo = model.InvoiceNo.Trim();
+            if (!String.IsNullOrEmpty(model.MaterielNo))
+                model.MaterielNo = model.MaterielNo.Trim();
+            if (!String.IsNullOrEmpty(model.PurchasingDocuments))
+                model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+            if (model.Id.Equals(0))
+            {
+                model.CreationTime = DateTime.Now;
+                model.IsDeleted = false;
+                model.Modifier = null;
+                model.ModifiedTime = null;
+                model.Creator = WorkContext.CurrentUser.Id;
+                _scheduleService.insertSchedule(model);
+            }
+            else
+            {
+                model.Modifier = WorkContext.CurrentUser.Id;
+                model.ModifiedTime = DateTime.Now;
+                _scheduleService.updateSchedule(model);
+            }
+            int mid = model.MainId;
+            return Redirect(ViewBag.ReturnUrl);
+        }
+    }
 }

@@ -269,7 +269,13 @@
     <Content Update="Areas\Admin\Views\ITPortCustomerBrokerInput\EditITPortCustomerBrokerInput.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITShipmentCreate\EditSchedule.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITShipmentCreate\EditITShipmentCreate.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITShipmentCreate\ITShipmentCreateScheduleIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\User\EditPassword.cshtml">

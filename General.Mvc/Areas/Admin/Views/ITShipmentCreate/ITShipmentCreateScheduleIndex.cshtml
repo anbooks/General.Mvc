@@ -1,10 +1,10 @@
 ﻿@using General.Framework.Menu
 @using General.Framework.Datatable
 @using General.Entities
-@model DataSourceResult<ImportTrans_main_record, SysCustomizedListSearchArg>
+@model DataSourceResult<Schedule, SysCustomizedListSearchArg>
 
 @{
-    ViewData["Title"] = "发运条目";
+    ViewData["Title"] = "明细表";
 }
 
 <div class="breadcrumbs" id="breadcrumbs">
@@ -14,10 +14,14 @@
             <a href="@Url.RouteUrl("mainIndex")">首页</a>
         </li>
         <li>
-           
+
             <a href="">进口运输</a>
         </li>
-        <li class="active">发运条目</li>
+        <li>
+
+            <a href="">发运条目</a>
+        </li>
+        <li class="active">明细表</li>
     </ul>
 </div>
 <div class="page-content">
@@ -36,13 +40,11 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form asp-route="itShipmentCreate" method="get" class="form-inline">
-
+                    <form asp-route="itShipmentCreateSchedule" method="get" class="form-inline">
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("Id", 1)
                         <label>关键字</label>
-                        <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
-                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
-                        @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
+                        <input type="text" class="form-control" name="materiel" style="width:180px;" value="@Model.Paging.RouteArg.materiel" placeholder="物料号" />
 
 
                         <button type="submit" class="btn btn-purple btn-sm">
@@ -55,8 +57,9 @@
         </div>
     </div>
 
-    <form asp-route="itShipmentCreate" method="post" id="formitShipmentCreate" class="form-horizontal" onsubmit="return false;">
-
+    <form asp-route="itShipmentCreateSchedule" method="post" id="formitShipmentCreate" class="form-horizontal" onsubmit="return false;">
+        @Html.AntiForgeryToken()
+        @Html.Hidden("Id",1)
         <div class="form-group">
             @if (Model != null)
             {
@@ -65,16 +68,11 @@
                     <thead>
                         <tr>
                             <th width="100px"></th>
-                            <th width="150px">编号</th>
-                            <th width="100px">发货人</th>
-                            <th width="100px">合同号</th>
-                            <th width="100px">贸易条款</th>
-                            <th width="100px">货物类型</th>
-                            <th width="100px">发票金额</th>
-                            <th width="100px">发票币种</th>
-                            <th width="100px">实际收/提货日期</th>
-                            <th width="100px">件数(箱数)</th>
-                            <th width="100px">毛重</th>
+                            <th width="100px">发票号</th>
+                            <th width="150px">物料号</th>
+
+                            <th width="100px">发货凭证</th>
+
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -85,25 +83,11 @@
                                 <td>
                                     <input type="checkbox" name="sysResource" value="@item.Id" />
                                 </td>
+                                <td>@item.InvoiceNo</td>
+                                <td>@item.MaterielNo</td>
+                                <td>@item.PurchasingDocuments</td>
                                 <td>
-                                    <input type="text" name="sysResource" value="@item.Itemno" />
-                                </td>
-                                <td>@item.Shipper</td>
-                                <td>@item.PoNo</td>
-                                <td>@item.Incoterms</td>
-                                <td>@item.CargoType</td>
-                                <td>@item.Invamou</td>
-                                <td>
-                                    @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, @item.Invcurr, new { @class = "form-control  input-small" })
-                                </td>
-                                <td>
-                                    @item.RealReceivingDate
-                                </td>
-                                <td>@item.Pcs</td>
-                                <td>@item.Gw</td>
-                                <td>
-                                    <a href="@Url.RouteUrl("editITShipmentCreate", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                                    <a href="@Url.RouteUrl("itShipmentCreateSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
+                                    <a href="@Url.RouteUrl("editSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
                                 </td>
                             </tr>
                         }

@@ -19,5 +19,6 @@ namespace General.Entities
         public string shipper { get; set; }//发运条目发货人
         public string pono { get; set; }//发运条目合同号
         public string invcurr { get; set; }//发运条目货币类型
+        public string materiel { get; set; }
     }
 }
