@@ -71,6 +71,38 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View();
         }
 
+        [Route("testFormSubmits", Name = "testFormSubmits")]
+        [Function("测试一个Form多Submits", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.TestIndex")]
+        public IActionResult TestFormSubmits()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        [Route("", Name = "editFormSubmits")]
+        public ActionResult EditFormSubmits()
+        {
+            //string rest = 
+            //string test = "sdasdad";
+
+            string submit = Request.Form["submit"];
+          
+            if (submit.Equals("1"))
+            {
+                AjaxData.Status = true;
+                AjaxData.Message = "点击了1!";
+            }
+            else if (submit.Equals("2"))
+            {
+                AjaxData.Status = true;
+                AjaxData.Message = "点击了2!";
+            }
+           
+            return Json(AjaxData);
+            //return View();
+        }
+
 
         /// <summary>
         /// 
