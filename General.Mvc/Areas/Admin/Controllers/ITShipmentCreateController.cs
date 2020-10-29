@@ -72,11 +72,11 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-
+           
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
-
+        
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
