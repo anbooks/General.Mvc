@@ -10,12 +10,16 @@ namespace General.Services.ImportTrans_main_recordService
     {
         void saveImportTransmain(List<int> categoryIds);
         void saveDeliveryStatus(List<int> categoryIds, Guid id);
-        void saveShippingMode(List<int> categoryIds); //InventoryInput
+        void saveShippingMode(List<int> categoryIds); //
         void saveInventoryInput(List<int> categoryIds);
         void saveCustomsBrokerSelect(List<int> categoryIds);
         void savePortCustomerBroker(List<int> categoryIds);
         void saveDeliveryRequired(List<int> categoryIds);
+        void saveCheckAndPass(List<int> categoryIds,Guid id);
+        void saveDeliveryReceipt(List<int> categoryIds);
         Entities.ImportTrans_main_record getById(int id);
+        IPagedList<Entities.ImportTrans_main_record> searchListCheckAndPass(SysCustomizedListSearchArg arg, int page, int size);
+
         IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size);
 
         IPagedList<Entities.ImportTrans_main_record> searchListDeliveryRequired(SysCustomizedListSearchArg arg, int page, int size);
@@ -27,9 +31,10 @@ namespace General.Services.ImportTrans_main_recordService
 
         IPagedList<Entities.ImportTrans_main_record> searchListShipModel(SysCustomizedListSearchArg arg, int page, int size);
         IPagedList<Entities.ImportTrans_main_record> searchListDeliveryStatus(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.ImportTrans_main_record> searchListDeliveryReceipt(SysCustomizedListSearchArg arg, int page, int size);
 
         /// <summary>
-        /// 新增，插入
+        /// 新增，插入DeliveryReceipt
         /// </summary>
         /// <param name="model"></param>
         void insertImportTransmain(Entities.ImportTrans_main_record model);
@@ -38,7 +43,8 @@ namespace General.Services.ImportTrans_main_recordService
         /// <summary>
         /// 更新修改
         /// </summary>
-        /// <param name="model"></param>InventoryInput
+        /// <param name="model"></param>DeliveryReceipt
+        void updateDeliveryReceipt(Entities.ImportTrans_main_record model);
         void updateInventoryInput(Entities.ImportTrans_main_record model);
         void updateDeliveryRequired(Entities.ImportTrans_main_record model);
         void updatePortCustomerBroker(Entities.ImportTrans_main_record model);

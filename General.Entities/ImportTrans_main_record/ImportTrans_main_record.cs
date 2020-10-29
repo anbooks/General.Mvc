@@ -75,5 +75,17 @@ namespace General.Entities
         public DateTime? DeliveryDateRequiredTime { get; set; }        
         public bool? F_DeliveryDateRequired { get; set; }
         public DateTime? DeliveryRequiredDate { get; set; }
+        public string DeliveryReceipt { get; set; }
+        public string ChooseDelivery { get; set; }
+        public DateTime? ActualDeliveryDate { get; set; }
+        public string BrokenRecord { get; set; }
+        public bool? F_DeliveryReceipt { get; set; }//DeliveryReceipter
+        public Guid? DeliveryReceipter { get; set; }
+        public DateTime? DeliveryReceiptTime { get; set; }
+        public bool? CheckAndPass { get; set; }
+        public Guid? CheckAndPassor { get; set; }
+        public DateTime? CheckAndPassTime { get; set; }
+        public bool? F_CheckAndPass { get; set; }
+
     }
 }

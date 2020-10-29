@@ -110,7 +110,19 @@ namespace General.Services.ImportTrans_main_record
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
         }
-        public void updateCustomsBrokerSelect(Entities.ImportTrans_main_record model)
+        public void updateDeliveryReceipt(Entities.ImportTrans_main_record model)
+        {
+            var item = _importTrans_main_recordRepository.getById(model.Id);
+            if (item == null)
+                return;
+            item.DeliveryReceipt = model.DeliveryReceipt;
+            item.ActualDeliveryDate = model.ActualDeliveryDate;
+            item.ChooseDelivery = model.ChooseDelivery;
+
+            _importTrans_main_recordRepository.update(item);
+            _memoryCache.Remove(MODEL_KEY);
+        }
+         public void updateCustomsBrokerSelect(Entities.ImportTrans_main_record model)
         {
             var item = _importTrans_main_recordRepository.getById(model.Id);
             if (item == null)
@@ -145,6 +157,24 @@ namespace General.Services.ImportTrans_main_record
 
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
+        }
+        //CheckAndPass
+        public IPagedList<Entities.ImportTrans_main_record> searchListCheckAndPass(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_DeliveryReceipt == true && o.F_CheckAndPass != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
         public IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size)
         {
@@ -231,6 +261,23 @@ namespace General.Services.ImportTrans_main_record
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
+        public IPagedList<Entities.ImportTrans_main_record> searchListDeliveryReceipt(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_PortCustomerBrokerInput == true && o.F_DeliveryReceipt != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
         public IPagedList<Entities.ImportTrans_main_record> searchListCustomsBrokerSelect(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.F_DeliveryStatusInput == true && o.F_CustomsBrokerSelect != true);
@@ -280,6 +327,22 @@ namespace General.Services.ImportTrans_main_record
             }
                 
         }
+        public void saveCheckAndPass(List<int> categoryIds,Guid id)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+                item.CheckAndPassor =id;
+                item.CheckAndPassTime = DateTime.Now;
+                item.CheckAndPass = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
         public void savePortCustomerBroker(List<int> categoryIds)
         {
 
@@ -290,6 +353,21 @@ namespace General.Services.ImportTrans_main_record
                     return;
 
                 item.F_PortCustomerBrokerInput = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public void saveDeliveryReceipt(List<int> categoryIds)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.F_DeliveryReceipt = true;
                 _importTrans_main_recordRepository.update(item);
                 _memoryCache.Remove(MODEL_KEY);
             }
