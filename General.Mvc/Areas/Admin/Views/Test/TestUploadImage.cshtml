@@ -1,0 +1,44 @@
+﻿
+@{
+    ViewData["Title"] = "TestUploadImage";
+}
+
+<h2>TestUploadImage</h2>
+<div class="row">
+   <form method="post" enctype="multipart/form-data">
+       <div class="row">
+           <input  type="file" multiple class="form-control"/>
+
+       </div>
+
+</form>
+ 
+
+
+</div>
+
+
+<div class="row">
+    <div class="col-sm-12">
+      
+        <input id="register_btn" onClick="FormAjax();" type="submit" value="立即注册"/>
+       
+    </div>
+</div>
+
+<script>
+    function FormAjax() {
+        $.ajax({
+            url: "/admin/test/registerResult",
+            data: {
+                "phone": 1, "verification_code": 2,
+                "password": 3, "password_again": 4
+            },
+            type: "post",
+            dataType: "text",
+            success: function (response) {
+                alert(response);
+            }
+        });
+    }
+</script>
