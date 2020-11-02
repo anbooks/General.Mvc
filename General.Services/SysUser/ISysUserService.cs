@@ -60,6 +60,8 @@ namespace General.Services.SysUser
         void updateSysUser(Entities.SysUser model);
         void updatePassword(Entities.SysUser model);
         void updateUsermessage(Entities.SysUser model);
+
+        void updateUsermessage2(Entities.SysUserMessage model);
         /// <summary>updateUsermessage
         /// 重置密码。默认重置成账号一样
         /// </summary>

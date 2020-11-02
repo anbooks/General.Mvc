@@ -33,9 +33,10 @@
                 <div id="user-profile-1" class="user-profile row">
                     <div class="col-xs-12 col-sm-3 center">
                         <div>
+                            <input type="text" class="form-control" name="avatar2" style="width:400px;" value="@Model.Avatar2" placeholder="图像地址" />
                             <span class="profile-picture">
-                              @*  <img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="@Model.Avatar2" />*@
-                                <img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="~/assets/images/avatars/avatar.png" />
+                                <img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="@Model.Avatar2" />
+                                @*<img id="avatar" class="editable img-responsive" alt="Alex's Avatar" src="~/assets/images/avatars/profile-pic.jpg" />*@
                             </span>
 
                             <div class="space-4"></div>
@@ -142,7 +143,8 @@
                 },
                 url: function (params) {
                     // ***UPDATE AVATAR HERE*** //
-                    var submit_url = "/admin/test/registerResult";//please modify submit_url accordingly
+                    //var submit_url = "/admin/test/registerResult";//please modify submit_url accordingly
+                    var submit_url = "/admin/users/avatarChange";//please modify submit_url accordingly
                     var deferred = null;
                     var avatar = '#avatar';
 
@@ -175,13 +177,13 @@
                         //and then add files
                         $form.find('input[type=file]').each(function () {
                             var field_name = $(this).attr('name');
-                            alert("filed_name===" + field_name);
+                           // alert("filed_name===" + field_name);
                             var files = $(this).data('ace_input_files');
                             if (files && files.length > 0) {
-                                alert("长度=" + files.length);
-                                alert("有内容吗？=" + files[0]);
+                               // alert("长度=" + files.length);
+                               // alert("有内容吗？=" + files[0]);
                                 formData_object.append(field_name, files[0]);
-                                alert("....="+formData_object.get(field_name));
+                               // alert("....="+formData_object.get(field_name));
                               
                             }
                         });
@@ -196,7 +198,15 @@
                             processData: false,//important
                             contentType: false,//important
                             dataType: 'json',//server response type
-                            data: formData_object
+                            data: formData_object,
+
+                             success: function (returndata) {
+                                //console.dir(returndata);
+                                // alert("OK");
+                            },
+                            error: function (returndata) {
+                                //console.dir(returndata);
+                            }
                         })
                     }
                     else {
@@ -238,10 +248,16 @@
 
                     //deferred callbacks, triggered by both ajax and iframe solution
                     deferred
+                    
                         .done(function (result) {//success
-                            var res = result[0];//the `result` is formatted by your server side response and is arbitrary
-                            if (res.status == 'OK') $(avatar).get(0).src = res.url;
-                            else alert(res.message);
+                            console.log(result)
+
+                           // alert(result.length);
+                            // var res = result[0];//the `result` is formatted by your server side response and is arbitrary
+                           // alert(result.status);
+                           // alert(result.url);
+                            if (result.status == 'OK') $(avatar).get(0).src = result.url;
+                            else alert(result.message);
                         })
                         .fail(function (result) {//failure
                             alert("There was an error");
@@ -254,11 +270,12 @@
                     return deferred.promise();
                     // ***END OF UPDATE AVATAR HERE*** //
                 },
-
+                
+                
                 success: function (response, newValue) {
                 }
             })
-
+            //alert("here?");
             /**
             //let's display edit mode by default?
             $('#avatar').editable('show').on('hidden', function(e, reason) {

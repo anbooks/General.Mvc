@@ -14,6 +14,9 @@ using General.Services.SysRole;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using General.Services.SysCustomizedList;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -26,12 +29,14 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysUserRoleService _sysUserRoleService;
         private ISysRoleService _sysRoleService;
         private ISysCustomizedListService _sysCustomizedListService;
-        public UserController(ISysCustomizedListService sysCustomizedListService, ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService)
+        private IHostingEnvironment _hostingEnvironment;
+        public UserController(ISysCustomizedListService sysCustomizedListService, ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService, IHostingEnvironment hostingEnvironment)
         {
             this._sysUserService = sysUserService;
             this._sysUserRoleService = sysUserRoleService;
             this._sysRoleService = sysRoleService;
             this._sysCustomizedListService = sysCustomizedListService;
+            this._hostingEnvironment = hostingEnvironment;
         }
         [Route("roledetail", Name = "roleDetail")]
         [Function("用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
@@ -405,5 +410,64 @@ namespace General.Mvc.Areas.Admin.Controllers
             AjaxData.Message = "用户密码已重置为原始密码";
             return Json(AjaxData);
         }
+
+
+        [HttpPost]
+        [Route("avatarChange", Name = "avatarChange")]
+        public ActionResult AvatarChange([FromForm(Name = "avatar")]List<IFormFile> files)
+        {
+            string show_Url = "";
+            //var files = Request.Form.Files;
+            //string test= Request.Form["phone"].ToString();
+            files.ForEach(file =>
+            {
+                var fileName = file.FileName;
+                string fileExtension = file.FileName.Substring(file.FileName.LastIndexOf(".") + 1);//获取文件名称后缀 
+                //保存文件
+                var stream = file.OpenReadStream();
+                // 把 Stream 转换成 byte[] 
+                byte[] bytes = new byte[stream.Length];
+                stream.Read(bytes, 0, bytes.Length);
+                // 设置当前流的位置为流的开始 
+                stream.Seek(0, SeekOrigin.Begin);
+                // 把 byte[] 写入文件 
+
+                //需要写一个获取文件路径的方法  Kevin？
+                // var path = Directory.GetCurrentDirectory();
+                var currentDate = DateTime.Now;
+                var webRootPath = _hostingEnvironment.WebRootPath;//>>>相当于HttpContext.Current.Server.MapPath("") 
+
+                //F:\Code\ILPT\General.Mvc\General.Mvc\wwwroot
+                var fileProfile = webRootPath + "\\Files\\profile\\";
+
+                FileStream fs = new FileStream(fileProfile + file.FileName, FileMode.Create);  //同名替换
+                //FileStream fs = new FileStream("D:\\" + file.FileName, FileMode.Create);
+                BinaryWriter bw = new BinaryWriter(fs);
+                bw.Write(bytes);
+                bw.Close();
+                fs.Close();
+                show_Url = "http://localhost:50491/Files/profile/" + file.FileName;
+
+
+                //操作model中的值给数据库赋值 Kevin?
+              
+                var model = _sysUserService.getById(WorkContext.CurrentUser.Id);
+                model.Avatar2 = show_Url;
+                _sysUserService.updateUsermessage(model);
+
+            });
+
+            //实现返回值的设置 Kevin？
+            AjaxDataImage.Status = "OK";
+            AjaxDataImage.Message = "上传成功";
+
+            AjaxDataImage.Url = show_Url;
+
+            return Json(AjaxDataImage);
+
+
+        }
+
+
     }
 }

@@ -475,6 +475,16 @@ namespace General.Services.SysUser
             _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
             _sysUserRepository.DbContext.SaveChanges();
         }
+
+        public void updateUsermessage2(Entities.SysUserMessage model)
+        {
+            // _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
+            //_sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
+           // _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("Avatar2").IsModified = true;
+            _sysUserRepository.DbContext.SaveChanges();
+        }
+
         /// <summary>
         /// 重置密码。默认重置成账号一样
         /// </summary>

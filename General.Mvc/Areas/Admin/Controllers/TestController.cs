@@ -9,9 +9,9 @@ using General.Framework.Controllers.Admin;
 using General.Framework.Datatable;
 using General.Framework.Menu;
 using General.Services.test_JqGrid;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -19,12 +19,13 @@ namespace General.Mvc.Areas.Admin.Controllers
     public class TestController : AdminPermissionController
     {
         private Itest_JqGridService _itest_JqGridService;
+        private  IHostingEnvironment _hostingEnvironment;
 
-
-        public TestController(Itest_JqGridService itest_JqGridService)
+        public TestController(Itest_JqGridService itest_JqGridService, IHostingEnvironment hostingEnvironment)
         {
 
             this._itest_JqGridService = itest_JqGridService;
+            this._hostingEnvironment = hostingEnvironment;
         }
 
 
@@ -183,9 +184,9 @@ namespace General.Mvc.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("registerResult", Name = "registerResult")]
-        public string RegisterResult([FromForm(Name = "avatar")]List<IFormFile>  files)
+        public ActionResult RegisterResult([FromForm(Name = "avatar")]List<IFormFile>  files)
         {
-
+            string show_Url = "";
              //var files = Request.Form.Files;
             //string test= Request.Form["phone"].ToString();
             files.ForEach(file =>
@@ -200,15 +201,33 @@ namespace General.Mvc.Areas.Admin.Controllers
                 // 设置当前流的位置为流的开始 
                 stream.Seek(0, SeekOrigin.Begin);
                 // 把 byte[] 写入文件 
-                FileStream fs = new FileStream("D:\\" + file.FileName, FileMode.Create);
+
+                //需要写一个获取文件路径的方法  Kevin？
+                // var path = Directory.GetCurrentDirectory();
+                var currentDate = DateTime.Now;
+                var webRootPath = _hostingEnvironment.WebRootPath;//>>>相当于HttpContext.Current.Server.MapPath("") 
+
+                //F:\Code\ILPT\General.Mvc\General.Mvc\wwwroot
+                var fileProfile = webRootPath + "\\Files\\profile\\";
+
+                FileStream fs = new FileStream(fileProfile + file.FileName, FileMode.Create);
+                //FileStream fs = new FileStream("D:\\" + file.FileName, FileMode.Create);
                 BinaryWriter bw = new BinaryWriter(fs);
                 bw.Write(bytes);
                 bw.Close();
                 fs.Close();
+                show_Url = "http://localhost:50491/Files/profile/" + file.FileName;
+                //操作model中的值给数据库赋值 Kevin?
             });
-            return "OK";
+            //实现返回值的设置 Kevin？
+            AjaxDataImage.Status = "OK";
+            AjaxDataImage.Message = "上传成功";
 
-           
+            AjaxDataImage.Url = show_Url;
+
+            return Json(AjaxDataImage);
+
+
         }  
 
 
