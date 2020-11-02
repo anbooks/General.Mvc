@@ -25,7 +25,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itCheckAndPass")]
-        [Function("核放", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 11)]
+        [Function("核放10", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 11)]
 
         public IActionResult ITCheckAndPassIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -41,13 +41,25 @@ namespace General.Mvc.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("")]
-        public ActionResult ITCheckAndPassIndex(List<int> sysResource)
+        public ActionResult ITCheckAndPassIndex(List<int> sysResource, string returnUrl = null)
         {
-            //string test = "sdasdad";
-            _importTrans_main_recordService.saveCheckAndPass(sysResource,WorkContext.CurrentUser.Id);
-            AjaxData.Status = true;
-            AjaxData.Message = "确认创建成功";
-            return Json(AjaxData);
+            string submit = Request.Form["submit"];
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itCheckAndPass");
+
+            if (submit.Equals("1"))
+            {
+                _importTrans_main_recordService.updateCheckAndPass(sysResource, WorkContext.CurrentUser.Id);
+                AjaxData.Status = true;
+                AjaxData.Message = "确认核放成功";
+            }
+            else if (submit.Equals("2"))
+            {
+                _importTrans_main_recordService.saveCheckAndPass(sysResource);
+                AjaxData.Status = true;
+                AjaxData.Message = "确认提交成功";
+            }
+
+            return Redirect(ViewBag.ReturnUrl);
             //return View();
         }
     }

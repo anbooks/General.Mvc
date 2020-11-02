@@ -15,10 +15,18 @@ namespace General.Services.ImportTrans_main_recordService
         void saveCustomsBrokerSelect(List<int> categoryIds);
         void savePortCustomerBroker(List<int> categoryIds);
         void saveDeliveryRequired(List<int> categoryIds);
-        void saveCheckAndPass(List<int> categoryIds,Guid id);
+        void saveCheckAndPass(List<int> categoryIds);
         void saveDeliveryReceipt(List<int> categoryIds);
+        void saveReceiptInput(List<int> categoryIds);
+        void saveSecondCheck(List<int> categoryIds);
+        void saveDeclaration(List<int> categoryIds);
         Entities.ImportTrans_main_record getById(int id);
         IPagedList<Entities.ImportTrans_main_record> searchListCheckAndPass(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.ImportTrans_main_record> searchListReceiptInput(SysCustomizedListSearchArg arg, int page, int size);
+
+        IPagedList<Entities.ImportTrans_main_record> searchListSecondCheck(SysCustomizedListSearchArg arg, int page, int size);
+
+        IPagedList<Entities.ImportTrans_main_record> searchListDeclaration(SysCustomizedListSearchArg arg, int page, int size);
 
         IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size);
 
@@ -45,6 +53,10 @@ namespace General.Services.ImportTrans_main_recordService
         /// </summary>
         /// <param name="model"></param>DeliveryReceipt
         void updateDeliveryReceipt(Entities.ImportTrans_main_record model);
+        void updateReceiptInput(Entities.ImportTrans_main_record model);
+        void updateSecondCheck(List<int> categoryIds,Guid id);
+        void updateDeclaration(List<int> categoryIds, Guid id);
+        void updateCheckAndPass(List<int> categoryIds, Guid id);
         void updateInventoryInput(Entities.ImportTrans_main_record model);
         void updateDeliveryRequired(Entities.ImportTrans_main_record model);
         void updatePortCustomerBroker(Entities.ImportTrans_main_record model);
