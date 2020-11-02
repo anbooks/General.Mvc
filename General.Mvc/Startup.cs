@@ -37,6 +37,7 @@ namespace General.Mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();   //MVC的服务
+            //services.AddAntiforgery(o => o.HeaderName = "XSRF-TOKEN");  //ajax 后台调用非api  没用啊？
 
             //services.AddDbContextPool<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //services.AddDbContext<GeneralDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))); //一个实例

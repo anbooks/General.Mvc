@@ -35,6 +35,7 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\UserRole\" />
     <Folder Include="Data\" />
+    <Folder Include="wwwroot\Files\profile\" />
   </ItemGroup>
 
   <ItemGroup>
