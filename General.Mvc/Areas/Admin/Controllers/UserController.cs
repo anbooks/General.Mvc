@@ -479,7 +479,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                 //F:\Code\ILPT\General.Mvc\General.Mvc\wwwroot
                 var fileProfile = webRootPath + "\\Files\\profile\\";
 
-                FileStream fs = new FileStream(fileProfile + file.FileName, FileMode.Create);  //同名替换
+                var fileNameFinal = WorkContext.CurrentUser.Id+ "-"+fileName;//用gid存放图像的照片
+
+                FileStream fs = new FileStream(fileProfile + fileNameFinal, FileMode.Create);  //同名替换
                 //FileStream fs = new FileStream("D:\\" + file.FileName, FileMode.Create);
                 BinaryWriter bw = new BinaryWriter(fs);
                 bw.Write(bytes);
@@ -488,7 +490,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 
              
 
-                show_Url = "/Files/profile/" + file.FileName;
+                show_Url = "/Files/profile/" + fileNameFinal;
 
 
                 //操作model中的值给数据库赋值 Kevin?

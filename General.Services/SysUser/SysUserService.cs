@@ -473,7 +473,10 @@ namespace General.Services.SysUser
             // _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
             _sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("Avatar2").IsModified = true;
             _sysUserRepository.DbContext.SaveChanges();
+
+            removeCacheUser(model.Id);   //没作用呢？
         }
 
         public void updateUsermessage2(Entities.SysUserMessage model)
@@ -481,8 +484,10 @@ namespace General.Services.SysUser
             // _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
             //_sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
            // _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
-            _sysUserRepository.DbContext.Entry(model).Property("Avatar2").IsModified = true;
+         
             _sysUserRepository.DbContext.SaveChanges();
+
+           
         }
 
         /// <summary>
