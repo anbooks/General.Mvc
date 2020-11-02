@@ -86,6 +86,22 @@ namespace General.Services.ImportTrans_main_record
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
         }
+        public void updateCheckAndPass(List<int> categoryIds, Guid id)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+                item.CheckAndPassor = id;
+                item.CheckAndPassTime = DateTime.Now;
+                item.CheckAndPass = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
         public void updateDeliveryRequired(Entities.ImportTrans_main_record model)
         {
             var item = _importTrans_main_recordRepository.getById(model.Id);
@@ -134,6 +150,55 @@ namespace General.Services.ImportTrans_main_record
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
         }
+        public void updateReceiptInput(Entities.ImportTrans_main_record model)
+        {
+            var item = _importTrans_main_recordRepository.getById(model.Id);
+            if (item == null)
+                return;
+            item.Note = model.Note;
+            item.ReceiptForm = model.ReceiptForm;
+            item.ReceiptFormer = model.ReceiptFormer;
+            item.ReceiptFormTime = model.ReceiptFormTime;
+
+            _importTrans_main_recordRepository.update(item);
+            _memoryCache.Remove(MODEL_KEY);
+        }
+        public void updateSecondCheck(List<int> categoryIds,Guid id)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;//CustomsBrokerSelect
+
+
+                item.SecondCheckor = id;
+                item.SecondCheckTime = DateTime.Now;
+                item.SecondCheck = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public void updateDeclaration(List<int> categoryIds, Guid id)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;//CustomsBrokerSelect
+
+
+                item.Declarationer = id;
+                item.DeclarationTime = DateTime.Now;
+                item.Declaration = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
         public void updateArrivalTime(Entities.ImportTrans_main_record model)
         {
             var item = _importTrans_main_recordRepository.getById(model.Id);
@@ -162,6 +227,57 @@ namespace General.Services.ImportTrans_main_record
         public IPagedList<Entities.ImportTrans_main_record> searchListCheckAndPass(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.F_DeliveryReceipt == true && o.F_CheckAndPass != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public IPagedList<Entities.ImportTrans_main_record> searchListReceiptInput(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_CheckAndPass == true && o.F_ReceiptForm != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public IPagedList<Entities.ImportTrans_main_record> searchListSecondCheck(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_ReceiptForm == true && o.F_SecondCheck != true);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public IPagedList<Entities.ImportTrans_main_record> searchListDeclaration(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_SecondCheck == true && o.F_Declaration != true);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -327,7 +443,7 @@ namespace General.Services.ImportTrans_main_record
             }
                 
         }
-        public void saveCheckAndPass(List<int> categoryIds,Guid id)
+        public void saveCheckAndPass(List<int> categoryIds)
         {
 
             foreach (int categoryId in categoryIds)
@@ -335,9 +451,8 @@ namespace General.Services.ImportTrans_main_record
                 var item = _importTrans_main_recordRepository.getById(categoryId);
                 if (item == null)
                     return;
-                item.CheckAndPassor =id;
-                item.CheckAndPassTime = DateTime.Now;
-                item.CheckAndPass = true;
+            
+                item.F_CheckAndPass = true;
                 _importTrans_main_recordRepository.update(item);
                 _memoryCache.Remove(MODEL_KEY);
             }
@@ -353,6 +468,51 @@ namespace General.Services.ImportTrans_main_record
                     return;
 
                 item.F_PortCustomerBrokerInput = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public void saveSecondCheck(List<int> categoryIds)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.F_SecondCheck= true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public void saveDeclaration(List<int> categoryIds)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.F_Declaration = true;
+                _importTrans_main_recordRepository.update(item);
+                _memoryCache.Remove(MODEL_KEY);
+            }
+
+        }
+        public void saveReceiptInput(List<int> categoryIds)
+        {
+
+            foreach (int categoryId in categoryIds)
+            {
+                var item = _importTrans_main_recordRepository.getById(categoryId);
+                if (item == null)
+                    return;
+
+                item.F_ReceiptForm = true;
                 _importTrans_main_recordRepository.update(item);
                 _memoryCache.Remove(MODEL_KEY);
             }
