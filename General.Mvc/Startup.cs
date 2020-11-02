@@ -128,7 +128,7 @@ namespace General.Mvc
             //泛型注入到DI里面
             //services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();   //关于http请求的注入
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
