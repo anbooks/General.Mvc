@@ -246,11 +246,11 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult Usermessages(Guid? id, Entities.SysUserMessage model, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
-
+            var item= _sysUserService.getById(WorkContext.CurrentUser.Id);
             string host_port = Request.Host.Value;
-            model.Email = WorkContext.CurrentUser.Email;
-            model.MobilePhone = WorkContext.CurrentUser.MobilePhone;
-            var AvatarOr= WorkContext.CurrentUser.Avatar2;
+            model.Email = item.Email;
+            model.MobilePhone = item.MobilePhone;
+            var AvatarOr= item.Avatar2;
             model.Avatar2 = "http://" + host_port + AvatarOr;
             if (model == null)
                 return Redirect(ViewBag.ReturnUrl);
