@@ -17,6 +17,9 @@ using General.Services.SysCustomizedList;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
+using System.Net;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -30,13 +33,15 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysRoleService _sysRoleService;
         private ISysCustomizedListService _sysCustomizedListService;
         private IHostingEnvironment _hostingEnvironment;
-        public UserController(ISysCustomizedListService sysCustomizedListService, ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService, IHostingEnvironment hostingEnvironment)
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+        public UserController(ISysCustomizedListService sysCustomizedListService, ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, ISysRoleService sysRoleService, IHostingEnvironment hostingEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             this._sysUserService = sysUserService;
             this._sysUserRoleService = sysUserRoleService;
             this._sysRoleService = sysRoleService;
             this._sysCustomizedListService = sysCustomizedListService;
             this._hostingEnvironment = hostingEnvironment;
+            this._httpContextAccessor = httpContextAccessor;
         }
         [Route("roledetail", Name = "roleDetail")]
         [Function("用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
@@ -241,11 +246,12 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult Usermessages(Guid? id, Entities.SysUserMessage model, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
-            var item = _sysUserService.getById(WorkContext.CurrentUser.Id);
 
-            model.Email = item.Email;
-            model.MobilePhone = item.MobilePhone;
-            model.Avatar2 = item.Avatar2;
+            string host_port = Request.Host.Value;
+            model.Email = WorkContext.CurrentUser.Email;
+            model.MobilePhone = WorkContext.CurrentUser.MobilePhone;
+            var AvatarOr= WorkContext.CurrentUser.Avatar2;
+            model.Avatar2 = "http://" + host_port + AvatarOr;
             if (model == null)
                 return Redirect(ViewBag.ReturnUrl);
             return View(model);
@@ -416,9 +422,42 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("avatarChange", Name = "avatarChange")]
         public ActionResult AvatarChange([FromForm(Name = "avatar")]List<IFormFile> files)
         {
-            string show_Url = "";
+            string str = (Request.HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString() + ":" + Request.HttpContext.Connection.LocalPort);
+
+
+            string clientIpAddress = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+
+
+            //服务器网卡信息
+            NetworkInterface[] networks = NetworkInterface.GetAllNetworkInterfaces();
+            string serverIpAddresses = string.Empty;
+            foreach (var network in networks)
+            {
+                var ipAddress = network.GetIPProperties().UnicastAddresses.Where(p => p.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(p.Address)).FirstOrDefault()?.Address.ToString();
+
+                serverIpAddresses += network.Name + ":" + ipAddress + "|";
+            }
+
+            string test = serverIpAddresses;
+
+            //获取整个url地址：
+           string  test_url= Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+            //访问的方式http
+            string test_http = Request.Scheme;   
+
+            //获取域名（不带端口号）
+            string test_host = Request.Host.Host;
+
+            //获取域名（带端口号）[Get the host]: localhost:4800
+            string host_port = Request.Host.Value;
+
+            //获取端口号（Get port）: 4800 (if a url contains port)
+            var test_port = Request.Host.Port;
+
+
             //var files = Request.Form.Files;
             //string test= Request.Form["phone"].ToString();
+            string show_Url = "";
             files.ForEach(file =>
             {
                 var fileName = file.FileName;
@@ -440,13 +479,18 @@ namespace General.Mvc.Areas.Admin.Controllers
                 //F:\Code\ILPT\General.Mvc\General.Mvc\wwwroot
                 var fileProfile = webRootPath + "\\Files\\profile\\";
 
-                FileStream fs = new FileStream(fileProfile + file.FileName, FileMode.Create);  //同名替换
+                var fileNameFinal = WorkContext.CurrentUser.Id+ "-"+fileName;//用gid存放图像的照片
+
+                FileStream fs = new FileStream(fileProfile + fileNameFinal, FileMode.Create);  //同名替换
                 //FileStream fs = new FileStream("D:\\" + file.FileName, FileMode.Create);
                 BinaryWriter bw = new BinaryWriter(fs);
                 bw.Write(bytes);
                 bw.Close();
                 fs.Close();
-                show_Url = "http://localhost:50491/Files/profile/" + file.FileName;
+
+             
+
+                show_Url = "/Files/profile/" + fileNameFinal;
 
 
                 //操作model中的值给数据库赋值 Kevin?
