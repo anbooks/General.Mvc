@@ -474,6 +474,7 @@ namespace General.Services.SysUser
             _sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
             _sysUserRepository.DbContext.SaveChanges();
+            _memoryCache.Remove(MODEL_KEY);
         }
 
         public void updateUsermessage2(Entities.SysUserMessage model)

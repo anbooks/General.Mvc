@@ -1,0 +1,72 @@
+﻿@*@{
+        ViewData["Title"] = "EditUser";
+    }
+
+    <h2>EditUser</h2>*@
+
+@using General.Entities
+@model ExportTransportation
+@{
+    ViewData["Title"] = "出口运输申请";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li><a href="@ViewBag.ReturnUrl">出口运输</a></li>
+        <li class="active">@ViewBag.Title</li>
+    </ul>
+</div>
+
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form asp-route="editETShippingApplicationInput" method="post" class="form-horizontal">
+                @Html.HiddenFor(m => m.Id)
+                <div asp-validation-summary="All"></div>
+
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()发运情况选择</label>
+                    <div class="col-sm-3">
+                        <select asp-for="DeliverySituation" class="form-control" asp-items="ViewBag.DeliverySituationlist"></select>
+                    </div>
+                    <span class="inline text-danger" asp-validation-for="DeliverySituation"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">付费方式</label>
+                    <div class="col-sm-3">
+                        <select asp-for="PaymentMethod" class="form-control" asp-items="ViewBag.PaymentMethodlist"></select>
+                    </div>
+                    <span asp-validation-for="PaymentMethod" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">原进口报关单号</label>
+                    <div class="col-sm-3">
+                        
+                        <input type="text" asp-for="ImportItem" class="form-control" placeholder="原进口报关单号" />
+                    </div>
+                    <span asp-validation-for="ImportItem" class="inline text-danger"></span>
+                </div>
+                
+
+
+
+                <div class="col-md-offset-2 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

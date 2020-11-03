@@ -24,7 +24,7 @@ namespace General.Entities
         public DbSet<Schedule> Schedules { get; set; }
 
         public DbSet<ImportTrans_main_record> ImportTrans_main_record { get; set; }
-
+        public DbSet<ExportTransportation> ExportTransportation { get; set; }
         public DbSet<test_JqGrid> test_JqGrid { get; set; }
     }
 }

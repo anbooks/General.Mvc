@@ -15,20 +15,18 @@ namespace General.Entities
          public string DeliverySituation { get; set; }//发运情况选择
          public string PaymentMethod { get; set; }//付款方式
          public string ImportItem { get; set; }//原进口报关单
-         public string F_DeliverySituation { get; set; }//申请标签
+         public bool? F_DeliverySituation { get; set; }//申请标签
          public Guid ?Applier { get; set; }//申请人
           public DateTime? ApplyTime { get; set; }//申请时间
          public string ItemNo { get; set; }//发票币种
          public string PackingList { get; set; }//件数(箱数)
          public string CreateList { get; set; }//毛重
 
-        public Guid Creator { get; set; }
+        public Guid?Creator { get; set; }
 
-        public DateTime CreationTime { get; set; }
+        public DateTime?CreationTime { get; set; }
 
-        public Guid? Modifier { get; set; }
-
-         public DateTime? ModifiedTime { get; set; }
+      
          public bool?IsDeleted { get; set; }
         public string Project { get; set; }
         public string OfGoods { get; set; }

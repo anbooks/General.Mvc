@@ -241,11 +241,11 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult Usermessages(Guid? id, Entities.SysUserMessage model, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
+            var item = _sysUserService.getById(WorkContext.CurrentUser.Id);
 
-
-            model.Email = WorkContext.CurrentUser.Email;
-            model.MobilePhone = WorkContext.CurrentUser.MobilePhone;
-            model.Avatar2 = WorkContext.CurrentUser.Avatar2;
+            model.Email = item.Email;
+            model.MobilePhone = item.MobilePhone;
+            model.Avatar2 = item.Avatar2;
             if (model == null)
                 return Redirect(ViewBag.ReturnUrl);
             return View(model);

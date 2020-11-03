@@ -1,0 +1,73 @@
+﻿@*@{
+        ViewData["Title"] = "EditUser";
+    }
+
+    <h2>EditUser</h2>*@
+
+@using General.Entities
+@model ExportTransportation
+@{
+    ViewData["Title"] = "创建发运清单";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li><a href="@ViewBag.ReturnUrl">出口运输</a></li>
+        <li class="active">@ViewBag.Title</li>
+    </ul>
+</div>
+
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form asp-route="editetShippingListCreate" method="post" class="form-horizontal">
+                @Html.HiddenFor(m => m.Id)
+                <div asp-validation-summary="All"></div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">编号</label>
+                    <div class="col-sm-3">
+
+                        <input type="text" asp-for="ItemNo" class="form-control" placeholder="编号" />
+                    </div>
+                    <span asp-validation-for="ItemNo" class="inline text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">项目</label>
+                    <div class="col-sm-3">
+
+                        <input type="text" asp-for="Project" class="form-control" placeholder="项目" />
+                    </div>
+                    <span asp-validation-for="Project" class="inline text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">品名</label>
+                    <div class="col-sm-3">
+
+                        <input type="text" asp-for="OfGoods" class="form-control" placeholder="品名" />
+                    </div>
+                    <span asp-validation-for="OfGoods" class="inline text-danger"></span>
+                </div>
+
+
+
+
+                <div class="col-md-offset-2 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
