@@ -8,10 +8,14 @@ using General.Framework;
 using General.Framework.Controllers.Admin;
 using General.Framework.Datatable;
 using General.Framework.Menu;
+using General.Services.SysCustomizedList;
 using General.Services.test_JqGrid;
+using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -20,12 +24,14 @@ namespace General.Mvc.Areas.Admin.Controllers
     {
         private Itest_JqGridService _itest_JqGridService;
         private  IHostingEnvironment _hostingEnvironment;
+        private ISysCustomizedListService _sysCustomizedListService;
 
-        public TestController(Itest_JqGridService itest_JqGridService, IHostingEnvironment hostingEnvironment)
+        public TestController(Itest_JqGridService itest_JqGridService, IHostingEnvironment hostingEnvironment, ISysCustomizedListService sysCustomizedListService)
         {
 
             this._itest_JqGridService = itest_JqGridService;
             this._hostingEnvironment = hostingEnvironment;
+            this._sysCustomizedListService = sysCustomizedListService;
         }
 
 
@@ -182,6 +188,67 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Json帮助类
+        /// </summary>
+        public class JsonHelper
+        {
+            /// <summary>
+            /// 将对象序列化为JSON格式
+            /// </summary>
+            /// <param name="o">对象</param>
+            /// <returns>json字符串</returns>
+            public static string SerializeObject(object o)
+            {
+                string json = JsonConvert.SerializeObject(o);
+                return json;
+            }
+
+            /// <summary>
+            /// 解析JSON字符串生成对象实体
+            /// </summary>
+            /// <typeparam name="T">对象类型</typeparam>
+            /// <param name="json">json字符串(eg.{"ID":"112","Name":"石子儿"})</param>
+            /// <returns>对象实体</returns>
+            public static T DeserializeJsonToObject<T>(string json) where T : class
+            {
+                Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
+                StringReader sr = new StringReader(json);
+                object o = serializer.Deserialize(new JsonTextReader(sr), typeof(T));
+                T t = o as T;
+                return t;
+            }
+
+            /// <summary>
+            /// 解析JSON数组生成对象实体集合
+            /// </summary>
+            /// <typeparam name="T">对象类型</typeparam>
+            /// <param name="json">json数组字符串(eg.[{"ID":"112","Name":"石子儿"}])</param>
+            /// <returns>对象实体集合</returns>
+            public static List<T> DeserializeJsonToList<T>(string json) where T : class
+            {
+                Newtonsoft.Json.JsonSerializer serializer = new Newtonsoft.Json.JsonSerializer();
+                StringReader sr = new StringReader(json);
+                object o = serializer.Deserialize(new JsonTextReader(sr), typeof(List<T>));
+                List<T> list = o as List<T>;
+                return list;
+            }
+
+            /// <summary>
+            /// 反序列化JSON到给定的匿名对象.
+            /// </summary>
+            /// <typeparam name="T">匿名对象类型</typeparam>
+            /// <param name="json">json字符串</param>
+            /// <param name="anonymousTypeObject">匿名对象</param>
+            /// <returns>匿名对象</returns>
+            public static T DeserializeAnonymousType<T>(string json, T anonymousTypeObject)
+            {
+                T t = JsonConvert.DeserializeAnonymousType(json, anonymousTypeObject);
+                return t;
+            }
+        }
+
+
         [HttpPost]
         [Route("registerResult", Name = "registerResult")]
         public ActionResult RegisterResult([FromForm(Name = "avatar")]List<IFormFile>  files)
@@ -228,9 +295,51 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Json(AjaxDataImage);
 
 
-        }  
-
-
-
         }
+
+
+
+        [Route("testCheckbox", Name = "testCheckbox")]
+        [Function("测试复选框如何传值", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.TestIndex")]
+        public IActionResult TestCheckbox()
+        {
+            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
+            ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            List<Entities.test_JqGrid> test_JqGrids = _itest_JqGridService.getAlltest_JqGrid();
+
+            return View(test_JqGrids);
+           
+        }
+
+        [HttpPost]
+        [Route("submitcheckbox", Name = "submitcheckbox")]
+        public ActionResult Submitcheckbox(string kevin,string returnUrl=null)
+        {
+            //ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("testCheckbox");
+
+            string test = kevin;
+
+            var Id= Request.Form["checkboxId"];
+            var Value = Request.Form["checkboxValue"];   //处理checkbox的值
+
+            List<Entities.test_JqGrid> jsonlist = JsonHelper.DeserializeJsonToList<Entities.test_JqGrid>(test);
+            
+           
+
+            var Name = Request.Form["Name"];
+            var Invcurr = Request.Form["invcurr"];
+            //_itest_JqGridService.updatetest_JqGrid(model);
+            //string test = "sdasdad";
+            // _importTrans_main_recordService.saveShippingMode(sysResource);
+            AjaxData.Status = true;
+            AjaxData.Message = "OK";
+
+
+            return Json(AjaxData);
+            //return View();
+            //return Redirect(ViewBag.ReturnUrl);
+        }
+
+
+    }
     }
