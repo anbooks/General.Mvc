@@ -11,19 +11,25 @@ using General.Framework.Datatable;
 using General.Services.SysCustomizedList;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using General.Services.ScheduleService;
+using General.Services.SysUser;
+using General.Services.SysRole;
+using General.Services.SysUserRole;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
 
     [Route("admin/itShipmentCreate")]
     public class ITShipmentCreateController : AdminPermissionController
-    {    
+    {
+        
+   
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
-
-        public ITShipmentCreateController(IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        private ISysUserRoleService _sysUserRoleService;
+        public ITShipmentCreateController(ISysUserRoleService sysUserRoleService, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
+            this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
@@ -36,6 +42,9 @@ namespace General.Mvc.Areas.Admin.Controllers
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
              ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
+            ViewBag.QX = USER.RoleName;
+
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
@@ -99,8 +108,13 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Shipper = model.Shipper.Trim();
             if (!String.IsNullOrEmpty(model.Itemno))
                 model.Itemno = model.Itemno.Trim();
+            if (!String.IsNullOrEmpty(model.PoNo))
+                model.PoNo = model.PoNo.Trim();
+            if (!String.IsNullOrEmpty(model.PoNo))
+                model.Buyer= model.PoNo.Substring(1, 2);
+            // model.PoNo = model.PoNo.Substring(0, 2);
             if (model.Id.Equals(0)) {
-                
+               
                 //model.Invcurr = model.Invcurr.Trim();
                 model.CreationTime = DateTime.Now;
                // model.Shipper = model.Shipper.Trim();

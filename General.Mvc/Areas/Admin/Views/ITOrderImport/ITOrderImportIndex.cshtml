@@ -5,3 +5,20 @@
 
 <h2>进口运输流程-订单信息导入</h2>
 
+
+
+<a asp-route="excelimport">导出Excel</a>
+
+<div class="col-lg-12">
+
+
+    <form enctype="multipart/form-data" method="post" asp-route="importexcel">
+        <div align="left" style="float:left">
+            <input type="file" name="excelfile" />
+        </div>
+        <div>
+            <input type="submit" value="批量添加" />
+        </div>
+    </form>
+
+</div>

@@ -1,0 +1,73 @@
+﻿@*@{
+        ViewData["Title"] = "EditUser";
+    }
+
+    <h2>EditUser</h2>*@
+
+@using General.Entities
+@model ExportTransportation
+@{
+    ViewData["Title"] = "综保区填写核注清单";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li><a href="@ViewBag.ReturnUrl">出口运输</a></li>
+        <li class="active">@ViewBag.Title</li>
+    </ul>
+</div>
+
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form asp-route="editetCPAInventoryInput" method="post" class="form-horizontal">
+                @Html.HiddenFor(m => m.Id)
+                <div asp-validation-summary="All"></div>
+
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">车牌号</label>
+                    <div class="col-sm-3">
+
+                        <input type="text" asp-for="LicensePlateNo" class="form-control" placeholder="车牌号" />
+                    </div>
+                    <span asp-validation-for="LicensePlateNo" class="inline text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">核注清单号</label>
+                    <div class="col-sm-3">
+
+                        <input type="text" asp-for="NuclearNote " class="form-control" placeholder="核注清单号" />
+                    </div>
+                    <span asp-validation-for="NuclearNote" class="inline text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">出厂日期</label>
+                    <div class="col-sm-3">
+
+                        <input type="date" asp-for="ManufactureDate" class="form-control" placeholder="出厂日期" />
+                    </div>
+                    <span asp-validation-for="ManufactureDate" class="inline text-danger"></span>
+                </div>
+
+
+
+
+                <div class="col-md-offset-2 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

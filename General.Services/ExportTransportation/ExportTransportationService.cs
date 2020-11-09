@@ -68,6 +68,14 @@ namespace General.Services.ExportTransportation
                 item.Creator = model.Creator;
                 item.CreationTime= model.CreationTime;
             }
+            else if (flag == "综保区填写核注清单")
+            {
+                item.LicensePlateNo = model.LicensePlateNo;
+                item.NuclearNote = model.NuclearNote;
+                item.ManufactureDate = model.ManufactureDate;
+                item.LicensePlater = model.LicensePlater;
+                item.LicensePlateTime = model.LicensePlateTime;
+            }
             _exportTransportationRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
            
@@ -82,6 +90,10 @@ namespace General.Services.ExportTransportation
             else if (flag == "创建发运清单")
             {
                 query = _exportTransportationRepository.Table.Where(o => o.F_DeliverySituation == true&& o.F_Item != true);
+            }
+            else if (flag == "综保区填写核注清单")
+            {
+                query = _exportTransportationRepository.Table.Where(o => o.F_Item == true && o.F_LicensePlate != true);
             }
             if (arg != null)
             {
@@ -109,9 +121,12 @@ namespace General.Services.ExportTransportation
                 }
                 else if (flag == "创建发运清单")
                 {
-                    item.F_Item = true;
+                    item.F_Item = true;//F_LicensePlate
                 }
-                
+                else if (flag == "综保区填写核注清单")
+                {
+                    item.F_LicensePlate = true;//F_LicensePlate
+                }
                 _exportTransportationRepository.update(item);
                 _memoryCache.Remove(MODEL_KEY);
             }

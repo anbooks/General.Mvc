@@ -78,13 +78,17 @@ namespace General.Mvc.Areas.Admin.Controllers
             //  _sysPermissionService.saveRolePermission(id, sysResource, WorkContext.CurrentUser.Id);
             if (modelab == 1)
             {
+                var item = _sysRoleService.getRole(sysResource);
                 model.Id = Guid.NewGuid();
                 model.UserId =id;
                 model.RoleId = sysResource;
+                model.RoleName = item.Name;
                 _sysUserRoleService.insertSysUserRole(model);
             }
             else
             {
+                var item = _sysRoleService.getRole(sysResource);
+                model.RoleName = item.Name;
                 model.RoleId = sysResource;
 
                 _sysUserRoleService.updateSysUserRole(model);

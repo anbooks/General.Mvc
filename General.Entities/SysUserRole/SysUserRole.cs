@@ -13,6 +13,7 @@ namespace General.Entities
         public Guid RoleId { get; set; }
 
         public Guid UserId { get; set; }
+        public string RoleName { get; set; }
 
         [ForeignKey("RoleId")]
         public virtual SysRole SysRole { get; set; }
