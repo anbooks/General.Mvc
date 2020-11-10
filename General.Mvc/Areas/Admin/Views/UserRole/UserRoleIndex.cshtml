@@ -1,0 +1,166 @@
+﻿@*@{
+        ViewData["Title"] = "系统用户";
+    }*@
+
+@*<h2>UserIndex</h2>*@
+@*<div class="breadcrumbs" id="breadcrumbs">
+        <ul class="breadcrumb">
+            <li>
+                <i class="ace-icon fa fa-home home-icon"></i>
+                <a href="@Url.RouteUrl("mainIndex")">首页</a>
+            </li>
+            <li class="active">系统用户</li>
+        </ul>
+    </div>
+    <div class="page-content">
+
+    </div>*@
+@using  General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<SysUser, SysUserSearchArg>
+@{
+    ViewData["Title"] = "系统用户列表";
+    bool canAddOrUpdate = Html.OwnPermission("editUser");
+    bool canResetPwd = Html.OwnPermission("resetPassword");
+    bool canDelete = Html.OwnPermission("deleteUser");
+}
+
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li class="active">系统用户</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            @if (canAddOrUpdate)
+            {
+                <a asp-route="editUser" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加系统用户</a>
+            }
+        </div>
+    </div>
+    <div class="space-2"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form asp-route="userIndex" method="get" class="form-inline">
+                        <label>关键字</label>
+                        <input type="text" class="form-control" name="q" style="width:220px;" value="@Model.Paging.RouteArg.q" placeholder="账号、姓名、邮箱、手机号" />
+                        <input type="text" class="form-control" name="unlock" style="width:220px;" value="@Model.Paging.RouteArg.unlock" placeholder="密码锁" />
+                        <button type="submit" class="btn btn-purple btn-sm">
+                            查询
+                            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th width="150px">账号</th>
+                        <th width="100px">姓名</th>
+                        <th width="110px">手机号</th>
+                        <th width="60px">性别</th>
+                        <th width="150px">活动时间</th>
+                        <th width="100px">启用</th>
+                        <th width="120px">登录锁</th>
+                        <th width="50px;">密码</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Data)
+                    {
+                        <tr>
+                            <td>@item.Account</td>
+                            <td>@item.Name</td>
+                            <td>@item.MobilePhone</td>
+                            <td>@item.Sex</td>
+                            <td>@(item.LastActivityTime?.ToString("yyyy-MM-dd HH;mm"))</td>
+                            <td>
+                                @if (!item.IsAdmin)
+                                {
+                                    if (item.Enabled)
+                                    {
+                                        <label>
+                                            <input name="enabled" class="ace ace-switch ace-switch-7 user_enabled" value="@item.Id" type="checkbox" checked="checked" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <input name="enabled" class="ace ace-switch ace-switch-7 user_enabled" value="@item.Id" type="checkbox" />
+                                            <span class="lbl"></span>
+                                        </label>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (item.LoginLock)
+                                {
+                                    <label>
+                                        <input name="LoginLock" value="@item.Id" class="ace ace-switch ace-switch-5 user_lock" type="checkbox" checked="checked" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                    if (item.AllowLoginTime.HasValue && item.AllowLoginTime > DateTime.Now)
+                                    {
+                                        <span class="badge">@((int)(item.AllowLoginTime.Value - DateTime.Now).TotalMinutes + 1)分</span>
+                                    }
+                                }
+                                else
+                                {
+                                    <label data-toggle="tooltip" data-placement="left" title="Tooltip on left">
+                                        <input name="LoginLock" value="@item.Id" class="ace ace-switch ace-switch-5 user_lock" type="checkbox" />
+                                        <span class="lbl"></span>
+                                    </label>
+                                }
+                            </td>
+                            <td>
+                                @if (!item.IsAdmin)
+                                {
+                                    if (canResetPwd)
+                                    {
+                                        <a href="@Url.RouteUrl("resetPassword", new { id = item.Id })" class="btn btn-xs btn-warning btnResetPwd" title="重置密码"><i class="ace-icon fa fa-undo"></i></a>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @if (canAddOrUpdate)
+                                {
+                                    <a href="@Url.RouteUrl("editUser", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-trash"></i>修改</a>
+                                }
+                                @if (canDelete)
+                                {
+                                    if (!item.IsAdmin)
+                                    {
+                                        <a href="@Url.RouteUrl("deleteUser", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="glyphicon glyphicon-trash"></i>删除</a>
+                                    }
+                                }
+                                <a href="@Url.RouteUrl("roleDetail",new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>设置权限</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <pager page-value="Model.Paging"></pager>
+
+        </div>
+    </div>
+</div>
+
+

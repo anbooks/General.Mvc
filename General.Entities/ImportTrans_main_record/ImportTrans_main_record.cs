@@ -15,7 +15,8 @@ namespace General.Entities
          public string Itemno { get; set; }//编号
          public string Shipper { get; set; }//发货人
          public string PoNo { get; set; }//合同号
-         public string Incoterms { get; set; }//贸易条款
+        public string Buyer { get; set; }//采购员
+        public string Incoterms { get; set; }//贸易条款
          public string CargoType { get; set; }//货物类型
           public string Invamou { get; set; }//发票金额
          public string Invcurr { get; set; }//发票币种

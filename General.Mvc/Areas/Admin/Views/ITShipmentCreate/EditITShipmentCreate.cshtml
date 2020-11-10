@@ -49,13 +49,13 @@
                     <span asp-validation-for="Shipper" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">实际到货日期</label>
+                    <label class="col-sm-2 control-label no-padding-right">订单号</label>
                     <div class="col-sm-3">
-                        
-                        <input type="date" asp-for="RealReceivingDate" class="form-control" placeholder="实际到货日期" />
+                        <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号" />
                     </div>
-                    <span asp-validation-for="RealReceivingDate" class="inline text-danger"></span>
+                    <span asp-validation-for="PoNo" class="inline text-danger "></span>
                 </div>
+                
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">货币类型</label>
                     <div class="col-sm-3">

@@ -39,6 +39,7 @@ namespace General.Services.ImportTrans_main_record
             _importTrans_main_recordRepository.insert(model);
             _memoryCache.Remove(MODEL_KEY);
         }
+
         /// <summary>
         /// 修改角色
         /// </summary>
@@ -51,12 +52,15 @@ namespace General.Services.ImportTrans_main_record
               item.RealReceivingDate = model.RealReceivingDate;
               item.Itemno = model.Itemno;
               item.Shipper = model.Shipper;
+              item.PoNo = model.PoNo;
+              item.Buyer = model.Buyer;
               item.Invcurr = model.Invcurr;
               item.ModifiedTime = model.ModifiedTime;
               item.Modifier = model.Modifier;
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
         }
+
         public void updateShippingMode(Entities.ImportTrans_main_record model)
         {
             var item = _importTrans_main_recordRepository.getById(model.Id);
@@ -306,6 +310,7 @@ namespace General.Services.ImportTrans_main_record
                 if (!String.IsNullOrEmpty(arg.invcurr))
                     query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
             }
+            query = query.OrderByDescending(o => o.Id);
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
@@ -428,9 +433,8 @@ namespace General.Services.ImportTrans_main_record
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
-        public void saveImportTransmain( List<int> categoryIds)
+        public void saveImportTransmain(List<int> categoryIds)
         {
- 
                 foreach (int categoryId in categoryIds)
                 {
                 var item = _importTrans_main_recordRepository.getById(categoryId);
