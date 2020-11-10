@@ -34,6 +34,9 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\UserRole\" />
+    <Folder Include="Areas\API\Data\" />
+    <Folder Include="Areas\API\Models\" />
+    <Folder Include="Areas\API\Views\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\Files\profile\" />
   </ItemGroup>
