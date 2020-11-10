@@ -10,7 +10,7 @@ namespace General.Mvc.Areas.API.Controllers
 {    //http://localhost:50491/api/users/1
     [Route("api/[controller]")]
     public class UsersController : Controller
-    {
+    {   
         //// GET: api/<controller>
         //[HttpGet]
         //public IEnumerable<string> Get()
@@ -25,6 +25,8 @@ namespace General.Mvc.Areas.API.Controllers
         //    return "value";
         //}
 
+
+        //测试API啥的
         //
         // GET: api/<controller>
         [HttpGet]
