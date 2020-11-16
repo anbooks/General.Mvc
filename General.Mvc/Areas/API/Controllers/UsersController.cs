@@ -32,7 +32,7 @@ namespace General.Mvc.Areas.API.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "Web API", "ASP.NET Core" };
+            return new string[] { "Who are you？", "你好呀" };
         }
 
         // GET api/<controller>/5
