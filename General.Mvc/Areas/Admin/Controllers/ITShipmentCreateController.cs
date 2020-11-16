@@ -14,6 +14,12 @@ using General.Services.ScheduleService;
 using General.Services.SysUser;
 using General.Services.SysRole;
 using General.Services.SysUserRole;
+using General.Core.Librs;
+using Microsoft.AspNetCore.Http;
+using System.IO;
+using OfficeOpenXml;
+using System.Text;
+using Microsoft.AspNetCore.Hosting;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -21,14 +27,15 @@ namespace General.Mvc.Areas.Admin.Controllers
     [Route("admin/itShipmentCreate")]
     public class ITShipmentCreateController : AdminPermissionController
     {
-        
-   
+
+        private readonly IHostingEnvironment _hostingEnvironment;
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITShipmentCreateController(ISysUserRoleService sysUserRoleService, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        public ITShipmentCreateController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
+            this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
             this._importTrans_main_recordService = importTrans_main_recordService;
@@ -53,7 +60,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("schedule", Name = "itShipmentCreateSchedule")]
         [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
         [HttpGet]
-        public IActionResult ITShipmentCreateScheduleIndex(List<int> sysResource, int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITShipmentCreateScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             ViewBag.Userid = id;
             RolePermissionViewModel model = new RolePermissionViewModel();
@@ -62,16 +69,114 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itShipmentCreateSchedule", arg);
             return View(dataSource);//sysImport
         }
-        [HttpPost]
-        [Route("")]
-        public ActionResult ITShipmentCreateIndex(List<int> sysResource, List<string> sysResource2)
+        [Route("excelimport2", Name = "excelimport2")]
+        public FileResult Excel()
         {
-            //string test = "sdasdad";
-            _importTrans_main_recordService.saveShippingMode(sysResource);
+
+            var list = _importTrans_main_recordService.getAll();
+            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
+            //添加一个sheet
+            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
+
+            //给sheet1添加第一行的头部标题
+            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
+            row1.CreateCell(0).SetCellValue("ID");
+            row1.CreateCell(1).SetCellValue("编号");
+           
+            for (int i = 0; i < list.Count; i++)
+            {
+                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
+                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
+                rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
+
+            }
+            // 写入到客户端 
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            book.Write(ms);
+            ms.Seek(0, SeekOrigin.Begin);
+            string sFileName = $"{DateTime.Now}.xls";
+            return File(ms, "application/vnd.ms-excel", sFileName);
+        }
+        [HttpPost]
+        [Route("importexcel2", Name = "importexcel2")]
+        public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+            string sFileName = $"{Guid.NewGuid()}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+            {
+                excelfile.CopyTo(fs);
+                fs.Flush();
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                StringBuilder sb = new StringBuilder();
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                int rowCount = worksheet.Dimension.Rows;
+                int ColCount = worksheet.Dimension.Columns;
+
+                for (int row = 2; row <= rowCount; row++)
+                {
+
+                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
+                    model.Shipper = worksheet.Cells[row, 2].Value.ToString();
+                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
+                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
+                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
+                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
+                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
+                    model.CreationTime = DateTime.Now;
+                    model.Creator = WorkContext.CurrentUser.Id;
+                    try
+                    {
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                    try
+                    {
+                    }
+                    catch (Exception e)
+                    {
+                    }
+                    _importTrans_main_recordService.insertImportTransmain(model);
+                }
+                return Redirect(ViewBag.ReturnUrl);
+            }
+        }
+        [HttpPost]
+        [Route("itShipmentCreateList", Name = "itShipmentCreateList")]
+        public ActionResult ITShipmentCreateList(string kevin)
+        {
+            string test = kevin;
+
+          
+
+            List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
+
+
+          //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            foreach (Entities.ImportTrans_main_record u in jsonlist)
+            {
+                var model = _importTrans_main_recordService.getById(u.Id);
+                model.Itemno = u.Itemno;
+                model.Shipper = u.Shipper;
+
+                _importTrans_main_recordService.updateImportTransmain(model);
+                //u就是jsonlist里面的一个实体类
+            }
+
+         
+
             AjaxData.Status = true;
-            AjaxData.Message = "确认创建成功";
+            AjaxData.Message = "OK";
+
+
             return Json(AjaxData);
-            //return View();
         }
         [HttpGet]
         [Route("edit", Name = "editITShipmentCreate")]

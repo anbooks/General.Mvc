@@ -29,6 +29,15 @@
     <div class="row">
         <div class="col-sm-12">
             <a asp-route="editITShipmentCreate" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加发运条目</a>
+            <a asp-route="excelimport2" class="btn btn-sm btn-pink">数据导出</a>
+            <form enctype="multipart/form-data" method="post" asp-route="importexcel2">
+                <div align="left" style="float:left">
+                    <input type="file" name="excelfile" />
+                </div>
+                <div>
+                    <input type="submit" value="数据导入" />
+                </div>
+            </form>
         </div>
     </div>
     <div class="space-2"></div>
@@ -114,20 +123,43 @@
                                     <a href="@Url.RouteUrl("editITShipmentCreate", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="sysResource" value="@item.Id" />
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                    <input type="hidden" name="checkboxValue" value="0" />
                                 </td>
                                 @if (ViewBag.QX == "管理员")
                                 {
+                                    @if (@item.Itemno == "捷诚伯仲-2020-300")
+                                    {
+                                        <td>
+                                            <input type="text" name="Itemno" style="background-color:red" value="@item.Itemno" />
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="text" name="Itemno" value="@item.Itemno" disabled />
+                                        </td>
+                                    }
+                                }
+                                else
+                                {
                                     <td>
-                                        <input type="text" name="sysResource"value="@item.Itemno" />
+                                        <input type="text" name="Itemno" value="@item.Itemno" disabled />
+                                    </td>
+                                }
+                                @if (ViewBag.QX == "管理员")
+                                {
+                                    <td>
+                                        <input type="text" name="Shipper" value="@item.Shipper" disabled />
                                     </td>
                                 }
                                 else
                                 {
-                                <td>@item.Itemno</td>
-                                  }
+                                    <td>
+                                        <input type="text" name="Shipper" value="@item.Shipper" />
+                                    </td>
+                                }
 
-                                <td>@item.Shipper</td>
                                 <td>@item.PoNo</td>
                                 <td>@item.Incoterms</td>
                                 <td>@item.CargoType</td>
@@ -185,30 +217,55 @@
                 }
             </div>
         </div>
-            <div class="col-md-offset-1">
-                <button class="btn btn-info" type="submit">
-                    <i class="ace-icon fa fa-check bigger-110"></i>
-                    确认创建
-                </button>
-            </div>
-        
+        <div class="col-md-offset-1">
+            <button class="btn btn-info" type="submit">
+                <i class="ace-icon fa fa-check bigger-110"></i>
+                确认创建
+            </button>
+        </div>
+
     </form>
     <script>
         $(function () {
             $('#formitShipmentCreate').submit(function () {
                 var form = $(this);
-                $.modal.confirm('您确定要保存此用户角色数据？', function () {
-                    form.ajaxSubmit(function (data) {
-                         
-                    });
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {                
+                    var test = $(this).next();
+                    var i = 0;
+                    var id = $(this).closest("tr").find("td").eq(1).find("input:checkbox");
+                    var itemno = $(this).closest("tr").find("td").eq(2).find("input:text");
+                    var shipper = $(this).closest("tr").find("td").eq(3).find("input:text");
+                  //  var invcurr = $(this).closest("tr").find("td").eq(3).find("select[name='invcurr']");
+                    //var test1 = $(this).next();
+                    var mSub = {
+                        id: id.val(),
+                        itemno: itemno.val(),
+                        shipper: shipper.val(),
+                    };
+                    subArray.push(mSub);
                 });
+                alert(JSON.stringify(subArray));
+                var _url = "/admin/itShipmentCreate/itShipmentCreateList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        alert('提交成功！');
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+
+
             });
+
         });
     </script>
-    <script src="WdatePicker/WdatePicker.js"></script>
-    <link href="../../My97DatePicker/skin/WdatePicker.css" rel="stylesheet" type="text/css" />
-    <script src="../../My97DatePicker/calendar.js" type="text/javascript"></script>
-    <script src="../../My97DatePicker/WdatePicker.js" type="text/javascript"></script>
+
+
 </div>
 
 

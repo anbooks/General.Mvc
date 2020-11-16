@@ -336,9 +336,6 @@ namespace General.Mvc.Areas.Admin.Controllers
                 //u就是jsonlist里面的一个实体类
             }
 
-
-
-
             var Name = Request.Form["Name"];
             var Invcurr = Request.Form["invcurr"];
             //_itest_JqGridService.updatetest_JqGrid(model);

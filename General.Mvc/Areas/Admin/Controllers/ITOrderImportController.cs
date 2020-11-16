@@ -15,6 +15,11 @@ using Microsoft.AspNetCore.Hosting;
 using OfficeOpenXml;
 using System.Text;
 using General.Services.ImportTrans_main_recordService;
+using General.Services.Order;
+using General.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using General.Framework.Datatable;
+using General.Services.SysCustomizedList;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -25,19 +30,30 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private readonly IHostingEnvironment _hostingEnvironment;
         private ISysRoleService _sysRoleService;
-      
-        public ITOrderImportController(IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        private IOrderService _sysOrderService;
+       
+        private ISysCustomizedListService _sysCustomizedListService;
+        public ITOrderImportController(ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
+            this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysRoleService = sysRoleService;
+            this._sysOrderService = sysOrderService;
             this._hostingEnvironment = hostingEnvironment;
         }
         [Route("", Name = "itOrderImportIndex")]
         [Function("订单数据导入", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
 
-        public IActionResult ITOrderImportIndex()
+        public IActionResult ITOrderImportIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
-            return View();
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
+            ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+
+            var pageList = _sysOrderService.searchOrder(arg, page, size);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
+            return View(dataSource);//sysImport
         }
         [Route("excelimport", Name = "excelimport")]
         public FileResult Excel()
@@ -86,7 +102,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("importexcel", Name = "importexcel")]
-        public ActionResult Import(IFormFile excelfile,Entities.ImportTrans_main_record model, string returnUrl = null)
+        public ActionResult Import(IFormFile excelfile, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
@@ -107,14 +123,14 @@ namespace General.Mvc.Areas.Admin.Controllers
 
                 for (int row = 2; row <= rowCount; row++)
                 {
-                 
-                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
-                    model.Shipper = worksheet.Cells[row,2].Value.ToString();
-                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
-                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
-                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
-                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
+                    Entities.Order model = new Entities.Order();
+                    model.OrderNo = worksheet.Cells[row, 1].Value.ToString();
+                    model.SupplierName = worksheet.Cells[row,2].Value.ToString();
+                    model.SupplierCode = worksheet.Cells[row, 3].Value.ToString();
+                    model.Item = worksheet.Cells[row, 4].Value.ToString();
+                    model.MaterialCode = worksheet.Cells[row, 5].Value.ToString();
+                    model.Name = worksheet.Cells[row, 6].Value.ToString();
+                    model.Size = worksheet.Cells[row, 7].Value.ToString();
                     model.CreationTime = DateTime.Now;
                     model.Creator = WorkContext.CurrentUser.Id;
                     try
@@ -130,7 +146,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     catch (Exception e)
                     {
                     }
-                    _importTrans_main_recordService.insertImportTransmain(model);
+                    _sysOrderService.insertOrder(model);
                 }
                 return Redirect(ViewBag.ReturnUrl);
             }

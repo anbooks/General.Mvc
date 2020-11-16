@@ -307,7 +307,7 @@ namespace General.Services.ImportTrans_main_record
                     query = query.Where(o => o.Shipper.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
                     query = query.Where(o => o.PoNo.Contains(arg.pono));
-                if (!String.IsNullOrEmpty(arg.invcurr))
+                if (!String.IsNullOrEmpty(arg.invcurr))    
                     query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
             }
             query = query.OrderByDescending(o => o.Id);
@@ -666,7 +666,7 @@ namespace General.Services.ImportTrans_main_record
 
             if (list != null)
                 return list;
-            list = _importTrans_main_recordRepository.Table.Where(o=>o.F_ShipmentCreate==true&&o.F_ArrivalTimeRequested!=true).ToList();
+            list = _importTrans_main_recordRepository.Table.Where(o=>o.IsDeleted!=true).ToList();
             return list;
         }
         public List<Entities.ImportTrans_main_record> getAllShipModel()
