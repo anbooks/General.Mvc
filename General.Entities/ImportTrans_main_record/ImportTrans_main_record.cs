@@ -33,8 +33,8 @@ namespace General.Entities
          public bool IsDeleted { get; set; }
         public Guid? Requester { get; set; }
         public DateTime? RequestTime { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? RequestedArrivalTime { get; set; }
+  
+        public DateTime? RequestedArrivalTime{ get; set; }
         public bool? F_ShipmentCreate { get; set; }
         public string ShippingMode { get; set; }
         public bool? F_ArrivalTimeRequested { get; set; }
@@ -52,8 +52,8 @@ namespace General.Entities
         public string Mbl { get; set; }
         public string Hbl { get; set; }
         public string Measurement { get; set; }
-        public string Atd { get; set; }
-        public string Ata { get; set; }
+        public DateTime? Atd { get; set; }
+        public DateTime? Ata { get; set; }
         public string Forwarder { get; set; }
         public string InventoryNo { get; set; }
         public bool? F_InventoryInput { get; set; }

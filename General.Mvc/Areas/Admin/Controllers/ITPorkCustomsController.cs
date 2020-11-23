@@ -24,8 +24,8 @@ using Microsoft.AspNetCore.Hosting;
 namespace General.Mvc.Areas.Admin.Controllers
 {
 
-    [Route("admin/itShipmentCreate")]
-    public class ITShipmentCreateController : AdminPermissionController
+    [Route("admin/itPorkCustoms")]
+    public class ITPorkCustomsController : AdminPermissionController
     {
 
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -33,7 +33,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITShipmentCreateController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        public ITPorkCustomsController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
@@ -41,54 +41,50 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
-        [Route("", Name = "itShipmentCreate")]
-        [Function("创建发运条目1", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Route("", Name = "itPorkCustoms")]
+        [Function("口岸报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
-        public IActionResult ITShipmentCreateIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITPorkCustomsIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
-            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
-             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
-            ViewBag.QX = USER.RoleName;
-
+            var customizedList = _sysCustomizedListService.getByAccount("自行送货或外部提货");
+            ViewData["ChooseDelivery"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
+             //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
+            ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itPorkCustoms", arg);
             return View(dataSource);//sysImport
         }
-        [Route("schedule", Name = "itShipmentCreateSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
+        [Route("schedule", Name = "itPorkCustomsSchedule")]
+        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
         [HttpGet]
-        public IActionResult ITShipmentCreateScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITPorkCustomsScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             ViewBag.Userid = id;
             RolePermissionViewModel model = new RolePermissionViewModel();
              var pageList = _scheduleService.searchList(arg, page, size,id);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itShipmentCreateSchedule", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itPorkCustomsSchedule", arg);
             return View(dataSource);//sysImport
         }
-        [Route("excelimport2", Name = "excelimport2")]
+        [Route("excelPorkCustoms", Name = "excelPorkCustoms")]
         public FileResult Excel()
         {
-
             var list = _importTrans_main_recordService.getAll();
             NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
             //添加一个sheet
             NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-
             //给sheet1添加第一行的头部标题
             NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
             row1.CreateCell(0).SetCellValue("ID");
             row1.CreateCell(1).SetCellValue("编号");
-           
             for (int i = 0; i < list.Count; i++)
             {
                 NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
                 rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
                 rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
-
             }
             // 写入到客户端 
             System.IO.MemoryStream ms = new System.IO.MemoryStream();
@@ -98,10 +94,10 @@ namespace General.Mvc.Areas.Admin.Controllers
             return File(ms, "application/vnd.ms-excel", sFileName);
         }
         [HttpPost]
-        [Route("importexcel2", Name = "importexcel2")]
+        [Route("importPorkCustoms", Name = "importPorkCustoms")]
         public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
             string sFileName = $"{Guid.NewGuid()}.xlsx";
@@ -117,7 +113,6 @@ namespace General.Mvc.Areas.Admin.Controllers
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
                 int rowCount = worksheet.Dimension.Rows;
                 int ColCount = worksheet.Dimension.Columns;
-
                 for (int row = 2; row <= rowCount; row++)
                 {
 
@@ -140,61 +135,47 @@ namespace General.Mvc.Areas.Admin.Controllers
                     catch (Exception e)
                     {
                     }
-
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
                     _importTrans_main_recordService.insertImportTransmain(model);
                 }
                 return Redirect(ViewBag.ReturnUrl);
             }
         }
         [HttpPost]
-        [Route("itShipmentCreateList", Name = "itShipmentCreateList")]
-        public ActionResult ITShipmentCreateList(string kevin)
+        [Route("itPorkCustomsList", Name = "itPorkCustomsList")]
+        public ActionResult ITPorkCustomsList(string kevin)
         {
             string test = kevin;
-
-          
-
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-
-
-          //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
-                model.Itemno = u.Itemno;
-                model.Shipper = u.Shipper;
-
+                
+              
+                if (u.ChooseDelivery != "") { model.ChooseDelivery = u.ChooseDelivery; }
+                model.BlDate = u.BlDate;
+                model.DeclarationDate = u.DeclarationDate;
+                model.ReleaseDate = u.ReleaseDate;
+                model.CustomsDeclarationNo = u.CustomsDeclarationNo;
+                model.InspectionLotNo = u.InspectionLotNo;
+                model.ActualDeliveryDate = u.ActualDeliveryDate;
+               
                 _importTrans_main_recordService.updateImportTransmain(model);
-                //u就是jsonlist里面的一个实体类
             }
-
-         
-
             AjaxData.Status = true;
             AjaxData.Message = "OK";
-
-
             return Json(AjaxData);
         }
         [HttpGet]
-        [Route("edit", Name = "editITShipmentCreate")]
-        [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
-        public IActionResult EditITShipmentCreate(int? id, string returnUrl = null)
+        [Route("edit", Name = "editITPorkCustoms")]
+        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        public IActionResult EditITPorkCustoms(int? id, string returnUrl = null)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-           
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
-        
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
@@ -203,14 +184,12 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("edit")]
-        public ActionResult EditITShipmentCreate(Entities.ImportTrans_main_record model, string returnUrl = null)
+        public ActionResult EditITPorkCustoms(Entities.ImportTrans_main_record model, string returnUrl = null)
         {
             ModelState.Remove("Id");
-            int a = 0;
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
             if (!ModelState.IsValid)
                 return View(model);
-            
              if (!String.IsNullOrEmpty(model.Invcurr))
                 model.Invcurr = model.Invcurr.Trim();
             if (!String.IsNullOrEmpty(model.Shipper))
@@ -221,13 +200,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.PoNo = model.PoNo.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
                 model.Buyer= model.PoNo.Substring(1, 2);
-            // model.PoNo = model.PoNo.Substring(0, 2);
             if (model.Id.Equals(0)) {
-               
-                //model.Invcurr = model.Invcurr.Trim();
                 model.CreationTime = DateTime.Now;
-               // model.Shipper = model.Shipper.Trim();
-              //  model.Itemno = model.Itemno.Trim();
                 model.IsDeleted = false;
                 model.Modifier = null;
                 model.ModifiedTime = null;
@@ -243,15 +217,14 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
         [HttpGet]
-        [Route("edit2", Name = "editSchedule")]
-        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateScheduleIndex")]
-        public IActionResult EditSchedule(int? id, string returnUrl = null)
+        [Route("edit2", Name = "editPorkCustomsSchedule")]
+        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsScheduleIndex")]
+        public IActionResult EditPorkCustomsSchedule(int? id, string returnUrl = null)
         {//页面跳转未完成
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
             if (id != null)
             {
                 var model = _scheduleService.getById(id.Value);
-
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
@@ -260,14 +233,13 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("edit2")]
-        public ActionResult EditSchedule(Entities.Schedule model, string returnUrl = null)
+        public ActionResult EditPorkCustomsSchedule(Entities.Schedule model, string returnUrl = null)
         {//页面跳转未完成
             ModelState.Remove("Id");
             int a = 0;
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
             if (!ModelState.IsValid)
                 return View(model);
-
             if (!String.IsNullOrEmpty(model.InvoiceNo))
                 model.InvoiceNo = model.InvoiceNo.Trim();
             if (!String.IsNullOrEmpty(model.MaterielNo))

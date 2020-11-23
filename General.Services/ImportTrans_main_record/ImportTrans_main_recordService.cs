@@ -314,6 +314,24 @@ namespace General.Services.ImportTrans_main_record
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
+        public IPagedList<Entities.ImportTrans_main_record> searchListBuyer(SysCustomizedListSearchArg arg, int page, int size,string buyer)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true&&o.Buyer==buyer);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            query = query.OrderByDescending(o => o.Id);
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
         public IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.F_InventoryInput == true && o.F_PortCustomerBrokerInput != true);

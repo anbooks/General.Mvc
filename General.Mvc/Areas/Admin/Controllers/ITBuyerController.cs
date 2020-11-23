@@ -24,8 +24,8 @@ using Microsoft.AspNetCore.Hosting;
 namespace General.Mvc.Areas.Admin.Controllers
 {
 
-    [Route("admin/itShipmentCreate")]
-    public class ITShipmentCreateController : AdminPermissionController
+    [Route("admin/itBuyer")]
+    public class ITBuyerController : AdminPermissionController
     {
 
         private readonly IHostingEnvironment _hostingEnvironment;
@@ -33,7 +33,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITShipmentCreateController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        public ITBuyerController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
@@ -41,35 +41,35 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
-        [Route("", Name = "itShipmentCreate")]
-        [Function("创建发运条目1", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Route("", Name = "itBuyer")]
+        [Function("采购员页面(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
-        public IActionResult ITShipmentCreateIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITBuyerIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
              ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
-            ViewBag.QX = USER.RoleName;
+           // var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
+            ViewBag.QX = WorkContext.CurrentUser.Co;
 
-            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
+            var pageList = _importTrans_main_recordService.searchListBuyer(arg, page, size, WorkContext.CurrentUser.Co);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itBuyer", arg);
             return View(dataSource);//sysImport
         }
-        [Route("schedule", Name = "itShipmentCreateSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
+        [Route("schedule", Name = "itBuyerSchedule")]
+        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
         [HttpGet]
-        public IActionResult ITShipmentCreateScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITBuyerScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             ViewBag.Userid = id;
             RolePermissionViewModel model = new RolePermissionViewModel();
              var pageList = _scheduleService.searchList(arg, page, size,id);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itShipmentCreateSchedule", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itBuyerSchedule", arg);
             return View(dataSource);//sysImport
         }
-        [Route("excelimport2", Name = "excelimport2")]
+        [Route("excelimporta2", Name = "excelimporta2")]
         public FileResult Excel()
         {
 
@@ -98,10 +98,10 @@ namespace General.Mvc.Areas.Admin.Controllers
             return File(ms, "application/vnd.ms-excel", sFileName);
         }
         [HttpPost]
-        [Route("importexcel2", Name = "importexcel2")]
+        [Route("importexcela2", Name = "importexcela2")]
         public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("Buyer");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
             string sFileName = $"{Guid.NewGuid()}.xlsx";
@@ -124,10 +124,6 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Itemno = worksheet.Cells[row, 1].Value.ToString();
                     model.Shipper = worksheet.Cells[row, 2].Value.ToString();
                     model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo!=null)
-                    {
-                        model.Buyer = model.PoNo.Substring(1, 2);
-                    }             
                     model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
                     model.CargoType = worksheet.Cells[row, 5].Value.ToString();
                     model.Invamou = worksheet.Cells[row, 6].Value.ToString();
@@ -153,8 +149,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
         }
         [HttpPost]
-        [Route("itShipmentCreateList", Name = "itShipmentCreateList")]
-        public ActionResult ITShipmentCreateList(string kevin)
+        [Route("itBuyerList", Name = "itBuyerLista")]
+        public ActionResult ITBuyerList(string kevin)
         {
             string test = kevin;
 
@@ -167,8 +163,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
-                model.Itemno = u.Itemno;
-                model.Shipper = u.Shipper;
+                model.RequestedArrivalTime = u.RequestedArrivalTime;
+           
 
                 _importTrans_main_recordService.updateImportTransmain(model);
                 //u就是jsonlist里面的一个实体类
@@ -183,11 +179,11 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Json(AjaxData);
         }
         [HttpGet]
-        [Route("edit", Name = "editITShipmentCreate")]
-        [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
-        public IActionResult EditITShipmentCreate(int? id, string returnUrl = null)
+        [Route("edit", Name = "editBuyer")]
+        [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        public IActionResult EditBuyer(int? id, string returnUrl = null)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
            
@@ -203,11 +199,11 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("edit")]
-        public ActionResult EditITShipmentCreate(Entities.ImportTrans_main_record model, string returnUrl = null)
+        public ActionResult EditBuyer(Entities.ImportTrans_main_record model, string returnUrl = null)
         {
             ModelState.Remove("Id");
             int a = 0;
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
             if (!ModelState.IsValid)
                 return View(model);
             
@@ -243,11 +239,11 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
         [HttpGet]
-        [Route("edit2", Name = "editSchedule")]
-        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateScheduleIndex")]
-        public IActionResult EditSchedule(int? id, string returnUrl = null)
+        [Route("edit", Name = "editBuyerSchedule")]
+        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerScheduleIndex")]
+        public IActionResult EditBuyerSchedule(int? id, string returnUrl = null)
         {//页面跳转未完成
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
             if (id != null)
             {
                 var model = _scheduleService.getById(id.Value);
@@ -259,12 +255,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        [Route("edit2")]
-        public ActionResult EditSchedule(Entities.Schedule model, string returnUrl = null)
+        [Route("edit")]
+        public ActionResult EditBuyerSchedule(Entities.Schedule model, string returnUrl = null)
         {//页面跳转未完成
             ModelState.Remove("Id");
             int a = 0;
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
             if (!ModelState.IsValid)
                 return View(model);
 

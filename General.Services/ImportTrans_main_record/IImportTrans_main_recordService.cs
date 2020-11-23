@@ -34,6 +34,7 @@ namespace General.Services.ImportTrans_main_recordService
 
         IPagedList<Entities.ImportTrans_main_record> searchListCustomsBrokerSelect(SysCustomizedListSearchArg arg, int page, int size);
         IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.ImportTrans_main_record> searchListBuyer(SysCustomizedListSearchArg arg, int page, int size,string buyer);
 
         IPagedList<Entities.ImportTrans_main_record> searchListInventoryInput(SysCustomizedListSearchArg arg, int page, int size);
 
