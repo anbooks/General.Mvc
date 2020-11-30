@@ -16,11 +16,11 @@ namespace General.Entities
          public string PaymentMethod { get; set; }//付款方式
          public string ImportItem { get; set; }//原进口报关单
          public bool? F_DeliverySituation { get; set; }//申请标签
-         public Guid ?Applier { get; set; }//申请人
-          public DateTime? ApplyTime { get; set; }//申请时间
-         public string ItemNo { get; set; }//发票币种
-         public string PackingList { get; set; }//件数(箱数)
-         public string CreateList { get; set; }//毛重
+         public string Applier { get; set; }//申请人
+          public DateTime? ApplyTime { get; set; }
+         public string ItemNo { get; set; }
+         public string PackingList { get; set; }
+         public string CreateList { get; set; }
 
         public Guid?Creator { get; set; }
 
@@ -54,7 +54,7 @@ namespace General.Entities
         public DateTime? CustomsDeclarationTime { get; set; }
         public DateTime? ExportDeclarationTime { get; set; }
         public DateTime? CuttingLoadTime { get; set; }
-        public bool? Booking { get; set; }
+        public string Booking { get; set; }
         public bool? F_CargoStatus { get; set; }
         public DateTime? PortDate { get; set; }
         public string TranMode { get; set; }

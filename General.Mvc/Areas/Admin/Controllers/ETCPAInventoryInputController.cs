@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using General.Core.Librs;
 using General.Entities;
 using General.Framework.Controllers.Admin;
 using General.Framework.Datatable;
@@ -25,7 +26,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "etCPAInventoryInput")]
-        [Function("综保区填写核注清单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ExportTransportationController", Sort = 1)]
+        [Function("综保区填写核注清单(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ExportTransportationController", Sort = 1)]
       
         public IActionResult ETCPAInventoryInputIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -40,16 +41,26 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Route("")]
-        public ActionResult ETCPAInventoryInputIndex(List<int> sysResource, string returnUrl = null)
+        [Route("etCPAInventoryInputList", Name = "etCPAInventoryInputList")]
+        public ActionResult ETCPAInventoryInputList(string kevin)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("etCPAInventoryInput");
-            string flag = "综保区填写核注清单";
-            _exportTransportationService.saveExportTransportation(sysResource, flag);
+            string test = kevin;
+            List<Entities.ExportTransportation> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ExportTransportation>(test);
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            foreach (Entities.ExportTransportation u in jsonlist)
+            {
+                var model = _exportTransportationService.getById(u.Id);
+                model.NuclearNote = u.NuclearNote;
+                model.LicensePlateNo = u.LicensePlateNo;
+                model.ManufactureDate = u.ManufactureDate;
+               
+                //model.Project = u.Project;
+                _exportTransportationService.updateExportTransportation(model);
+                //u就是jsonlist里面的一个实体类
+            }
             AjaxData.Status = true;
-            AjaxData.Message = "确认创建成功";
-            return Redirect(ViewBag.ReturnUrl);
-            //return View();
+            AjaxData.Message = "OK";
+            return Json(AjaxData);
         }
         [HttpGet]
         [Route("edit", Name = "editetCPAInventoryInput")]
@@ -94,7 +105,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 
                 model.LicensePlateTime = DateTime.Now;
                 model.LicensePlater = WorkContext.CurrentUser.Id;
-                _exportTransportationService.updateExportTransportation(model, flag);
+                _exportTransportationService.updateExportTransportation(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }

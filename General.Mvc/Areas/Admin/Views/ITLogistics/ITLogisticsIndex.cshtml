@@ -84,6 +84,7 @@
                                 <th width="150px">毛重</th>
                                 <th width="150px">运输方式</th>
                                 <th width="150px">要求送货日期</th>
+                                <th width="150px">口岸报关行</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -161,6 +162,18 @@
                                         <input type="datetime" name="Atd" value="@item.DeliveryRequiredDate" disabled />
                                     </td>
                                 }
+                                @if (ViewBag.QX == "01")
+                                {
+                                    <td>
+                                        <input type="text" name="Forwarder" value="@item.Forwarder" style="width:80px" />
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="Forwarder" value="@item.Forwarder" disabled style="width:80px" />
+                                    </td>
+                                }
                                 <td>
                                     <a href="@Url.RouteUrl("itLogisticsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
                                 </td>
@@ -194,15 +207,13 @@
                     
                     var shippingMode = $(this).closest("tr").find("td").eq(12).find("select[name='ShippingMode']");
                     var deliveryRequiredDate = $(this).closest("tr").find("td").eq(13).find("input:data");
-                    //var ata = $(this).closest("tr").find("td").eq(20).find("input:data");
-                    //  var invcurr = $(this).closest("tr").find("td").eq(3).find("select[name='Status']");
-                    //var test1 = $(this).next();
+                    var forwarder = $(this).closest("tr").find("td").eq(14).find("input:text");
                     var mSub = {
                         id: id.val(),
                        
                         shippingMode: shippingMode.val(),
                         deliveryRequiredDate: deliveryRequiredDate.val(),
-                        //ata: ata.val(),
+                        forwarder: forwarder.val(),
                     };
                     subArray.push(mSub);
                 });

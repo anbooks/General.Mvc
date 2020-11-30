@@ -1,7 +1,380 @@
 ﻿
+@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<ExportTransportation, SysCustomizedListSearchArg>
+
 @{
-    ViewData["Title"] = "ETDeliveryStatusInputIndex";
+    ViewData["Title"] = "创建发运清单";
 }
 
-<h2>ETDeliveryStatusInputIndex</h2>
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
 
+            <a href="">出口运输</a>
+        </li>
+        <li class="active">填写运输状态</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+
+    <div class="space-2"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form asp-route="etDeliveryStatusInput" method="get" class="form-inline">
+
+                        <label>关键字</label>
+                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发运情况选择" />
+
+                        @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "付款方式", new { @class = "form-control  input-small" })
+
+
+                        <button type="submit" class="btn btn-purple btn-sm">
+                            查询
+                            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form asp-route="etDeliveryStatusInput" method="post" id="formetDeliveryStatusInput" class="form-horizontal" onsubmit="return false;">
+
+        <div class="form-group">
+            @if (Model != null)
+            {
+
+                <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th width="50px"></th>
+                            <th width="100px">编号</th>
+                            <th width="100px">发运情况选择</th>
+                            <th width="100px">付费方式</th>
+                            <th width="100px">原进口报关单号</th>
+                            <th width="100px">截载日期</th>
+                            <th width="100px">订舱确认</th>
+                            <th width="100px">入港日期</th>
+                            <th width="100px">运输方式</th>
+                            <th width="100px">运单号</th>
+                            <th width="100px">启运港</th>
+                            <th width="100px">目的港</th>
+                            <th width="100px">离港日期</th>
+                            <th width="100px">预计到港日期</th>
+                            <th width="100px">实际到港日期</th>
+                            <th width="100px">送货日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.Data)
+                        {
+                        <tr>
+                            @if (ViewBag.QX == null)
+                            {
+
+                                <td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
+                                    <input type="hidden" name="checkboxValue" value="0" />
+                                </td>}
+                            else
+                            {
+                                <td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
+                                    <input type="hidden" name="checkboxValue" value="0" />
+                                </td>}
+                            <td>
+                                @item.ItemNo
+                            </td>
+                            <td>
+                                @item.DeliverySituation
+                            </td>
+                            <td>
+                                @item.PaymentMethod
+                            </td>
+                            <td style="color:red">
+                                @item.ImportItem
+                            </td>
+                            @if (ViewBag.QX == null)
+                            {
+                                @if (@item.CuttingLoadTime == null)
+                                {
+                                    <td>
+                                        <input type="date" name="CuttingLoadTime" value="@item.CuttingLoadTime" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="CuttingLoadTime" value="@item.CuttingLoadTime.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="CuttingLoadTime" value="@item.CuttingLoadTime" disabled />
+                                </td>
+                            }
+
+                            @if (ViewBag.QX == null)
+                            {
+                                @if (@item.Booking == null)
+                                {
+                                    <td>
+                                        @Html.DropDownList("Booking", ViewData["Booking"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("Booking", ViewData["Booking"] as SelectList, @item.Booking, new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+                            
+                            }
+                            else
+                            {
+                                <td>
+
+                                    <input type="text" name="Booking" value="@item.Booking" disabled style="width:80px" />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                @if (@item.PortDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="PortDate" value="@item.PortDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="PortDate" value="@item.PortDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="PortDate" value="@item.PortDate" disabled />
+                                </td>
+                            }
+
+                            @if (ViewBag.QX == null)
+                            {
+                                <td>
+                                    <input type="text" name="TranMode" value="@item.TranMode" style="width:100px" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="text" name="TranMode" value="@item.TranMode" disabled style="width:100px" />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                <td>
+                                    <input type="text" name="Awb" value="@item.Awb" style="width:100px" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="text" name="Awb" value="@item.Awb" disabled style="width:100px" />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                <td>
+                                    <input type="text" name="ShipmentPort" value="@item.ShipmentPort" style="width:100px" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="text" name="ShipmentPort" value="@item.ShipmentPort" disabled style="width:100px" />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                <td>
+                                    <input type="text" name="DestinationPort" value="@item.DestinationPort" style="width:100px" />
+                                </td>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="text" name="DestinationPort" value="@item.DestinationPort" disabled style="width:100px" />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                @if (@item.DepartureDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="DepartureDate" value="@item.DepartureDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="DepartureDate" value="@item.DepartureDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="DepartureDate" value="@item.DepartureDate" disabled />
+                                </td>
+                            } @if (ViewBag.QX == null)
+                            {
+                                @if (@item.EstimatedArrivalDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="EstimatedArrivalDate" value="@item.EstimatedArrivalDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="EstimatedArrivalDate" value="@item.EstimatedArrivalDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="EstimatedArrivalDate" value="@item.EstimatedArrivalDate" disabled />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                @if (@item.RealArrivalDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="RealArrivalDate" value="@item.RealArrivalDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="RealArrivalDate" value="@item.RealArrivalDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="RealArrivalDate" value="@item.RealArrivalDate" disabled />
+                                </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
+                                @if (@item.DeliveryDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="DeliveryDate" value="@item.DeliveryDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="DeliveryDate" value="@item.DeliveryDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="DeliveryDate" value="@item.DeliveryDate" disabled />
+                                </td>
+                            }
+
+                            <td>
+                                <a href="@Url.RouteUrl("editetDeliveryStatusInput", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <pager page-value="Model.Paging"></pager>
+
+            }
+        </div>
+        <div class="col-md-offset-1">
+            <button class="btn btn-info" type="submit">
+                <i class="ace-icon fa fa-check bigger-110"></i>
+                确认创建
+            </button>
+        </div>
+    </form>
+    <script>
+        $(function () {
+            $('#formetDeliveryStatusInput').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {
+                    var test = $(this).next();
+                    var i = 0;
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var cuttingLoadTime = $(this).closest("tr").find("td").eq(5).find("input:data");
+                    var booking = $(this).closest("tr").find("td").eq(6).find("select[name='Booking']");
+                    var portDate = $(this).closest("tr").find("td").eq(7).find("input:data");
+                    var tranMode = $(this).closest("tr").find("td").eq(8).find("input:text");
+                    var awb = $(this).closest("tr").find("td").eq(9).find("input:text");
+                    var shipmentPort = $(this).closest("tr").find("td").eq(10).find("input:text");
+                    var destinationPort = $(this).closest("tr").find("td").eq(11).find("input:text");
+                    var departureDate = $(this).closest("tr").find("td").eq(12).find("input:data");
+                    var estimatedArrivalDate = $(this).closest("tr").find("td").eq(13).find("input:data");
+                    var realArrivalDate = $(this).closest("tr").find("td").eq(14).find("input:data");
+                    var deliveryDate = $(this).closest("tr").find("td").eq(15).find("input:data");
+
+
+                    var mSub = {
+                        id: id.val(),
+                        cuttingLoadTime: cuttingLoadTime.val(),
+                        booking: booking.val(),
+                        portDate: portDate.val(),
+                        tranMode: tranMode.val(),
+                        awb: awb.val(),
+                        shipmentPort: shipmentPort.val(),
+                        destinationPort: destinationPort.val(),
+                        departureDate: departureDate.val(),
+                        estimatedArrivalDate: estimatedArrivalDate.val(),
+                        realArrivalDate: realArrivalDate.val(),
+                        deliveryDate: deliveryDate.val(),
+                    };
+                    subArray.push(mSub);
+                });
+                alert(JSON.stringify(subArray));
+                var _url = "/admin/etDeliveryStatusInput/etDeliveryStatusInputList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        alert('提交成功！');
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+
+
+            });
+
+        });
+    </script>
+</div>

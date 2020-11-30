@@ -89,7 +89,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (model.Id.Equals(0))
             {
                 model.ApplyTime = DateTime.Now;
-                model.Applier = WorkContext.CurrentUser.Id;
+                model.Applier = WorkContext.CurrentUser.Account;
 
                 _exportTransportationService.insertExportTransportation(model);
             }
@@ -97,7 +97,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                   
         
-                _exportTransportationService.updateExportTransportation(model,flag);
+                _exportTransportationService.updateExportTransportation(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }

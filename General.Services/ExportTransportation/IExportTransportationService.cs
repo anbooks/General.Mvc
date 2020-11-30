@@ -13,6 +13,6 @@ namespace General.Services.ExportTransportationService
         void insertExportTransportation(Entities.ExportTransportation model);
         void saveExportTransportation(List<int> categoryIds, string flag);
         IPagedList<Entities.ExportTransportation> searchList(SysCustomizedListSearchArg arg, int page, int size, string flag);
-        void updateExportTransportation(Entities.ExportTransportation model, string flag);
+        void updateExportTransportation(Entities.ExportTransportation model);
     }
 }

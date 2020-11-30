@@ -34,7 +34,6 @@ namespace General.Services.Order
             {
                 if (!String.IsNullOrEmpty(arg.pono))
                     query = query.Where(o => o.Name.Contains(arg.pono));
-         
             }
             query = query.OrderBy(o => o.Name);
             return new PagedList<Entities.Order>(query, page, size);
@@ -51,8 +50,6 @@ namespace General.Services.Order
         {
             return _sysOrderRepository.Table.Any(o => o.Name == account );
         }
-
-
         /// <summary>
         /// 获取用户详情
         /// </summary>

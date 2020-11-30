@@ -23,7 +23,7 @@ namespace General.Services.ExportTransportation
         private IRepository<Entities.ExportTransportation> _exportTransportationRepository;
 
         private ISysUserService _sysUserService;
-        public ExportTransportationService(ISysUserService sysUserService,IRepository<Entities.ExportTransportation> exportTransportationRepository,
+        public ExportTransportationService(ISysUserService sysUserService, IRepository<Entities.ExportTransportation> exportTransportationRepository,
             IMemoryCache memoryCache)
         {
             this._sysUserService = sysUserService;
@@ -40,7 +40,7 @@ namespace General.Services.ExportTransportation
 
             if (list != null)
                 return list;
-            list = _exportTransportationRepository.Table.Where(o => o.IsDeleted != true ).ToList();
+            list = _exportTransportationRepository.Table.Where(o => o.IsDeleted != true).ToList();
             return list;
         }
         public void insertExportTransportation(Entities.ExportTransportation model)
@@ -48,57 +48,53 @@ namespace General.Services.ExportTransportation
             _exportTransportationRepository.insert(model);
             _memoryCache.Remove(MODEL_KEY);
         }
-        public void updateExportTransportation(Entities.ExportTransportation model, string flag)
+        public void updateExportTransportation(Entities.ExportTransportation model)
         {
             var item = _exportTransportationRepository.getById(model.Id);
             if (item == null)
                 return;
-            if (flag == "出口运输申请")
-            { 
+            item.Project = model.Project;
+            item.OfGoods = model.OfGoods;
+            item.TotalGw = model.TotalGw;
+            item.TotalNo = model.TotalNo;
+            item.TradeTerms = model.TradeTerms;
+            item.Carrier = model.Carrier;
+            item.PickDriver = model.PickDriver;
+            item.DriverCard = model.DriverCard;
             item.DeliverySituation = model.DeliverySituation;
             item.PaymentMethod = model.PaymentMethod;
             item.ImportItem = model.ImportItem;
             item.Applier = model.Applier;
             item.ApplyTime = model.ApplyTime;
-            }else if (flag == "创建发运清单")
-            {
-                item.ItemNo = model.ItemNo;
-                item.Project = model.Project;
-                item.OfGoods = model.OfGoods;
-                item.Creator = model.Creator;
-                item.CreationTime= model.CreationTime;
-            }
-            else if (flag == "综保区填写核注清单")
-            {
-                item.LicensePlateNo = model.LicensePlateNo;
-                item.NuclearNote = model.NuclearNote;
-                item.ManufactureDate = model.ManufactureDate;
-                item.LicensePlater = model.LicensePlater;
-                item.LicensePlateTime = model.LicensePlateTime;
-            }
+            item.ItemNo = model.ItemNo;
+            item.LicensePlateNo = model.LicensePlateNo;
+            item.NuclearNote = model.NuclearNote;
+            item.ManufactureDate = model.ManufactureDate;
+            item.LicensePlater = model.LicensePlater;
+            item.LicensePlateTime = model.LicensePlateTime;
             _exportTransportationRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
-           
+
         }
         public IPagedList<Entities.ExportTransportation> searchList(SysCustomizedListSearchArg arg, int page, int size, string flag)
         {
-               var query = _exportTransportationRepository.Table.Where(o => o.IsDeleted != true);
-            if (flag == "出口运输申请")
-            {
-                query = _exportTransportationRepository.Table.Where(o => o.F_DeliverySituation != true);
-            }
-            else if (flag == "创建发运清单")
-            {
-                query = _exportTransportationRepository.Table.Where(o => o.F_DeliverySituation == true&& o.F_Item != true);
-            }
-            else if (flag == "综保区填写核注清单")
-            {
-                query = _exportTransportationRepository.Table.Where(o => o.F_Item == true && o.F_LicensePlate != true);
-            }
+            var query = _exportTransportationRepository.Table.Where(o => o.IsDeleted != true);
+            //if (flag == "出口运输申请")
+            //{
+            //    query = _exportTransportationRepository.Table.Where(o => o.F_DeliverySituation != true);
+            //}
+            //else if (flag == "创建发运清单")
+            //{
+            //    query = _exportTransportationRepository.Table.Where(o => o.F_DeliverySituation == true&& o.F_Item != true);
+            //}
+            //else if (flag == "综保区填写核注清单")
+            //{
+            //    query = _exportTransportationRepository.Table.Where(o => o.F_Item == true && o.F_LicensePlate != true);
+            //}
             if (arg != null)
             {
-               // if (!String.IsNullOrEmpty(arg.itemno))
-                   // query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                // if (!String.IsNullOrEmpty(arg.itemno))
+                // query = query.Where(o => o.Itemno.Contains(arg.itemno));
                 if (!String.IsNullOrEmpty(arg.shipper))
                     query = query.Where(o => o.DeliverySituation.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.invcurr))
@@ -107,7 +103,7 @@ namespace General.Services.ExportTransportation
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ExportTransportation>(query, page, size);
         }
-        public void saveExportTransportation(List<int> categoryIds,string flag)
+        public void saveExportTransportation(List<int> categoryIds, string flag)
         {
 
             foreach (int categoryId in categoryIds)

@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <form asp-route="etCPAInventoryInput" method="post" class="form-horizontal">
+    <form asp-route="etCPAInventoryInput" method="post" class="form-horizontal" id="formetCPAInventoryInput" onsubmit="return false;">
 
         <div class="form-group">
             @if (Model != null)
@@ -61,9 +61,14 @@
                     <thead>
                         <tr>
                             <th width="50px"></th>
+                            <th width="150px">编号</th>
                             <th width="150px">发运情况选择</th>
                             <th width="150px">付费方式</th>
                             <th width="150px">原进口报关单号</th>
+                            <th width="150px">车牌号</th>
+                            <th width="150px">核注清单号</th>
+                            <th width="150px">出厂日期</th>
+                            
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -71,23 +76,82 @@
 
                         @foreach (var item in Model.Data)
                         {
-                            <tr>
+                        <tr>
+                            @if (ViewBag.QX == null)
+                            {
+
                                 <td>
-                                    <input type="checkbox" name="sysResource" value="@item.Id" />
-                                </td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
+                                    <input type="hidden" name="checkboxValue" value="0" />
+                                </td>}
+                            else
+                            {
                                 <td>
-                                    @item.DeliverySituation
-                                </td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
+                                    <input type="hidden" name="checkboxValue" value="0" />
+                                </td>}
+                            <td>
+                                @item.ItemNo
+                            </td>
+                            <td>
+                                @item.DeliverySituation
+                            </td>
+                            <td>
+                                @item.PaymentMethod
+                            </td>
+                            <td style="color:red">
+                                @item.ImportItem
+                            </td>
+                            @if (ViewBag.QX == null)
+                            {
                                 <td>
-                                    @item.PaymentMethod
+                                    <input type="text" name="LicensePlateNo" value="@item.LicensePlateNo" style="width:100px;color:red" />
                                 </td>
+                            }
+                            else
+                            {
                                 <td>
-                                    @item.ImportItem
+                                    <input type="text" name="LicensePlateNo" value="@item.LicensePlateNo" disabled style="width:100px" />
                                 </td>
+                            }
+                            @if (ViewBag.QX == null)
+                            {
                                 <td>
-                                    <a href="@Url.RouteUrl("editetCPAInventoryInput", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                                    <input type="text" name="NuclearNote" value="@item.NuclearNote" style="width:100px" />
                                 </td>
-                            </tr>
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="text" name="NuclearNote" value="@item.NuclearNote" disabled style="width:100px" />
+                                </td>
+                            }
+                            @if (ViewBag.QX ==null)
+                            {
+                                @if (@item.ManufactureDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="ManufactureDate" value="@item.ManufactureDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="ManufactureDate" value="@item.ManufactureDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="ManufactureDate" value="@item.ManufactureDate" disabled />
+                                </td>
+                            }
+                           
+
+                            <td>
+                                <a href="@Url.RouteUrl("editetShippingListCreate", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -102,5 +166,51 @@
             </button>
         </div>
     </form>
- 
+    <script>
+        $(function () {
+            $('#formetCPAInventoryInput').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {
+                    var test = $(this).next();
+                    var i = 0;
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var nuclearNote = $(this).closest("tr").find("td").eq(6).find("input:text");
+                    var licensePlateNo = $(this).closest("tr").find("td").eq(5).find("input:text");
+                    var manufactureDate = $(this).closest("tr").find("td").eq(7).find("input:data");
+                    
+                    //var batchNo = $(this).closest("tr").find("td").eq(13).find("input:text");
+                    //var waybill = $(this).closest("tr").find("td").eq(14).find("input:text");
+
+
+                    var mSub = {
+                        id: id.val(),
+                        nuclearNote: nuclearNote.val(),
+                        licensePlateNo: licensePlateNo.val(),
+                        manufactureDate: manufactureDate.val(),
+                        
+                        //batchNo: batchNo.val(),
+                        // waybill: waybill.val(),
+                    };
+                    subArray.push(mSub);
+                });
+                alert(JSON.stringify(subArray));
+                var _url = "/admin/etCPAInventoryInput/etCPAInventoryInputList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        alert('提交成功！');
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+
+
+            });
+
+        });
+    </script>
 </div>

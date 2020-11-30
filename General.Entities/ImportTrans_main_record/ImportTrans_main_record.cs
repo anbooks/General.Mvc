@@ -11,8 +11,8 @@ namespace General.Entities
     public class ImportTrans_main_record
     {
          public int Id { get; set; }//数据库建表主键必须命名为Id
-       
-         public string Itemno { get; set; }//编号
+        public string OrderNo { get; set; }//订单号
+        public string Itemno { get; set; }//编号
          public string Shipper { get; set; }//发货人
          public string PoNo { get; set; }//合同号
         public string Buyer { get; set; }//采购员

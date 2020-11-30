@@ -120,33 +120,43 @@ namespace General.Mvc.Areas.Admin.Controllers
                 ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
                 int rowCount = worksheet.Dimension.Rows;
                 int ColCount = worksheet.Dimension.Columns;
-
+                int orderno=0; int suppliername = 0; int suppliercode = 0; int item = 0; int materialcode = 0; int name = 0; int size = 0;
+                for (int columns = 1;columns <= ColCount; columns++)
+                {
+                    //Entities.Order model = new Entities.Order();
+                    if (worksheet.Cells[1, columns].Value.ToString() == "订单号") {  orderno = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "供应商名称") { suppliername = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "供应商代码") { suppliercode = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "行号") { item = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "物料代码") {  materialcode = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "品名") {  name = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "规格") {  size = columns; }
+                }
                 for (int row = 2; row <= rowCount; row++)
                 {
-                    Entities.Order model = new Entities.Order();
-                    model.OrderNo = worksheet.Cells[row, 1].Value.ToString();
-                    model.SupplierName = worksheet.Cells[row,2].Value.ToString();
-                    model.SupplierCode = worksheet.Cells[row, 3].Value.ToString();
-                    model.Item = worksheet.Cells[row, 4].Value.ToString();
-                    model.MaterialCode = worksheet.Cells[row, 5].Value.ToString();
-                    model.Name = worksheet.Cells[row, 6].Value.ToString();
-                    model.Size = worksheet.Cells[row, 7].Value.ToString();
+                   
+                    try
+                    {
+                        Entities.Order model = new Entities.Order();
+                        model.OrderNo = worksheet.Cells[row, orderno].Value.ToString();
+                    model.SupplierName = worksheet.Cells[row, suppliername].Value.ToString();
+                    model.SupplierCode = worksheet.Cells[row, suppliercode].Value.ToString();
+                    model.Item = worksheet.Cells[row, item].Value.ToString();
+                    model.MaterialCode = worksheet.Cells[row, materialcode].Value.ToString();
+                    model.Name = worksheet.Cells[row, name].Value.ToString();
+                    model.Size = worksheet.Cells[row, size].Value.ToString();
                     model.CreationTime = DateTime.Now;
                     model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
+                    _sysOrderService.insertOrder(model);
                     }
                     catch (Exception e)
                     {
+                        ViewData["IsShowAlert"] = "True";
+                        // return Content("<script>alert('请先登录');</script>");
                     }
 
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    _sysOrderService.insertOrder(model);
+                   
+                   
                 }
                 return Redirect(ViewBag.ReturnUrl);
             }

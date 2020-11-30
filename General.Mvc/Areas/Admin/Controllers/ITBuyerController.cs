@@ -20,6 +20,7 @@ using System.IO;
 using OfficeOpenXml;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using General.Services.Order;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -33,8 +34,10 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITBuyerController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        private IOrderService _sysOrderService;
+        public ITBuyerController(ISysUserRoleService sysUserRoleService, IOrderService sysOrderService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
+            this._sysOrderService = sysOrderService;
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
@@ -62,11 +65,35 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult ITBuyerScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
-            ViewBag.Userid = id;
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            int? ida = id;
+            if (ida == 0) {
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+               
+            } else {
+                HttpContext.Session.SetInt32("import", id);
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+            }
+            //Session["username"] = id.ToString(); 
+            int importid = ViewBag.Import;
             RolePermissionViewModel model = new RolePermissionViewModel();
-             var pageList = _scheduleService.searchList(arg, page, size,id);
+             var pageList = _scheduleService.searchList(arg, page, size, importid);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itBuyerSchedule", arg);
+            return View(dataSource);//sysImport
+        }
+        [Route("Order", Name = "itOrderBuyerIndex")]
+        [Function("订单导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+
+        public IActionResult ITOrderBuyerIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
+            ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+
+            var pageList = _sysOrderService.searchOrder(arg, page, size);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
             return View(dataSource);//sysImport
         }
         [Route("excelimporta2", Name = "excelimporta2")]
@@ -130,19 +157,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
                     model.CreationTime = DateTime.Now;
                     model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
+                 
                     _importTrans_main_recordService.insertImportTransmain(model);
                 }
                 return Redirect(ViewBag.ReturnUrl);
@@ -153,29 +168,67 @@ namespace General.Mvc.Areas.Admin.Controllers
         public ActionResult ITBuyerList(string kevin)
         {
             string test = kevin;
-
-          
-
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-
-
-          //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
                 model.RequestedArrivalTime = u.RequestedArrivalTime;
-           
-
                 _importTrans_main_recordService.updateImportTransmain(model);
                 //u就是jsonlist里面的一个实体类
             }
-
-         
-
             AjaxData.Status = true;
             AjaxData.Message = "OK";
-
-
+            return Json(AjaxData);
+        }
+        [HttpPost]
+        [Route("itBuyerScheduleList", Name = "itBuyerScheduleList")]
+        public ActionResult ITBuyerScheduleList(string kevin)
+        {
+            string test = kevin;
+            List<Entities.Schedule> jsonlist = JsonHelper.DeserializeJsonToList<Entities.Schedule>(test);
+ //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            foreach (Entities.Schedule u in jsonlist)
+            {
+                var model = _scheduleService.getById(u.Id);
+                model.InvoiceNo= u.InvoiceNo;
+                model.MaterielNo = u.MaterielNo;
+                model.NetOrder = u.NetOrder;
+                model.NetPrice = u.NetPrice;
+                model.OrderUnit = u.OrderUnit;
+                model.PurchaseOrderQuantity = u.PurchaseOrderQuantity;
+                model.PurchasingDocuments = u.PurchasingDocuments;
+                model.ShortTxt = u.ShortTxt;
+                model.Waybill = u.Waybill;
+                model.BatchNo = u.BatchNo;
+                _scheduleService.updateSchedule(model);
+                //u就是jsonlist里面的一个实体类
+            }
+            AjaxData.Status = true;
+            AjaxData.Message = "OK";
+            return Json(AjaxData);
+        }
+        [HttpPost]
+        [Route("itOrderBuyerList", Name = "itOrderBuyerList")]
+        public ActionResult ITOrderBuyerList(string kevin)
+        {
+            string test = kevin;
+            List<Entities.Order> jsonlist = JsonHelper.DeserializeJsonToList<Entities.Order>(test);
+            ViewBag.Import = HttpContext.Session.GetInt32("import");
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            foreach (Entities.Order u in jsonlist)
+            {
+                var item = _sysOrderService.getById(u.Id);
+                Entities.Schedule model = new Entities.Schedule();
+                model.MaterielNo = item.OrderNo;
+                model.MainId = ViewBag.Import;
+                model.CreationTime = DateTime.Now;
+                model.Creator = WorkContext.CurrentUser.Id;
+                _scheduleService.insertSchedule(model);
+                //u就是jsonlist里面的一个实体类
+            }
+            AjaxData.Status = true;
+            AjaxData.Message = "OK";
             return Json(AjaxData);
         }
         [HttpGet]
@@ -239,11 +292,11 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
         [HttpGet]
-        [Route("edit", Name = "editBuyerSchedule")]
+        [Route("edit2", Name = "editBuyerSchedule")]
         [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerScheduleIndex")]
         public IActionResult EditBuyerSchedule(int? id, string returnUrl = null)
         {//页面跳转未完成
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyerSchedule");
             if (id != null)
             {
                 var model = _scheduleService.getById(id.Value);
@@ -255,12 +308,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View();
         }
         [HttpPost]
-        [Route("edit")]
+        [Route("edit2")]
         public ActionResult EditBuyerSchedule(Entities.Schedule model, string returnUrl = null)
         {//页面跳转未完成
             ModelState.Remove("Id");
             int a = 0;
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyerSchedule");
             if (!ModelState.IsValid)
                 return View(model);
 

@@ -153,6 +153,48 @@ namespace General.Mvc.Areas.Admin.Controllers
               
                 if (u.ShippingMode != "") { model.ShippingMode = u.ShippingMode; }
                 model.DeliveryRequiredDate = u.DeliveryRequiredDate;
+                if (WorkContext.CurrentUser.Co == "北京捷诚" || WorkContext.CurrentUser.Co == "辽宁北方")
+                {
+                    if (model.Dest == "PEK")
+                    {
+                        model.Forwarder = "北京捷诚";
+                    }
+                    else if (model.Dest == "SHE")
+                    {
+                        model.Forwarder = "辽宁北方";
+                    }
+                    else if (model.Dest == "DLC")
+                    {
+                        model.Forwarder = "大连环球";
+                    }
+                    else
+                    {
+                        model.Forwarder = "辽宁北方";
+                    }
+                }
+                else if (WorkContext.CurrentUser.Co == "北京和合" || WorkContext.CurrentUser.Co == "大连环球")
+                {
+                    if (model.Dest == "PEK")
+                    {
+                        model.Forwarder = "北京捷诚";
+                    }
+                    else if (model.Dest == "SHE")
+                    {
+                        model.Forwarder = "辽宁北方";
+                    }
+                    else if (model.Dest == "DLG")
+                    {
+                        model.Forwarder = "大连环球";
+                    }
+                    else
+                    {
+                        model.Forwarder = "辽宁北方";
+                    }
+                }
+                else
+                {
+                    model.Forwarder = u.Forwarder;
+                }
                 _importTrans_main_recordService.updateImportTransmain(model);
             }
             AjaxData.Status = true;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using General.Core.Librs;
 using General.Entities;
 using General.Framework.Controllers.Admin;
 using General.Framework.Datatable;
@@ -25,7 +26,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "etShippingListCreate")]
-        [Function("创建发运清单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ExportTransportationController", Sort = 1)]
+        [Function("物流员（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ExportTransportationController", Sort = 1)]
 
         public IActionResult ETShippingListCreateIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -38,19 +39,45 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.ExportTransportation, SysCustomizedListSearchArg>("etShippingListCreate", arg);
             return View(dataSource);
         }
-
         [HttpPost]
-        [Route("")]
-        public ActionResult ETShippingListCreateIndex(List<int> sysResource, string returnUrl = null)
+        [Route("etShippingListCreateList", Name = "etShippingListCreateList")]
+        public ActionResult ETShippingListCreateList(string kevin)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("etShippingListCreate");
-            string flag = "创建发运清单";
-            _exportTransportationService.saveExportTransportation(sysResource, flag);
+            string test = kevin;
+            List<Entities.ExportTransportation> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ExportTransportation>(test);
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            foreach (Entities.ExportTransportation u in jsonlist)
+            {
+                var model = _exportTransportationService.getById(u.Id);
+                model.Project = u.Project;
+                model.Applier = u.Applier;
+                model.OfGoods = u.OfGoods;
+                model.TotalGw = u.TotalGw;
+                model.TotalNo = u.TotalNo;
+                model.TradeTerms = u.TradeTerms;
+                model.Carrier = u.Carrier;
+                model.PickDriver = u.PickDriver;
+                model.DriverCard = u.DriverCard;
+                //model.Project = u.Project;
+                _exportTransportationService.updateExportTransportation(model);
+                //u就是jsonlist里面的一个实体类
+            }
             AjaxData.Status = true;
-            AjaxData.Message = "确认创建成功";
-            return Redirect(ViewBag.ReturnUrl);
-            //return View();
+            AjaxData.Message = "OK";
+            return Json(AjaxData);
         }
+        //[HttpPost]
+        //[Route("")]
+        //public ActionResult ETShippingListCreateIndex(List<int> sysResource, string returnUrl = null)
+        //{
+        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("etShippingListCreate");
+        //    string flag = "创建发运清单";
+        //    _exportTransportationService.saveExportTransportation(sysResource, flag);
+        //    AjaxData.Status = true;
+        //    AjaxData.Message = "确认创建成功";
+        //    return Redirect(ViewBag.ReturnUrl);
+        //    //return View();
+        //}
         [HttpGet]
         [Route("edit", Name = "editetShippingListCreate")]
         [Function("创建发运清单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ETShippingListCreateController.ETShippingListCreateIndex")]
@@ -81,7 +108,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("etShippingListCreate");
             if (!ModelState.IsValid)
                 return View(model);
-            string flag = "创建发运清单";
+   
             if (!String.IsNullOrEmpty(model.ItemNo))
                 model.ItemNo = model.ItemNo.Trim();
             if (!String.IsNullOrEmpty(model.Project))
@@ -96,7 +123,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 model.CreationTime = DateTime.Now;
                 model.Creator = WorkContext.CurrentUser.Id;
-                _exportTransportationService.updateExportTransportation(model, flag);
+                _exportTransportationService.updateExportTransportation(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }

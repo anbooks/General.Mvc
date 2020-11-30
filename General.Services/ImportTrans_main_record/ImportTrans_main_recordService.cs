@@ -58,7 +58,7 @@ namespace General.Services.ImportTrans_main_record
               item.ModifiedTime = model.ModifiedTime;
               item.Modifier = model.Modifier;
             _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
+            _memoryCache.Remove(MODEL_KEY); 
         }
 
         public void updateShippingMode(Entities.ImportTrans_main_record model)

@@ -263,6 +263,9 @@
     <Content Update="Areas\Admin\Views\ETShippingListCreate\EditETShippingListCreate.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITBuyer\ITOrderBuyerIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITCustomsBrokerSelect\EditITCustomsBrokerSelect.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

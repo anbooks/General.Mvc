@@ -12,16 +12,16 @@ namespace General.Entities
     {
          public int Id { get; set; }//数据库建表主键必须命名为Id
        
-         public string InvoiceNo { get; set; }//编号
-         public string PurchasingDocuments { get; set; }//发货人
-         public string MaterielNo { get; set; }//合同号
-         public string ShortTxt { get; set; }//贸易条款
-         public string OrderUnit { get; set; }//货物类型
-          public string PurchaseOrderQuantity { get; set; }//发票金额
-         public string NetPrice { get; set; }//发票币种
-         public string NetOrder { get; set; }//件数(箱数)
-         public string BatchNo { get; set; }//毛重
-        public string Waybill { get; set; }//实际提货/收货日期
+         public string InvoiceNo { get; set; }
+         public string PurchasingDocuments { get; set; }
+         public string MaterielNo { get; set; }
+         public string ShortTxt { get; set; }
+         public string OrderUnit { get; set; }
+          public string PurchaseOrderQuantity { get; set; }
+         public string NetPrice { get; set; }
+         public string NetOrder { get; set; }
+         public string BatchNo { get; set; }
+        public string Waybill { get; set; }
         public int MainId { get; set; }
         public Guid Creator { get; set; }
 
