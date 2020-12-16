@@ -42,7 +42,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._hostingEnvironment = hostingEnvironment;
         }
         [Route("", Name = "itOrderImportIndex")]
-        [Function("订单数据导入", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("订单数据导入", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.DataImportController", Sort = 1)]
 
         public IActionResult ITOrderImportIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -56,49 +56,17 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View(dataSource);//sysImport
         }
         [Route("excelimport", Name = "excelimport")]
-        public FileResult Excel()
+        public FileStreamResult Excel(int?id)
         {
-            //获取list数据
-            var list = _sysRoleService.getAllRoles();//bll.NurseUserListExcel("", "ID asc");
+            var model = _sysOrderService.getById(id.Value);
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var fileProfile = sWebRootFolder + "\\Files\\profile\\";
+            string sFileName = model.Attachment;
+            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+            FileStream fs = new FileStream(file.ToString(), FileMode.Create);
             
-            //创建Excel文件的对象
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
+            return File(fs,"application/octet-stream", sFileName);
 
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("用户姓名");
-            //row1.CreateCell(2).SetCellValue("电话");
-            //row1.CreateCell(3).SetCellValue("注册时间");
-            //row1.CreateCell(4).SetCellValue("邀请人ID");
-            //row1.CreateCell(5).SetCellValue("邀请人名称");
-            //row1.CreateCell(6).SetCellValue("邀请人电话");
-            //row1.CreateCell(7).SetCellValue("总积分");
-            //row1.CreateCell(8).SetCellValue("已使用积分");
-            //row1.CreateCell(9).SetCellValue("可用积分");
-            //将数据逐步写入sheet1各个行
-            for (int i = 0; i < list.Count; i++)
-            {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Name);
-                //rowtemp.CreateCell(2).SetCellValue(list[i].Phone);
-                //rowtemp.CreateCell(3).SetCellValue(list[i].CreateTime.Value.ToString());
-                //rowtemp.CreateCell(4).SetCellValue(list[i].InviterID.Value);
-                //rowtemp.CreateCell(5).SetCellValue(list[i].iName);
-                //rowtemp.CreateCell(6).SetCellValue(list[i].iPhone);
-                //rowtemp.CreateCell(7).SetCellValue(list[i].IntegralSum);
-                //rowtemp.CreateCell(8).SetCellValue(list[i].IntegralSy);
-                //rowtemp.CreateCell(9).SetCellValue(list[i].IntegralKy);
-            }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xlsx";
-            return File(ms, "application/vnd.ms-excel", sFileName);
         }
         [HttpPost]
         [Route("importexcel", Name = "importexcel")]
@@ -106,60 +74,16 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = $"{Guid.NewGuid()}.xlsx";
+            var fileProfile = sWebRootFolder + "\\Files\\profile\\";
+            string sFileName = excelfile.FileName;
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
             using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
             {
                 excelfile.CopyTo(fs);
                 fs.Flush();
             }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                int orderno=0; int suppliername = 0; int suppliercode = 0; int item = 0; int materialcode = 0; int name = 0; int size = 0;
-                for (int columns = 1;columns <= ColCount; columns++)
-                {
-                    //Entities.Order model = new Entities.Order();
-                    if (worksheet.Cells[1, columns].Value.ToString() == "订单号") {  orderno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "供应商名称") { suppliername = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "供应商代码") { suppliercode = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "行号") { item = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "物料代码") {  materialcode = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "品名") {  name = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "规格") {  size = columns; }
-                }
-                for (int row = 2; row <= rowCount; row++)
-                {
-                   
-                    try
-                    {
-                        Entities.Order model = new Entities.Order();
-                        model.OrderNo = worksheet.Cells[row, orderno].Value.ToString();
-                    model.SupplierName = worksheet.Cells[row, suppliername].Value.ToString();
-                    model.SupplierCode = worksheet.Cells[row, suppliercode].Value.ToString();
-                    model.Item = worksheet.Cells[row, item].Value.ToString();
-                    model.MaterialCode = worksheet.Cells[row, materialcode].Value.ToString();
-                    model.Name = worksheet.Cells[row, name].Value.ToString();
-                    model.Size = worksheet.Cells[row, size].Value.ToString();
-                    model.CreationTime = DateTime.Now;
-                    model.Creator = WorkContext.CurrentUser.Id;
-                    _sysOrderService.insertOrder(model);
-                    }
-                    catch (Exception e)
-                    {
-                        ViewData["IsShowAlert"] = "True";
-                        // return Content("<script>alert('请先登录');</script>");
-                    }
-
-                   
-                   
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
+           return Redirect(ViewBag.ReturnUrl);
+            
         }
         //[HttpPost]
         //public JsonResult ExcelToUpload(HttpPostedFileBase file)

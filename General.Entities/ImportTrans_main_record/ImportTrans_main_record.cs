@@ -24,19 +24,16 @@ namespace General.Entities
          public string Gw { get; set; }//毛重
         public DateTime? RealReceivingDate { get; set; }//实际提货/收货日期
         public Guid Creator { get; set; }
-
         public DateTime CreationTime { get; set; }
-
         public Guid? Modifier { get; set; }
-
          public DateTime? ModifiedTime { get; set; }
          public bool IsDeleted { get; set; }
         public Guid? Requester { get; set; }
         public DateTime? RequestTime { get; set; }
-  
         public DateTime? RequestedArrivalTime{ get; set; }
         public bool? F_ShipmentCreate { get; set; }
-        public string ShippingMode { get; set; }
+        public string ShippingMode { get; set; }//运输方式
+        public string InventoryAttachment { get; set; }//箱单发票附件
         public bool? F_ArrivalTimeRequested { get; set; }
         public bool? F_ShippingModeGiven { get; set; }
         public DateTime? ShippingModeGivenTime { get; set; }
@@ -45,17 +42,19 @@ namespace General.Entities
         public bool? F_DeliveryStatusInput { get; set; }
         public Guid? DeliveryStatusInputer { get; set; }
         public DateTime? DeliveryStatusInputTime { get; set; }
-        public string Status { get; set; }
-        public string FlighVessel { get; set; }
-        public string Origin { get; set; }
-        public string Dest { get; set; }
-        public string Mbl { get; set; }
-        public string Hbl { get; set; }
-        public string Measurement { get; set; }
-        public DateTime? Atd { get; set; }
-        public DateTime? Ata { get; set; }
-        public string Forwarder { get; set; }
-        public string InventoryNo { get; set; }
+        public string Status { get; set; }//运输状态
+        public string FlighVessel { get; set; }//航班号/船名
+        public string Origin { get; set; }//起运港
+        public string Dest { get; set; }//目的港
+        public string Mbl { get; set; }//主单号
+        public string MblAttachment { get; set; }//主运单附件
+        public string Hbl { get; set; }//分单号
+        public string HblAttachment { get; set; }//分单附件
+        public string Measurement { get; set; }//计费重量
+        public DateTime? Atd { get; set; }//
+        public DateTime? Ata { get; set; }//
+        public string Forwarder { get; set; }//口岸报关行
+        public string InventoryNo { get; set; }//核注清单号
         public bool? F_InventoryInput { get; set; }
         public Guid? InventoryInputer { get; set; }
         public DateTime? InventoryInputTime { get; set; }
@@ -66,29 +65,29 @@ namespace General.Entities
         public bool? F_PortCustomerBrokerInput { get; set; }
         public Guid? PortCustomerBrokerInputer { get; set; }
         public DateTime? PortCustomerBrokerInputTime { get; set; }
-        public DateTime? BlDate { get; set; }
-        public DateTime? DeclarationDate { get; set; }
-        public DateTime? ReleaseDate { get; set; }
-        public string CustomsDeclarationNo { get; set; }        
-        public string InspectionLotNo { get; set; }
-        public bool? IsNeedSecondCheck { get; set; }     
+        public DateTime? BlDate { get; set; }//提单日期
+        public DateTime? DeclarationDate { get; set; }//申报日期
+        public DateTime? ReleaseDate { get; set; }//放行日期
+        public string CustomsDeclarationNo { get; set; }// 报关单号       
+        public string InspectionLotNo { get; set; }//报检单号
+        public bool? IsNeedSecondCheck { get; set; } //  是否生成二检  
         public Guid? DeliveryDateRequirer { get; set; }
         public DateTime? DeliveryDateRequiredTime { get; set; }        
         public bool? F_DeliveryDateRequired { get; set; }
-        public DateTime? DeliveryRequiredDate { get; set; }
-        public string DeliveryReceipt { get; set; }
-        public string ChooseDelivery { get; set; }
-        public DateTime? ActualDeliveryDate { get; set; }
-        public string BrokenRecord { get; set; }
+        public DateTime? DeliveryRequiredDate { get; set; }//要求送货日期
+        public string DeliveryReceipt { get; set; }//
+        public string ChooseDelivery { get; set; }//选择自行送货或外部提货
+        public DateTime? ActualDeliveryDate { get; set; }//实际提/送货日期
+        public string BrokenRecord { get; set; }//破损记录
         public bool? F_DeliveryReceipt { get; set; }
         public Guid? DeliveryReceipter { get; set; }
         public DateTime? DeliveryReceiptTime { get; set; }
-        public bool? CheckAndPass { get; set; }
+        public bool? CheckAndPass { get; set; }//是否核放
         public Guid? CheckAndPassor { get; set; }
         public DateTime? CheckAndPassTime { get; set; }
         public bool? F_CheckAndPass { get; set; }
-        public string ReceiptForm { get; set; }
-        public string Note { get; set; }
+        public string ReceiptForm { get; set; }//
+        public string Note { get; set; }//
         public Guid? ReceiptFormer { get; set; }
         public DateTime? ReceiptFormTime { get; set; }
         public bool? F_ReceiptForm { get; set; }

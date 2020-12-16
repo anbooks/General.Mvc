@@ -10,7 +10,8 @@ namespace General.Entities
         public GeneralDbContext(DbContextOptions options) : base(options)
         {
         }
-        
+        public DbSet<ProcurementPlan> ProcurementPlan { get; set; }
+        public DbSet<MaterialAcceptance> MaterialAcceptance { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<SysUser> SysUsers { get; set; }
         public DbSet<SysUserToken> SysUserTokenes { get; set; }

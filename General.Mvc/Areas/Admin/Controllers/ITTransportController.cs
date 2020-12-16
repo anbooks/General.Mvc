@@ -44,7 +44,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("", Name = "itTransport")]
         [Function("运代（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
-        public IActionResult ITTransportIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITTransportIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("运输方式");
@@ -60,85 +60,38 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("schedule", Name = "itTransportSchedule")]
         [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
         [HttpGet]
-        public IActionResult ITTransportScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITTransportScheduleIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             ViewBag.Userid = id;
             RolePermissionViewModel model = new RolePermissionViewModel();
-             var pageList = _scheduleService.searchList(arg, page, size,id);
+            var pageList = _scheduleService.searchList(arg, page, size, id);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itTransportSchedule", arg);
             return View(dataSource);//sysImport
         }
-        [Route("excelTransport", Name = "excelTransport")]
-        public FileResult Excel()
+        [Route("downLoadmbl", Name = "downLoadmbl")]
+        [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        public FileStreamResult DownLoadMbl(int? id)
         {
-            var list = _importTrans_main_recordService.getAll();
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("编号");
-            for (int i = 0; i < list.Count; i++)
-            {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
-            }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xls";
-            return File(ms, "application/vnd.ms-excel", sFileName);
-        }
-        [HttpPost]
-        [Route("importTransport", Name = "importTransport")]
-        public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itTransport");
+            var model = _importTrans_main_recordService.getById(id.Value);
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = $"{Guid.NewGuid()}.xlsx";
+            var fileProfile = sWebRootFolder + "\\Files\\mbl\\";
+            string sFileName = model.MblAttachment;
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                for (int row = 2; row <= rowCount; row++)
-                {
-
-                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
-                    model.Shipper = worksheet.Cells[row, 2].Value.ToString();
-                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo!=null)
-                    {
-                        model.Buyer = model.PoNo.Substring(1, 2);
-                    }             
-                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
-                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
-                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
-                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
-                    model.CreationTime = DateTime.Now;
-                    model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    _importTrans_main_recordService.insertImportTransmain(model);
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
+            FileStream fs = new FileStream(file.ToString(), FileMode.Create);
+            return File(fs, "application/octet-stream", sFileName);
+        }
+        [Route("downLoadhbl", Name = "downLoadhbl")]
+        [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        public FileStreamResult DownLoadHbl(int? id)
+        {
+            var model = _importTrans_main_recordService.getById(id.Value);
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var fileProfile = sWebRootFolder + "\\Files\\hbl\\";
+            string sFileName = model.HblAttachment;
+            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+            FileStream fs = new FileStream(file.ToString(), FileMode.Create);
+            return File(fs, "application/octet-stream", sFileName);
         }
         [HttpPost]
         [Route("itTransportList", Name = "itTransportList")]
@@ -150,8 +103,13 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
                 
-              
                 if (u.Status != "") { model.Status = u.Status; }
+                model.FlighVessel = u.FlighVessel;
+                model.Origin = u.Origin;
+                model.Dest = u.Dest;
+                model.Mbl = u.Mbl;
+                model.Hbl = u.Hbl;
+                model.Measurement = u.Measurement;
                 model.Ata = u.Ata;
                 model.Atd = u.Atd;
                 _importTrans_main_recordService.updateImportTransmain(model);
@@ -171,21 +129,28 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
+                ViewBag.mbl = model.MblAttachment;
+                ViewBag.hbl = model.HblAttachment;
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
+            }
+            else
+            {
+                ViewBag.FJ = 1;
             }
             return View();
         }
         [HttpPost]
         [Route("edit")]
-        public ActionResult EditITTransport(Entities.ImportTrans_main_record model, string returnUrl = null)
+        public ActionResult EditITTransport(Entities.ImportTrans_main_record model, IFormFile mblfile, IFormFile hblfile, string returnUrl = null)
         {
             ModelState.Remove("Id");
+            int a = 0;
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itTransport");
             if (!ModelState.IsValid)
                 return View(model);
-             if (!String.IsNullOrEmpty(model.Invcurr))
+            if (!String.IsNullOrEmpty(model.Invcurr))
                 model.Invcurr = model.Invcurr.Trim();
             if (!String.IsNullOrEmpty(model.Shipper))
                 model.Shipper = model.Shipper.Trim();
@@ -194,17 +159,37 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!String.IsNullOrEmpty(model.PoNo))
                 model.PoNo = model.PoNo.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
-                model.Buyer= model.PoNo.Substring(1, 2);
-            if (model.Id.Equals(0)) {
+                model.Buyer = model.PoNo.Substring(1, 2);
+            if (model.Id.Equals(0))
+            {
                 model.CreationTime = DateTime.Now;
                 model.IsDeleted = false;
                 model.Modifier = null;
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
-            _importTrans_main_recordService.insertImportTransmain(model);
+                _importTrans_main_recordService.insertImportTransmain(model);
             }
             else
             {
+                string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                var fileProfilem = sWebRootFolder + "\\Files\\mbl\\";
+                var fileProfileh = sWebRootFolder + "\\Files\\hbl\\";
+                string sFileNamem = mblfile.FileName;
+                string sFileNameh = hblfile.FileName;
+                FileInfo filem = new FileInfo(Path.Combine(fileProfilem, sFileNamem));
+                FileInfo fileh = new FileInfo(Path.Combine(fileProfileh, sFileNameh));
+                using (FileStream fsm = new FileStream(filem.ToString(), FileMode.Create))
+                {
+                    mblfile.CopyTo(fsm);
+                    fsm.Flush();
+                }
+                using (FileStream fsh = new FileStream(fileh.ToString(), FileMode.Create))
+                {
+                    mblfile.CopyTo(fsh);
+                    fsh.Flush();
+                }
+                model.MblAttachment = mblfile.FileName;
+                model.HblAttachment = hblfile.FileName;
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;
                 _importTrans_main_recordService.updateImportTransmain(model);
@@ -235,12 +220,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itTransport");
             if (!ModelState.IsValid)
                 return View(model);
-            if (!String.IsNullOrEmpty(model.InvoiceNo))
-                model.InvoiceNo = model.InvoiceNo.Trim();
-            if (!String.IsNullOrEmpty(model.MaterielNo))
-                model.MaterielNo = model.MaterielNo.Trim();
-            if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-                model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+            //if (!String.IsNullOrEmpty(model.InvoiceNo))
+            //     model.InvoiceNo = model.InvoiceNo.Trim();
+            // if (!String.IsNullOrEmpty(model.MaterielNo))
+            //      model.MaterielNo = model.MaterielNo.Trim();
+            // if (!String.IsNullOrEmpty(model.PurchasingDocuments))
+            //     model.PurchasingDocuments = model.PurchasingDocuments.Trim();
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;

@@ -1,9 +1,4 @@
-﻿@*@{
-        ViewData["Title"] = "EditUser";
-    }
-
-    <h2>EditUser</h2>*@
-
+﻿
 @using General.Entities
 @model ImportTrans_main_record
 @{
@@ -28,12 +23,9 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="editITTransport" method="post" class="form-horizontal">
+            <form asp-route="editITTransport" method="post" enctype="multipart/form-data" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
-
-
-
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()编号</label>
                     <div class="col-sm-3">
@@ -55,7 +47,7 @@
                     </div>
                     <span asp-validation-for="PoNo" class="inline text-danger "></span>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">货币类型</label>
                     <div class="col-sm-3">
@@ -63,9 +55,45 @@
                     </div>
                     <span asp-validation-for="Invcurr" class="inline text-danger"></span>
                 </div>
-
-
-
+                @if (ViewBag.FJ != 1)
+                {
+                    @if (ViewBag.mbl != null)
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label no-padding-right">主运单附件上传(已上传)</div>
+                            <div class="col-sm-3">
+                                <input type="file" name="mblfile" />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label no-padding-right">主运单附件上传</div>
+                            <div class="col-sm-3">
+                                <input type="file" name="mblfile" />
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.hbl != null)
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label no-padding-right">分运单附件上传(已上传)</div>
+                            <div class="col-sm-3">
+                                <input type="file" name="hblfile" />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label no-padding-right">分运单附件上传</div>
+                            <div class="col-sm-3">
+                                <input type="file" name="hblfile" />
+                            </div>
+                        </div>          
+                    }
+                }
                 <div class="col-md-offset-2 col-md-9">
                     <button class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>

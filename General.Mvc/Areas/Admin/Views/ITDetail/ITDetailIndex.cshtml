@@ -1,0 +1,218 @@
+﻿@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<ImportTrans_main_record, SysCustomizedListSearchArg>
+
+@{
+    ViewData["Title"] = "查询页面";
+}
+
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+
+            <a href="">进口运输</a>
+        </li>
+        <li class="active">查询页面</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <!--<div class="col-sm-12">
+                <a asp-route="editITShipmentCreate" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加发运条目</a>
+                <a asp-route="excelimport2" class="btn btn-sm btn-pink">数据导出</a>
+                <form enctype="multipart/form-data" method="post" asp-route="importexcel2">
+                    <div align="left" style="float:left">
+                        <input type="file" name="excelfile" />
+                    </div>
+                    <div>
+                        <input type="submit" value="数据导入" />
+                    </div>
+                </form>
+            </div>-->
+        </div>
+        <div class="space-2"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-route="itDetail" method="get" class="form-inline">
+
+                            <label>关键字</label>
+                            <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
+                            <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
+                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
+                            @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
+                            <button type="submit" class="btn btn-purple btn-sm">
+                                查询
+                                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form asp-route="itDetail" method="post" id="formitShipmentCreate" class="form-horizontal" onsubmit="return false;">
+            <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
+                <div class="form-group">
+                    @if (Model != null)
+                    {
+                        <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                            <thead>
+                                <tr>
+                                    <th width="100px"></th>
+                                    <th width="100px">编号</th>
+                                    <th width="100px">发货人</th>
+                                    <th width="100px">合同号</th>
+                                    <th width="100px">贸易条款</th>
+                                    <th width="100px">货物类型</th>
+                                    <th width="100px">发票金额</th>
+                                    <th width="100px">发票币种</th>
+                                    <th width="100px">实际收/提货日期</th>
+                                    <th width="100px">件数(箱数)</th>
+                                    <th width="100px">毛重</th>
+                                    <th width="100px">采购员</th>
+                                    <th width="100px">要求到货时间</th>
+                                    <th width="100px">运输方式</th>
+                                    <th width="100px">运输状态</th>
+                                    <th width="100px">航班号/船名</th>
+                                    <th width="100px">起运港</th>
+                                    <th width="100px">目的港</th>
+                                    <th width="100px">主单号</th>
+                                    <th width="100px">分单号</th>
+                                    <th width="100px">计费重量</th>
+                                    <th width="100px">实际发运日期</th>
+                                    <th width="100px">实际到港日期</th>
+                                    <th width="100px">（口岸）报关行</th>
+                                    <th width="100px">核注清单号</th>
+                                    <th width="100px">提单日期</th>
+                                    <th width="100px">申报日期</th>
+                                    <th width="100px">放行日期</th>
+                                    <th width="100px">报关单号</th>
+                                    <th width="100px">报检单号</th>
+                                    <th width="100px">生成二检明细</th>
+                                    <th width="100px">要求送货日期</th>
+                                    <th width="100px">选择自行送货或外部提货</th>
+                                    <th width="100px">实际提/送货日期</th>
+                                    <th width="100px">是否核放</th>
+                                    <th width="100px">是否已生成报检单</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @foreach (var item in Model.Data)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="@Url.RouteUrl("editITShipmentCreate", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                                        </td>
+                                        <td><input style="width:150px" type="text" value="@item.Itemno" disabled/></td>
+                                        <td><input style="width:80px" type="text" value="@item.Shipper" disabled /></td>
+                                        <td><input style="width:100px" type="text" value="@item.PoNo" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Incoterms" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.CargoType" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Invamou" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Invcurr" disabled /></td>
+                                        <td><input style="width:90px" type="text" value="@item.RealReceivingDate" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Pcs" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Gw" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Buyer" disabled /></td>
+                                        <td><input style="width:90px" type="text" value="@item.RequestedArrivalTime" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.ShippingMode" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Status" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.FlighVessel" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Origin" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Dest" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Mbl" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Hbl" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Measurement" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Atd" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Ata" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Forwarder" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.InventoryNo" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.BlDate" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.DeclarationDate" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.ReleaseDate" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.CustomsDeclarationNo" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.InspectionLotNo" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.IsNeedSecondCheck" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.DeliveryRequiredDate" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.ChooseDelivery" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.ActualDeliveryDate" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.CheckAndPass" disabled /></td>
+                                        <td><input style="width:80px" type="text" value="@item.Declaration" disabled /></td>
+                                        <td>
+                                        <a href="@Url.RouteUrl("itShipmentCreateSchedule", new { id = item.Id })" class="btn btn-xs btn-purple">
+                                            <i class="fa fa-bolt"></i>查看明细表</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        <pager page-value="Model.Paging"></pager>
+
+                    }
+                </div>
+            </div>
+            <div class="col-md-offset-1">
+                <button class="btn btn-info" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    确认创建
+                </button>
+            </div>
+
+        </form>
+        <script>
+            $(function () {
+                $('#formitShipmentCreate').submit(function () {
+                    var form = $(this);
+                    var subArray = [];
+                    $("input[name='checkboxId']:checked").each(function () {
+                        var test = $(this).next();
+                        var i = 0;
+                        var id = $(this).closest("tr").find("td").eq(1).find("input:checkbox");
+                        var itemno = $(this).closest("tr").find("td").eq(2).find("input:text");
+                        var shipper = $(this).closest("tr").find("td").eq(3).find("input:text");
+                        //  var invcurr = $(this).closest("tr").find("td").eq(3).find("select[name='invcurr']");
+                        //var test1 = $(this).next();
+                        var mSub = {
+                            id: id.val(),
+                            itemno: itemno.val(),
+                            shipper: shipper.val(),
+                        };
+                        subArray.push(mSub);
+                    });
+                    alert(JSON.stringify(subArray));
+                    var _url = "/admin/itShipmentCreate/itShipmentCreateList"
+                    form.ajaxSubmit({
+                        type: 'post', // 提交方式 get/post
+                        url: _url, // 需要提交的 url
+                        dataType: "json", //数据类型 注意这里！！！！！
+                        data: { "kevin": JSON.stringify(subArray) },
+                        success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                            // 此处可对 data 作相关处理
+                            alert('提交成功！');
+                        }
+                    });
+                    return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+
+
+                });
+
+            });
+        </script>
+
+
+    </div>
+
+

@@ -70,28 +70,88 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View(dataSource);//sysImport
         }
         [Route("excelConfirmedCustoms", Name = "excelConfirmedCustoms")]
-        public FileResult Excel()
+        
+        [Function("核注清单生成", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
+        public IActionResult Export()
         {
-            var list = _importTrans_main_recordService.getAll();
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("编号");
-            for (int i = 0; i < list.Count; i++)
+            //ViewBag.Import = HttpContext.Session.GetInt32("import");
+            //var list = _scheduleService.getAll(ViewBag.Import);
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+
+            string sFileName = "核注清单" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
+
+            file.Delete();
+            using (ExcelPackage package = new ExcelPackage(file))
             {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
+                // 添加worksheet
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("核注清单");
+                //添加头
+                worksheet.Cells[1, 1].Value = "序号";
+                worksheet.Cells[1, 2].Value = "商品料号";
+                worksheet.Cells[1, 3].Value = "报关单商品序号";
+                worksheet.Cells[1, 4].Value = "流转申报表序号";
+                worksheet.Cells[1, 5].Value = "原产国（地区）";
+                worksheet.Cells[1, 6].Value = "申报单价";
+                worksheet.Cells[1, 7].Value = "申报总价";
+                worksheet.Cells[1, 8].Value = "币制";
+                worksheet.Cells[1, 9].Value = "申报数量";
+                worksheet.Cells[1, 10].Value = "法定数量";
+                worksheet.Cells[1, 11].Value = "第二数量";
+                worksheet.Cells[1, 12].Value = "第一比例因子";
+                worksheet.Cells[1, 13].Value = "第二比例因子";
+                worksheet.Cells[1, 14].Value = "重量比例因子";
+                worksheet.Cells[1, 15].Value = "毛重";
+                worksheet.Cells[1, 16].Value = "净重";
+                worksheet.Cells[1, 17].Value = "征免方式";
+                worksheet.Cells[1, 18].Value = "用途";
+                worksheet.Cells[1, 19].Value = "单耗版本号";
+                worksheet.Cells[1, 20].Value = "备注";
+                worksheet.Cells[1, 21].Value = "最终目的国（地区）";
+                worksheet.Cells[1, 22].Value = "修改标志";
+                worksheet.Cells[1, 23].Value = "备案序号";
+                //添加值
+                //for (int i = 0; i <= list.Count - 1; i++)
+                //{
+                //    if (list[i].Buyer.ToString() != null)
+                //    {
+                //        worksheet.Cells[i + 2, 1].Value = list[i].Buyer.ToString();
+                //    }
+                //    if (list[i].OrderNo.ToString() != null)
+                //    {
+                //        worksheet.Cells[i + 2, 2].Value = list[i].OrderNo.ToString();
+                //    }
+                //    if (list[i].ReferenceNo.ToString() != null)
+                //    { worksheet.Cells[i + 2, 3].Value = list[i].ReferenceNo.ToString(); }
+                //    if (list[i].MaterialCode.ToString() != null)
+                //    { worksheet.Cells[i + 2, 4].Value = list[i].MaterialCode.ToString(); }
+                //    if (list[i].Description.ToString() != null)
+                //    { worksheet.Cells[i + 2, 5].Value = list[i].Description.ToString(); }
+                //    if (list[i].Type.ToString() != null)
+                //    { worksheet.Cells[i + 2, 6].Value = list[i].Type.ToString(); }
+                //    if (list[i].Specification.ToString() != null)
+                //    { worksheet.Cells[i + 2, 7].Value = list[i].Specification.ToString(); }
+                //    if (list[i].Thickness.ToString() != null)
+                //    { worksheet.Cells[i + 2, 8].Value = list[i].Thickness; }
+                //    if (list[i].Length.ToString() != null)
+                //    { worksheet.Cells[i + 2, 9].Value = list[i].Length.ToString(); }
+                //    if (list[i].Width.ToString() != null)
+                //    { worksheet.Cells[i + 2, 10].Value = list[i].Width.ToString(); }
+                //    if (list[i].PurchaseQuantity.ToString() != null)
+                //    { worksheet.Cells[i + 2, 11].Value = list[i].PurchaseQuantity.ToString(); }
+                //    if (list[i].PurchaseUnit.ToString() != null)
+                //    { worksheet.Cells[i + 2, 12].Value = list[i].PurchaseUnit.ToString(); }
+                //    if (list[i].Manufacturers.ToString() != null)
+                //    { worksheet.Cells[i + 2, 13].Value = list[i].Manufacturers.ToString(); }
+                //    if (list[i].BatchNo.ToString() != null)
+                //    { worksheet.Cells[i + 2, 14].Value = list[i].BatchNo.ToString(); }
+                //    if (list[i].Waybill.ToString() != null)
+                //    { worksheet.Cells[i + 2, 15].Value = list[i].Waybill.ToString(); }
+
+                //}
+                package.Save();
             }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xls";
-            return File(ms, "application/vnd.ms-excel", sFileName);
+            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
         }
         [HttpPost]
         [Route("importConfirmedCustoms", Name = "importConfirmedCustoms")]
@@ -236,12 +296,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itConfirmedCustoms");
             if (!ModelState.IsValid)
                 return View(model);
-            if (!String.IsNullOrEmpty(model.InvoiceNo))
-                model.InvoiceNo = model.InvoiceNo.Trim();
-            if (!String.IsNullOrEmpty(model.MaterielNo))
-                model.MaterielNo = model.MaterielNo.Trim();
-            if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-                model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+            //if (!String.IsNullOrEmpty(model.InvoiceNo))
+           //     model.InvoiceNo = model.InvoiceNo.Trim();
+           // if (!String.IsNullOrEmpty(model.MaterielNo))
+            //    model.MaterielNo = model.MaterielNo.Trim();
+            //if (!String.IsNullOrEmpty(model.PurchasingDocuments))
+           //     model.PurchasingDocuments = model.PurchasingDocuments.Trim();
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;

@@ -34,7 +34,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
 
-            var pageList = _importTrans_main_recordService.searchListDeliveryStatus(arg, page, size);
+            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itDeliveryStatusInput", arg);
             return View(dataSource);//sysImport
@@ -45,7 +45,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         public ActionResult ITDeliveryStatusInputIndex(List<int> sysResource, List<string> sysResource2)
         {
             //string test = "sdasdad";
-            _importTrans_main_recordService.saveDeliveryStatus(sysResource, WorkContext.CurrentUser.Id);
+            //_importTrans_main_recordService.saveCheckAndPass(sysResource, WorkContext.CurrentUser.Id);
             AjaxData.Status = true;
             AjaxData.Message = "确认创建成功";
             return Json(AjaxData);

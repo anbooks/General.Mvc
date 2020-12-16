@@ -1,0 +1,164 @@
+﻿
+@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<ProcurementPlan, SysCustomizedListSearchArg>
+
+@{
+    ViewData["Title"] = "采购计划";
+}
+
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+
+            <a href="">进口运输</a>
+        </li>
+        <li class="active">采购计划</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+</div>
+<div>
+    <div class="col-lg-12">
+        <a asp-route="editITProcurementPlan" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>批量添加</a>
+    </div>
+    <div class="space-2"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form asp-route="itProcurementPlanIndex" method="get" class="form-inline">
+                        <label>关键字</label>
+                        <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
+                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
+                        @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
+                        <button type="submit" class="btn btn-purple btn-sm">
+                            查询
+                            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form asp-route="itProcurementPlanIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
+        <div class="form-group">
+            @if (Model != null)
+            {
+                <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                    <thead>
+                        <tr>
+                            <th width="100px"></th>
+                            <th width="100px">采购计划编号</th>
+                            <th width="100px">采购计划编制人</th>
+                            <th width="100px">项目</th>
+                            <th width="100px">序号</th>
+                            <th width="100px">物料编码</th>
+                            <th width="100px">名称</th>
+                            <th width="100px">牌号</th>
+                            <th width="100px">技术规范</th>
+                            <th width="100px">规格</th>
+                            <th width="100px">宽</th>
+                            <th width="100px">长</th>
+                            <th width="100px">计划数量</th>
+                            <th width="100px">计划单位</th>
+                            <th width="100px">采购订单数量</th>
+                            <th width="100px">采购订单单位</th>
+                            <th width="100px">要求到货时间</th>
+                            <th width="100px">采购起止架份</th>
+                            <th width="100px">采购依据及批准人</th>
+                            <th width="100px">申请号</th>
+                            <th width="100px">备注1</th>
+                            <th width="100px">备注2</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Data)
+                        {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="sysResource" value="@item.Id" />
+                            </td>
+                            <td>@item.PlanItem</td>
+                            <td>@item.Prepare</td>
+                            <td>@item.Project</td>
+                            <td>@item.Item</td>
+                            <td>@item.Materialno</td>
+                            <td>@item.Name</td>
+                            <td>@item.PartNo</td>
+                            <td>@item.Technical</td>
+                            <td>@item.Size</td>
+                            <td>@item.Width</td>
+                            <td>@item.Length</td>
+                            <td>@item.PlanNo</td>
+                            <td>@item.PlanUnit</td>
+                            <td>@item.PlanOrderNo</td>
+                            <td>@item.PlanOrderUnit</td>
+                            @if (ViewBag.QX == "01")
+                            {
+                                @if (@item.RequiredDockDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="RequiredDockDate" value="@item.RequiredDockDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="RequiredDockDate" value="@item.RequiredDockDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+
+                            }
+                            else
+                            {
+                                <td>
+                                    <input type="datetime" name="RequiredDockDate" value="@item.RequiredDockDate" disabled />
+                                </td>
+                            }
+                            <td>@item.ACCovers</td>
+                            <td>@item.Purchasing</td>
+                            <td>@item.Application</td>
+                            <td>@item.Remark1</td>
+                            <td>@item.Remark2</td>
+                            <td>
+                                <a href="@Url.RouteUrl("editITProcurementPlan", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+                <pager page-value="Model.Paging"></pager>
+            }
+        </div>
+        <div class="col-md-offset-1">
+            <button class="btn btn-info" type="submit">
+                <i class="ace-icon fa fa-check bigger-110"></i>
+                确认创建
+            </button>
+        </div>
+    </form>
+    <script>
+        $(function () {
+            $('#formitInventoryInput').submit(function () {
+                var form = $(this);
+                $.modal.confirm('您确定要保存此用户角色数据？', function () {
+                    form.ajaxSubmit(function (data) {
+                        $.modal.alert(data);
+                    });
+                });
+            });
+        });
+    </script>
+</div>
+

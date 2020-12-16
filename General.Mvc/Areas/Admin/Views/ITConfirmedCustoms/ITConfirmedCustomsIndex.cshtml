@@ -4,7 +4,7 @@
 @model DataSourceResult<ImportTrans_main_record, SysCustomizedListSearchArg>
 
 @{
-    ViewData["Title"] = "发运条目";
+    ViewData["Title"] = "综保报关行";
 }
 
 <div class="breadcrumbs" id="breadcrumbs">
@@ -14,7 +14,7 @@
             <a href="@Url.RouteUrl("mainIndex")">首页</a>
         </li>
         <li>
-           
+
             <a href="">进口运输</a>
         </li>
         <li class="active">综保报关行</li>
@@ -28,30 +28,19 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <a asp-route="editITConfirmedCustoms" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加发运条目</a>
-            <a asp-route="excelConfirmedCustoms" class="btn btn-sm btn-pink">数据导出</a>
-            <form enctype="multipart/form-data" method="post" asp-route="importexcel2">
-                <div align="left" style="float:left">
-                    <input type="file" name="excelfile" />
-                </div>
-                <div>
-                    <input type="submit" value="数据导入" />
-                </div>
-            </form>
+            <a asp-route="excelConfirmedCustoms" class="btn btn-sm btn-pink">核注清单生成</a>
         </div>
-    </div>
-    <div class="space-2"></div>
+    </div><div class="space-2"></div>
     <div class="row">
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
                     <form asp-route="itConfirmedCustoms" method="get" class="form-inline">
-
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
                         <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
-                         <button type="submit" class="btn btn-purple btn-sm">
+                        <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                         </button>
@@ -90,49 +79,48 @@
 
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <a href="@Url.RouteUrl("editITConfirmedCustoms", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
-                                    <input type="hidden" name="checkboxValue" value="0" />
-                                </td>
-                                <td>
-                                    @item.Itemno
-                                </td>
-                                <td>
-                                    @item.Shipper
-                                </td>
-                                <td>@item.PoNo</td>
-                                <td>@item.Incoterms</td>
-                                <td>@item.CargoType</td>
+                                <tr>
+                                    <td>
+                                        <a href="@Url.RouteUrl("editITConfirmedCustoms", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                        <input type="hidden" name="checkboxValue" value="0" />
+                                    </td>
+                                    <td>
+                                        @item.Itemno
+                                    </td>
+                                    <td>
+                                        @item.Shipper
+                                    </td>
+                                    <td>@item.PoNo</td>
+                                    <td>@item.Incoterms</td>
+                                    <td>@item.CargoType</td>
+                                    <td>
+                                        @item.RealReceivingDate
+                                    </td>
+                                    <td>@item.Pcs</td>
+                                    <td>@item.Gw</td>
+                                    <td> @item.ShippingMode</td>
+                                    <td>@item.DeliveryRequiredDate</td>
 
-                                <td>
-                                    @item.RealReceivingDate
-                                </td>
-                                <td>@item.Pcs</td>
-                                <td>@item.Gw</td>
-                               <td> @item.ShippingMode</td>
-                            <td>@item.DeliveryRequiredDate</td>
-                               
-                                @if (ViewBag.QX == "01")
-                                {
+                                    @if (ViewBag.QX == "01")
+                                    {
+                                        <td>
+                                            <input type="text" name="InventoryNo" value="@item.InventoryNo" style="width:80px" />
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="text" name="InventoryNo" value="@item.InventoryNo" disabled style="width:80px" />
+                                        </td>
+                                    }
+
                                     <td>
-                                        <input type="text" name="InventoryNo" value="@item.InventoryNo" style="width:80px" />
+                                        <a href="@Url.RouteUrl("itConfirmedCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
                                     </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="text" name="InventoryNo" value="@item.InventoryNo" disabled style="width:80px" />
-                                    </td>
-                                }
-                              
-                                <td>
-                                    <a href="@Url.RouteUrl("itConfirmedCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                </td>
-                            </tr>
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -154,17 +142,17 @@
             $('#formitConfirmedCustoms').submit(function () {
                 var form = $(this);
                 var subArray = [];
-                $("input[name='checkboxId']:checked").each(function () {                
+                $("input[name='checkboxId']:checked").each(function () {
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(1).find("input:checkbox");
 
                     var inventoryNo = $(this).closest("tr").find("td").eq(12).find("input:text");
-                   
+
                     var mSub = {
                         id: id.val(),
                         inventoryNo: inventoryNo.val(),
-                        
+
                     };
                     subArray.push(mSub);
                 });

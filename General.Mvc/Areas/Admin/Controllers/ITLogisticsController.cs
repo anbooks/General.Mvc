@@ -276,12 +276,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itLogistics");
             if (!ModelState.IsValid)
                 return View(model);
-            if (!String.IsNullOrEmpty(model.InvoiceNo))
-                model.InvoiceNo = model.InvoiceNo.Trim();
-            if (!String.IsNullOrEmpty(model.MaterielNo))
-                model.MaterielNo = model.MaterielNo.Trim();
-            if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-                model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+          //  if (!String.IsNullOrEmpty(model.InvoiceNo))
+          //      model.InvoiceNo = model.InvoiceNo.Trim();
+           // if (!String.IsNullOrEmpty(model.MaterielNo))
+           //     model.MaterielNo = model.MaterielNo.Trim();
+           // if (!String.IsNullOrEmpty(model.PurchasingDocuments))
+          //      model.PurchasingDocuments = model.PurchasingDocuments.Trim();
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;

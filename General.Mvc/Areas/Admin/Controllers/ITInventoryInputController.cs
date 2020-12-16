@@ -33,7 +33,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
 
-            var pageList = _importTrans_main_recordService.searchListInventoryInput(arg, page, size);
+            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itInventoryInput", arg);
             return View(dataSource);//sysImport
@@ -44,7 +44,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         public ActionResult ITInventoryInputIndex(List<int> sysResource, List<string> sysResource2)
         {
             //string test = "sdasdad";
-            _importTrans_main_recordService.saveInventoryInput(sysResource);
+          //  _importTrans_main_recordService.saveInventoryInput(sysResource);
             AjaxData.Status = true;
             AjaxData.Message = "确认创建成功";
             return Json(AjaxData);
@@ -91,7 +91,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.InventoryInputTime = DateTime.Now;
                 model.InventoryInputer = WorkContext.CurrentUser.Id;
 
-                _importTrans_main_recordService.updateInventoryInput(model);
+              //  _importTrans_main_recordService.updateInventoryInput(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }

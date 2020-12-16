@@ -48,11 +48,35 @@ namespace General.Services.ImportTrans_main_record
             var item = _scheduleRepository.getById(model.Id);
             if (item == null)
                 return;
-             item.InvoiceNo = model.InvoiceNo;
-            item.MaterielNo= model.MaterielNo;
-             item.PurchasingDocuments = model.PurchasingDocuments;
-            // item.Invcurr = model.Invcurr;
-             item.ModifiedTime = model.ModifiedTime;
+             item.OrderNo = model.OrderNo;
+             item.Buyer = model.Buyer;
+             item.OrderLine = model.OrderLine;
+             item.ReferenceNo = model.ReferenceNo;
+            item.MaterialCode = model.MaterialCode;
+            item.Description = model.Description;
+            item.Type = model.Type;
+            item.Specification = model.Specification;
+            item.Thickness = model.Thickness;
+            item.Length = model.Length;
+            item.Width = model.Width;
+            item.PurchaseQuantity = model.PurchaseQuantity;
+            item.PurchaseUnit = model.PurchaseUnit;
+            item.UnitPrice = model.UnitPrice;
+            item.TotalPrice = model.TotalPrice;
+            item.ShipmentDate = model.ShipmentDate;
+            item.Consignor = model.Consignor;
+            item.Manufacturers = model.Manufacturers;
+            item.OriginCountry = model.OriginCountry;
+            item.BatchNo = model.BatchNo;
+            item.Waybill = model.Waybill;
+            item.Books = model.Books;
+            item.BooksItem = model.BooksItem;
+            item.RecordUnit = model.RecordUnit;
+            item.RecordUnitReducedPrice = model.RecordUnitReducedPrice;
+            item.LegalUnits = model.LegalUnits;
+            item.LegalUniteReducedPrice = model.LegalUniteReducedPrice;
+            item.Qualification = model.Qualification;
+            item.ModifiedTime = model.ModifiedTime;
              item.Modifier = model.Modifier;
             _scheduleRepository.update(item);
             _memoryCache.Remove(MODEL_KEY);
@@ -64,7 +88,7 @@ namespace General.Services.ImportTrans_main_record
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.materiel))
-                    query = query.Where(o => o.MaterielNo.Contains(arg.materiel));
+                   query = query.Where(o => o.MaterialCode.Contains(arg.materiel));
                // if (!String.IsNullOrEmpty(arg.shipper))
                  //   query = query.Where(o => o.Shipper.Contains(arg.shipper));
                // if (!String.IsNullOrEmpty(arg.pono))
@@ -72,7 +96,7 @@ namespace General.Services.ImportTrans_main_record
               //  if (!String.IsNullOrEmpty(arg.invcurr))
                   //  query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
             }
-            query = query.OrderBy(o => o.InvoiceNo).ThenBy(o => o.MaterielNo).ThenByDescending(o => o.CreationTime);
+            query = query.OrderBy(o => o.CreationTime).ThenBy(o => o.OrderLine).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.Schedule>(query, page, size);
         }
       

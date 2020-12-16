@@ -33,7 +33,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 RolePermissionViewModel model = new RolePermissionViewModel();
                 var customizedList = _sysCustomizedListService.getByAccount("货币类型");
                 ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-                var pageList = _importTrans_main_recordService.searchListShipModel(arg, page, size);
+                var pageList = _importTrans_main_recordService.searchList(arg, page, size);
                 ViewBag.Arg = arg;//传参数
                 var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("iTModeShippingGiven", arg);
                 return View(dataSource);//sysImport
@@ -44,7 +44,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         public ActionResult ITModeShippingGivenIndex(List<int> sysResource, List<string> sysResource2)
         {
             //string test = "sdasdad";
-            _importTrans_main_recordService.saveShippingMode(sysResource);
+           // _importTrans_main_recordService.saveShippingMode(sysResource);
             AjaxData.Status = true;
             AjaxData.Message = "确认创建成功";
             return Json(AjaxData);
@@ -91,7 +91,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ShippingModeGivenTime = DateTime.Now;
                 model.ShippingModeGiver = WorkContext.CurrentUser.Id;
 
-                _importTrans_main_recordService.updateShippingMode(model);
+              //  _importTrans_main_recordService.updateShippingMode(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }

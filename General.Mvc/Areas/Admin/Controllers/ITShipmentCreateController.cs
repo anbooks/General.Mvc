@@ -42,13 +42,13 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itShipmentCreate")]
-        [Function("创建发运条目1", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("创建发运条目(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
-        public IActionResult ITShipmentCreateIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITShipmentCreateIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
-             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            ViewData["Invcurr"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
             ViewBag.QX = USER.RoleName;
 
@@ -57,130 +57,52 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
             return View(dataSource);//sysImport
         }
-        [Route("schedule", Name = "itShipmentCreateSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
-        [HttpGet]
-        public IActionResult ITShipmentCreateScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
-        {
-            ViewBag.Userid = id;
-            RolePermissionViewModel model = new RolePermissionViewModel();
-             var pageList = _scheduleService.searchList(arg, page, size,id);
-            ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itShipmentCreateSchedule", arg);
-            return View(dataSource);//sysImport
-        }
-        [Route("excelimport2", Name = "excelimport2")]
-        public FileResult Excel()
-        {
-
-            var list = _importTrans_main_recordService.getAll();
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("编号");
-           
-            for (int i = 0; i < list.Count; i++)
-            {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
-
-            }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xls";
-            return File(ms, "application/vnd.ms-excel", sFileName);
-        }
-        [HttpPost]
-        [Route("importexcel2", Name = "importexcel2")]
-        public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = $"{Guid.NewGuid()}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-
-                for (int row = 2; row <= rowCount; row++)
-                {
-
-                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
-                    model.Shipper = worksheet.Cells[row, 2].Value.ToString();
-                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo!=null)
-                    {
-                        model.Buyer = model.PoNo.Substring(1, 2);
-                    }             
-                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
-                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
-                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
-                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
-                    model.CreationTime = DateTime.Now;
-                    model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    _importTrans_main_recordService.insertImportTransmain(model);
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
-        }
+        
         [HttpPost]
         [Route("itShipmentCreateList", Name = "itShipmentCreateList")]
+        [Function("发运条目编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
+
         public ActionResult ITShipmentCreateList(string kevin)
         {
             string test = kevin;
-
-          
-
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-
-
-          //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
                 model.Itemno = u.Itemno;
                 model.Shipper = u.Shipper;
-
+                model.PoNo = u.PoNo;
+                model.Incoterms = u.Incoterms;
+                model.CargoType = u.CargoType;
+                model.Invamou = u.Invamou;
+                if (u.Invcurr!="") { model.Invcurr = u.Invcurr; }
+                model.RealReceivingDate = u.RealReceivingDate;
+                model.Gw = u.Gw;
+                model.Pcs = u.Pcs;
+                model.Buyer = u.PoNo.Substring(1, 2);;
+               
                 _importTrans_main_recordService.updateImportTransmain(model);
                 //u就是jsonlist里面的一个实体类
             }
-
-         
-
+           // return Redirect(Url.IsLocalUrl(null) ? null : Url.RouteUrl("itShipmentCreate"));
             AjaxData.Status = true;
             AjaxData.Message = "OK";
-
-
             return Json(AjaxData);
+        }
+        [Route("downLoadInventory", Name = "downLoadInventory")]
+        [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
+        public FileStreamResult DownLoadInventory(int? id)
+        {
+            var model = _importTrans_main_recordService.getById(id.Value);
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+            string sFileName = model.InventoryAttachment;
+            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+            FileStream fs = new FileStream(file.ToString(), FileMode.Create);
+
+            return File(fs, "application/octet-stream", sFileName);
+
         }
         [HttpGet]
         [Route("edit", Name = "editITShipmentCreate")]
@@ -190,28 +112,30 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-           
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
-        
+
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
+            }
+            else
+            {
+                ViewBag.FJ = 1;
             }
             return View();
         }
         [HttpPost]
         [Route("edit")]
-        public ActionResult EditITShipmentCreate(Entities.ImportTrans_main_record model, string returnUrl = null)
+        public ActionResult EditITShipmentCreate(Entities.ImportTrans_main_record model, IFormFile excelfile, string returnUrl = null)
         {
             ModelState.Remove("Id");
             int a = 0;
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
             if (!ModelState.IsValid)
                 return View(model);
-            
-             if (!String.IsNullOrEmpty(model.Invcurr))
+            if (!String.IsNullOrEmpty(model.Invcurr))
                 model.Invcurr = model.Invcurr.Trim();
             if (!String.IsNullOrEmpty(model.Shipper))
                 model.Shipper = model.Shipper.Trim();
@@ -220,60 +144,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!String.IsNullOrEmpty(model.PoNo))
                 model.PoNo = model.PoNo.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
-                model.Buyer= model.PoNo.Substring(1, 2);
-            // model.PoNo = model.PoNo.Substring(0, 2);
-            if (model.Id.Equals(0)) {
-               
-                //model.Invcurr = model.Invcurr.Trim();
-                model.CreationTime = DateTime.Now;
-               // model.Shipper = model.Shipper.Trim();
-              //  model.Itemno = model.Itemno.Trim();
-                model.IsDeleted = false;
-                model.Modifier = null;
-                model.ModifiedTime = null;
-                model.Creator = WorkContext.CurrentUser.Id;
-            _importTrans_main_recordService.insertImportTransmain(model);
-            }
-            else
-            {
-                model.Modifier = WorkContext.CurrentUser.Id;
-                model.ModifiedTime = DateTime.Now;
-                _importTrans_main_recordService.updateImportTransmain(model);
-            }
-            return Redirect(ViewBag.ReturnUrl);
-        }
-        [HttpGet]
-        [Route("edit2", Name = "editSchedule")]
-        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateScheduleIndex")]
-        public IActionResult EditSchedule(int? id, string returnUrl = null)
-        {//页面跳转未完成
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
-            if (id != null)
-            {
-                var model = _scheduleService.getById(id.Value);
-
-                if (model == null)
-                    return Redirect(ViewBag.ReturnUrl);
-                return View(model);
-            }
-            return View();
-        }
-        [HttpPost]
-        [Route("edit2")]
-        public ActionResult EditSchedule(Entities.Schedule model, string returnUrl = null)
-        {//页面跳转未完成
-            ModelState.Remove("Id");
-            int a = 0;
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
-            if (!ModelState.IsValid)
-                return View(model);
-
-            if (!String.IsNullOrEmpty(model.InvoiceNo))
-                model.InvoiceNo = model.InvoiceNo.Trim();
-            if (!String.IsNullOrEmpty(model.MaterielNo))
-                model.MaterielNo = model.MaterielNo.Trim();
-            if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-                model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+                model.Buyer = model.PoNo.Substring(1, 2);
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;
@@ -281,16 +152,26 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Modifier = null;
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
-                _scheduleService.insertSchedule(model);
+                _importTrans_main_recordService.insertImportTransmain(model);
             }
             else
             {
+                string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+                string sFileName = excelfile.FileName;
+                FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                {
+                    excelfile.CopyTo(fs);
+                    fs.Flush();
+                }
+                model.InventoryAttachment = excelfile.FileName;
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;
-                _scheduleService.updateSchedule(model);
+                _importTrans_main_recordService.updateImportTransmain(model);
             }
-            int mid = model.MainId;
             return Redirect(ViewBag.ReturnUrl);
         }
+       
     }
 }

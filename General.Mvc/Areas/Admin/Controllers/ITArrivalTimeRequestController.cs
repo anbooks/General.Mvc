@@ -48,7 +48,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 pro.Requester = WorkContext.CurrentUser.Id;
                 pro.RequestTime = DateTime.Now;
-                _importTrans_main_recordService.updateArrivalTime(pro);
+                //_importTrans_main_recordService.updateArrivalTime(pro);
             }
             return Json(pro);
         }

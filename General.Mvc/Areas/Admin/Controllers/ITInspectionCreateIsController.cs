@@ -25,7 +25,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itInspectionCreateIs")]
-        [Function("生成送检单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("生成送检单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.GeneratedFormController", Sort = 1)]
 
         public IActionResult ITInspectionCreateIsIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -46,18 +46,18 @@ namespace General.Mvc.Areas.Admin.Controllers
             string submit = Request.Form["submit"];
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itInspectionCreateIs");
 
-            if (submit.Equals("1"))
-            {
-                _importTrans_main_recordService.updateDeclaration(sysResource, WorkContext.CurrentUser.Id);
-                AjaxData.Status = true;
-                AjaxData.Message = "确认生成成功";
-            }
-            else if (submit.Equals("2"))
-            {
-                _importTrans_main_recordService.saveDeclaration(sysResource);
-                AjaxData.Status = true;
-                AjaxData.Message = "确认提交成功";
-            }
+            //if (submit.Equals("1"))
+            //{
+            //    _importTrans_main_recordService.updateDeclaration(sysResource, WorkContext.CurrentUser.Id);
+            //    AjaxData.Status = true;
+            //    AjaxData.Message = "确认生成成功";
+            //}
+            //else if (submit.Equals("2"))
+            //{
+            //    _importTrans_main_recordService.saveDeclaration(sysResource);
+            //    AjaxData.Status = true;
+            //    AjaxData.Message = "确认提交成功";
+            //}
 
             return Redirect(ViewBag.ReturnUrl);
             //return View();

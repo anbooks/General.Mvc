@@ -49,6 +49,9 @@ namespace General.Services.ImportTrans_main_record
             var item = _importTrans_main_recordRepository.getById(model.Id);
             if (item == null)
                 return;
+              item.InventoryAttachment = model.InventoryAttachment;
+              item.MblAttachment = model.MblAttachment;
+              item.HblAttachment = model.HblAttachment;
               item.RealReceivingDate = model.RealReceivingDate;
               item.Itemno = model.Itemno;
               item.Shipper = model.Shipper;
@@ -61,172 +64,7 @@ namespace General.Services.ImportTrans_main_record
             _memoryCache.Remove(MODEL_KEY); 
         }
 
-        public void updateShippingMode(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.ShippingMode = model.ShippingMode;
-            item.ShippingModeGivenTime = model.ShippingModeGivenTime;
-            item.ShippingModeGiver = model.ShippingModeGiver;
-            
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updatePortCustomerBroker(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.PortCustomerBrokerInputer = model.PortCustomerBrokerInputer;
-            item.PortCustomerBrokerInputTime = model.PortCustomerBrokerInputTime;
-            item.BlDate = model.BlDate;
-            item.DeclarationDate = model.DeclarationDate;
-            item.ReleaseDate = model.ReleaseDate;
-            item.CustomsDeclarationNo = model.CustomsDeclarationNo;
-            item.InspectionLotNo = model.InspectionLotNo;
-            item.IsNeedSecondCheck = model.IsNeedSecondCheck;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updateCheckAndPass(List<int> categoryIds, Guid id)
-        {
-
-            foreach (int categoryId in categoryIds)
-            {
-                var item = _importTrans_main_recordRepository.getById(categoryId);
-                if (item == null)
-                    return;
-                item.CheckAndPassor = id;
-                item.CheckAndPassTime = DateTime.Now;
-                item.CheckAndPass = true;
-                _importTrans_main_recordRepository.update(item);
-                _memoryCache.Remove(MODEL_KEY);
-            }
-
-        }
-        public void updateDeliveryRequired(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.DeliveryDateRequirer = model.DeliveryDateRequirer;
-            item.DeliveryRequiredDate = model.DeliveryRequiredDate;
-            item.DeliveryDateRequiredTime = model.DeliveryDateRequiredTime;
-    
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updateDeliveryStatus(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.Status = model.Status;
-            item.DeliveryStatusInputTime = model.DeliveryStatusInputTime;
-            item.DeliveryStatusInputer = model.ShippingModeGiver;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updateDeliveryReceipt(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.DeliveryReceipt = model.DeliveryReceipt;
-            item.ActualDeliveryDate = model.ActualDeliveryDate;
-            item.ChooseDelivery = model.ChooseDelivery;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-         public void updateCustomsBrokerSelect(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.Forwarder = model.Forwarder;
-            item.CustomsBrokerSelectTime = model.CustomsBrokerSelectTime;
-            item.CustomsBrokerSelecter = model.CustomsBrokerSelecter;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updateReceiptInput(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.Note = model.Note;
-            item.ReceiptForm = model.ReceiptForm;
-            item.ReceiptFormer = model.ReceiptFormer;
-            item.ReceiptFormTime = model.ReceiptFormTime;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updateSecondCheck(List<int> categoryIds,Guid id)
-        {
-
-            foreach (int categoryId in categoryIds)
-            {
-                var item = _importTrans_main_recordRepository.getById(categoryId);
-                if (item == null)
-                    return;//CustomsBrokerSelect
-
-
-                item.SecondCheckor = id;
-                item.SecondCheckTime = DateTime.Now;
-                item.SecondCheck = true;
-                _importTrans_main_recordRepository.update(item);
-                _memoryCache.Remove(MODEL_KEY);
-            }
-
-        }
-        public void updateDeclaration(List<int> categoryIds, Guid id)
-        {
-
-            foreach (int categoryId in categoryIds)
-            {
-                var item = _importTrans_main_recordRepository.getById(categoryId);
-                if (item == null)
-                    return;//CustomsBrokerSelect
-
-
-                item.Declarationer = id;
-                item.DeclarationTime = DateTime.Now;
-                item.Declaration = true;
-                _importTrans_main_recordRepository.update(item);
-                _memoryCache.Remove(MODEL_KEY);
-            }
-
-        }
-        public void updateArrivalTime(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.RequestedArrivalTime = model.RequestedArrivalTime;
-            item.Requester = model.Requester;
-            item.RequestTime = model.RequestTime;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
-        public void updateInventoryInput(Entities.ImportTrans_main_record model)
-        {
-            var item = _importTrans_main_recordRepository.getById(model.Id);
-            if (item == null)
-                return;
-            item.InventoryInputTime = model.InventoryInputTime;
-            item.InventoryInputer = model.InventoryInputer;
-            item.InventoryNo = model.InventoryNo;
-
-            _importTrans_main_recordRepository.update(item);
-            _memoryCache.Remove(MODEL_KEY);
-        }
+        
         //CheckAndPass
         public IPagedList<Entities.ImportTrans_main_record> searchListCheckAndPass(SysCustomizedListSearchArg arg, int page, int size)
         {
@@ -262,9 +100,13 @@ namespace General.Services.ImportTrans_main_record
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
-        public IPagedList<Entities.ImportTrans_main_record> searchListSecondCheck(SysCustomizedListSearchArg arg, int page, int size)
+        public IPagedList<Entities.ImportTrans_main_record> searchListSecondCheck(SysCustomizedListSearchArg arg, int page, int size,　string role)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_ReceiptForm == true && o.F_SecondCheck != true);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true);
+            if(role== "管理员")
+            {
+                query = query.Where(o => o.Shipper== "Satair");
+            }
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -276,7 +118,7 @@ namespace General.Services.ImportTrans_main_record
                 if (!String.IsNullOrEmpty(arg.invcurr))
                     query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
             }
-            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+             query = query.OrderByDescending(o => o.Id);;
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListDeclaration(SysCustomizedListSearchArg arg, int page, int size)
@@ -366,40 +208,8 @@ namespace General.Services.ImportTrans_main_record
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
-        public IPagedList<Entities.ImportTrans_main_record> searchListShipModel(SysCustomizedListSearchArg arg, int page, int size)
-        {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_ArrivalTimeRequested == true && o.F_ShippingModeGiven != true);
-            if (arg != null)
-            {
-                if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
-                if (!String.IsNullOrEmpty(arg.shipper))
-                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
-                if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.PoNo.Contains(arg.pono));
-                if (!String.IsNullOrEmpty(arg.invcurr))
-                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
-            }
-            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
-            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
-        }
-        public IPagedList<Entities.ImportTrans_main_record> searchListDeliveryStatus(SysCustomizedListSearchArg arg, int page, int size)
-        {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_ShippingModeGiven == true && o.F_DeliveryStatusInput != true);
-            if (arg != null)
-            {
-                if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
-                if (!String.IsNullOrEmpty(arg.shipper))
-                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
-                if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.PoNo.Contains(arg.pono));
-                if (!String.IsNullOrEmpty(arg.invcurr))
-                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
-            }
-            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
-            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
-        }
+        
+       
         public IPagedList<Entities.ImportTrans_main_record> searchListDeliveryReceipt(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.F_PortCustomerBrokerInput == true && o.F_DeliveryReceipt != true);
@@ -434,23 +244,7 @@ namespace General.Services.ImportTrans_main_record
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
-        public IPagedList<Entities.ImportTrans_main_record> searchListInventoryInput(SysCustomizedListSearchArg arg, int page, int size)
-        {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.F_CustomsBrokerSelect == true && o.F_InventoryInput!= true);
-            if (arg != null)
-            {
-                if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
-                if (!String.IsNullOrEmpty(arg.shipper))
-                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
-                if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.PoNo.Contains(arg.pono));
-                if (!String.IsNullOrEmpty(arg.invcurr))
-                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
-            }
-            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
-            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
-        }
+       
         public void saveImportTransmain(List<int> categoryIds)
         {
                 foreach (int categoryId in categoryIds)
@@ -570,21 +364,7 @@ namespace General.Services.ImportTrans_main_record
             }
 
         }
-        public void saveInventoryInput(List<int> categoryIds)
-        {
-
-            foreach (int categoryId in categoryIds)
-            {
-                var item = _importTrans_main_recordRepository.getById(categoryId);
-                if (item == null)
-                    return;
-                item.InventoryNo = "具体报关信息体现在明细表中";
-                item.F_InventoryInput = true;
-                _importTrans_main_recordRepository.update(item);
-                _memoryCache.Remove(MODEL_KEY);
-            }
-
-        }
+        
         public void saveDeliveryStatus(List<int> categoryIds,Guid id)
            {
 
@@ -663,21 +443,7 @@ namespace General.Services.ImportTrans_main_record
             }
 
         }
-        public void saveShippingMode(List<int> categoryIds)
-        {
-
-            foreach (int categoryId in categoryIds)
-            {
-                var item = _importTrans_main_recordRepository.getById(categoryId);
-                if (item == null)
-                    return;
-
-                item.F_ShippingModeGiven = true;
-                _importTrans_main_recordRepository.update(item);
-                _memoryCache.Remove(MODEL_KEY);
-            }
-
-        }
+       
         public List<Entities.ImportTrans_main_record> getAll()
         {
             List<Entities.ImportTrans_main_record> list = null;

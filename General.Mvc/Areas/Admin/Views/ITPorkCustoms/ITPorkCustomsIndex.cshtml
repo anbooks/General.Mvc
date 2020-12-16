@@ -4,7 +4,7 @@
 @model DataSourceResult<ImportTrans_main_record, SysCustomizedListSearchArg>
 
 @{
-    ViewData["Title"] = "发运条目";
+    ViewData["Title"] = "口岸报关行";
 }
 
 <div class="breadcrumbs" id="breadcrumbs">
@@ -14,10 +14,10 @@
             <a href="@Url.RouteUrl("mainIndex")">首页</a>
         </li>
         <li>
-           
+
             <a href="">进口运输</a>
         </li>
-        <li class="active">物流员</li>
+        <li class="active">口岸报关行</li>
     </ul>
 </div>
 <div class="page-content">
@@ -28,16 +28,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <a asp-route="editITPorkCustoms" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加发运条目</a>
-            <a asp-route="excelPorkCustoms" class="btn btn-sm btn-pink">数据导出</a>
-            <form enctype="multipart/form-data" method="post" asp-route="importexcel2">
-                <div align="left" style="float:left">
-                    <input type="file" name="excelfile" />
-                </div>
-                <div>
-                    <input type="submit" value="数据导入" />
-                </div>
-            </form>
+            <a asp-route="editITPorkCustoms" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加</a>
         </div>
     </div>
     <div class="space-2"></div>
@@ -51,7 +42,7 @@
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
                         <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
-                         <button type="submit" class="btn btn-purple btn-sm">
+                        <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                         </button>
@@ -93,170 +84,154 @@
                             </tr>
                         </thead>
                         <tbody>
-
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
-                                    <input type="hidden" name="checkboxValue" value="0" />
-                                </td>
-                                <td>
-                                    @item.Itemno
-                                </td>
-                                <td>
-                                    @item.Shipper
-                                </td>
-                                <td>@item.PoNo</td>
-                                <td>@item.Incoterms</td>
-                                <td>@item.CargoType</td>
-
-                                <td>
-                                    @item.RealReceivingDate
-                                </td>
-                                <td>@item.Pcs</td>
-                                <td>@item.Gw</td>
-                               <td> @item.ShippingMode</td>
-                            <td>@item.DeliveryRequiredDate</td>
-                                @if (ViewBag.QX == "01")
-                                {
-                                    @if (@item.BlDate == null)
+                                <tr>
+                                    <td>
+                                        <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                    </td>
+                                    <td>@item.Itemno</td>
+                                    <td>@item.Shipper</td>
+                                    <td>@item.PoNo</td>
+                                    <td>@item.Incoterms</td>
+                                    <td>@item.CargoType</td>
+                                    <td>@item.RealReceivingDate</td>
+                                    <td>@item.Pcs</td>
+                                    <td>@item.Gw</td>
+                                    <td>@item.ShippingMode</td>
+                                    <td>@item.DeliveryRequiredDate</td>
+                                    @if (ViewBag.QX == "01")
                                     {
-                                        <td>
-                                            <input type="date" name="BlDate" value="@item.BlDate" />
-                                        </td>}
+                                        @if (@item.BlDate == null)
+                                        {
+                                            <td>
+                                                <input type="date" name="BlDate" value="@item.BlDate" />
+                                            </td>}
+                                        else
+                                        {
+                                            <td>
+                                                <input type="date" name="BlDate" value="@item.BlDate.Value.ToString("yyyy-MM-dd")" />
+                                            </td>}
+                                    }
                                     else
                                     {
                                         <td>
-                                            <input type="date" name="BlDate" value="@item.BlDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="datetime" name="BlDate" value="@item.BlDate" disabled />
-                                    </td>
-                                }
-                                @if (ViewBag.QX == "01")
-                                {
-                                    @if (@item.DeclarationDate == null)
+                                            <input type="datetime" name="BlDate" value="@item.BlDate" disabled />
+                                        </td>
+                                    }
+                                    @if (ViewBag.QX == "01")
                                     {
-                                        <td>
-                                            <input type="date" name="DeclarationDate" value="@item.DeclarationDate" />
-                                        </td>}
+                                        @if (@item.DeclarationDate == null)
+                                        {
+                                            <td>
+                                                <input type="date" name="DeclarationDate" value="@item.DeclarationDate" />
+                                            </td>}
+                                        else
+                                        {
+                                            <td>
+                                                <input type="date" name="DeclarationDate" value="@item.DeclarationDate.Value.ToString("yyyy-MM-dd")" />
+                                            </td>}
+                                    }
                                     else
                                     {
                                         <td>
-                                            <input type="date" name="DeclarationDate" value="@item.DeclarationDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="datetime" name="DeclarationDate" value="@item.DeclarationDate" disabled />
-                                    </td>
-                                }
-                                @if (ViewBag.QX == "01")
-                                {
-                                    @if (@item.ReleaseDate == null)
+                                            <input type="datetime" name="DeclarationDate" value="@item.DeclarationDate" disabled />
+                                        </td>
+                                    }
+                                    @if (ViewBag.QX == "01")
                                     {
-                                        <td>
-                                            <input type="date" name="ReleaseDate" value="@item.ReleaseDate" />
-                                        </td>}
+                                        @if (@item.ReleaseDate == null)
+                                        {
+                                            <td>
+                                                <input type="date" name="ReleaseDate" value="@item.ReleaseDate" />
+                                            </td>}
+                                        else
+                                        {
+                                            <td>
+                                                <input type="date" name="ReleaseDate" value="@item.ReleaseDate.Value.ToString("yyyy-MM-dd")" />
+                                            </td>}
+                                    }
                                     else
                                     {
                                         <td>
-                                            <input type="date" name="ReleaseDate" value="@item.ReleaseDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="datetime" name="ReleaseDate" value="@item.ReleaseDate" disabled />
-                                    </td>
-                                }
-                                @if (ViewBag.QX == "01")
-                                {
-                                    <td>
-                                        <input type="text" name="CustomsDeclarationNo" value="@item.CustomsDeclarationNo" style="width:80px" />
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="text" name="CustomsDeclarationNo" value="@item.CustomsDeclarationNo" disabled style="width:80px" />
-                                    </td>
-                                }
-                                @if (ViewBag.QX == "01")
-                                {
-                                    <td>
-                                        <input type="text" name="InspectionLotNo" value="@item.InspectionLotNo" style="width:80px" />
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="text" name="InspectionLotNo" value="@item.InspectionLotNo" disabled style="width:80px" />
-                                    </td>
-                                }
-                                @if (ViewBag.QX == "01")
-                                {
-                                    @if (@item.ChooseDelivery == null)
+                                            <input type="datetime" name="ReleaseDate" value="@item.ReleaseDate" disabled />
+                                        </td>
+                                    }
+                                    @if (ViewBag.QX == "01")
                                     {
                                         <td>
-                                            @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                            <input type="text" name="CustomsDeclarationNo" value="@item.CustomsDeclarationNo" style="width:80px" />
                                         </td>
                                     }
                                     else
                                     {
                                         <td>
-                                            @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, @item.ChooseDelivery, new { @class = "form-control  input-small" })
+                                            <input type="text" name="CustomsDeclarationNo" value="@item.CustomsDeclarationNo" disabled style="width:80px" />
                                         </td>
                                     }
-
-                                }
-                                else
-                                {
-                                    <td>
-
-                                        <input type="text" name="ChooseDelivery" value="@item.ChooseDelivery" disabled style="width:80px" />
-                                    </td>
-                                }
-                                @if (ViewBag.QX == "01")
-                                {
-                                    @if (@item.ActualDeliveryDate == null)
+                                    @if (ViewBag.QX == "01")
                                     {
                                         <td>
-                                            <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate" />
-                                        </td>}
+                                            <input type="text" name="InspectionLotNo" value="@item.InspectionLotNo" style="width:80px" />
+                                        </td>
+                                    }
                                     else
                                     {
                                         <td>
-                                            <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-
-                                }
-                                else
-                                {
+                                            <input type="text" name="InspectionLotNo" value="@item.InspectionLotNo" disabled style="width:80px" />
+                                        </td>
+                                    }
+                                    @if (ViewBag.QX == "01")
+                                    {
+                                        @if (@item.ChooseDelivery == null)
+                                        {
+                                            <td>
+                                                @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>
+                                                @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, @item.ChooseDelivery, new { @class = "form-control  input-small" })
+                                            </td>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="text" name="ChooseDelivery" value="@item.ChooseDelivery" disabled style="width:80px" />
+                                        </td>
+                                    }
+                                    @if (ViewBag.QX == "01")
+                                    {
+                                        @if (@item.ActualDeliveryDate == null)
+                                        {
+                                            <td>
+                                                <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate" />
+                                            </td>}
+                                        else
+                                        {
+                                            <td>
+                                                <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate.Value.ToString("yyyy-MM-dd")" />
+                                            </td>}
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <input type="datetime" name="ActualDeliveryDate" value="@item.ActualDeliveryDate" disabled />
+                                        </td>
+                                    }
                                     <td>
-                                        <input type="datetime" name="ActualDeliveryDate" value="@item.ActualDeliveryDate" disabled />
+                                        <a href="@Url.RouteUrl("itPorkCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
                                     </td>
-                                }
-                                <td>
-                                    <a href="@Url.RouteUrl("itPorkCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                </td>
-                            </tr>
+                                </tr>
                             }
                         </tbody>
                     </table>
                     <pager page-value="Model.Paging"></pager>
-
                 }
             </div>
         </div>
@@ -266,19 +241,16 @@
                 确认创建
             </button>
         </div>
-
     </form>
     <script>
         $(function () {
             $('#formitPorkCustoms').submit(function () {
                 var form = $(this);
                 var subArray = [];
-                $("input[name='checkboxId']:checked").each(function () {                
+                $("input[name='checkboxId']:checked").each(function () {
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(1).find("input:checkbox");
-                  
-                    
                     //var shippingMode = $(this).closest("tr").find("td").eq(12).find("select[name='ShippingMode']");
                     //var deliveryRequiredDate = $(this).closest("tr").find("td").eq(13).find("input:data");
                     var blDate = $(this).closest("tr").find("td").eq(12).find("input:data");
