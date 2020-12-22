@@ -56,10 +56,12 @@ namespace General.Services.ImportTrans_main_record
               item.Itemno = model.Itemno;
               item.Shipper = model.Shipper;
               item.PoNo = model.PoNo;
+              item.Note = model.Note;
               item.Buyer = model.Buyer;
               item.Invcurr = model.Invcurr;
               item.ModifiedTime = model.ModifiedTime;
               item.Modifier = model.Modifier;
+              item.F_ShippingModeGiven = model.F_ShippingModeGiven;
             _importTrans_main_recordRepository.update(item);
             _memoryCache.Remove(MODEL_KEY); 
         }

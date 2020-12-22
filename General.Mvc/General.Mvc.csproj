@@ -101,6 +101,9 @@
     <Folder Include="wwwroot\Files\sjdfile\" />
     <Folder Include="wwwroot\Files\mbl\" />
     <Folder Include="wwwroot\Files\hbl\" />
+    <Folder Include="wwwroot\Files\ejdfile\" />
+    <Folder Include="wwwroot\Files\inventoryfile\" />
+    <Folder Include="wwwroot\Files\notefile\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -339,6 +342,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITConfirmedCustoms\ITConfirmedCustomsScheduleIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITOrderImport\EditITOrderImport.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITPorkCustoms\EditITPorkCustoms.cshtml">

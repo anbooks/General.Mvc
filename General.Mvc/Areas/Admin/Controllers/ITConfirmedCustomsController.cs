@@ -44,13 +44,13 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("", Name = "itConfirmedCustoms")]
         [Function("综保报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
-        public IActionResult ITConfirmedCustomsIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITConfirmedCustomsIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("自行送货或外部提货");
             ViewData["ChooseDelivery"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
-             //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
+            //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
             ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
@@ -60,27 +60,25 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("schedule", Name = "itConfirmedCustomsSchedule")]
         [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
         [HttpGet]
-        public IActionResult ITConfirmedCustomsScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITConfirmedCustomsScheduleIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             ViewBag.Userid = id;
             RolePermissionViewModel model = new RolePermissionViewModel();
-             var pageList = _scheduleService.searchList(arg, page, size,id);
+            var pageList = _scheduleService.searchList(arg, page, size, id);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itConfirmedCustomsSchedule", arg);
             return View(dataSource);//sysImport
         }
         [Route("excelConfirmedCustoms", Name = "excelConfirmedCustoms")]
-        
+
         [Function("核注清单生成", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
         public IActionResult Export()
         {
             //ViewBag.Import = HttpContext.Session.GetInt32("import");
             //var list = _scheduleService.getAll(ViewBag.Import);
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
-
             string sFileName = "核注清单" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder, sFileName));
-
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\", sFileName));
             file.Delete();
             using (ExcelPackage package = new ExcelPackage(file))
             {
@@ -151,7 +149,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 //}
                 package.Save();
             }
-            return File(sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+            return File("\\Files\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
         }
         [HttpPost]
         [Route("importConfirmedCustoms", Name = "importConfirmedCustoms")]
@@ -179,10 +177,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Itemno = worksheet.Cells[row, 1].Value.ToString();
                     model.Shipper = worksheet.Cells[row, 2].Value.ToString();
                     model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo!=null)
+                    if (model.PoNo != null)
                     {
                         model.Buyer = model.PoNo.Substring(1, 2);
-                    }             
+                    }
                     model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
                     model.CargoType = worksheet.Cells[row, 5].Value.ToString();
                     model.Invamou = worksheet.Cells[row, 6].Value.ToString();
@@ -206,19 +204,27 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             string test = kevin;
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-            foreach (Entities.ImportTrans_main_record u in jsonlist)
+            try
             {
-                var model = _importTrans_main_recordService.getById(u.Id);
-                
-              
-               
-                model.InventoryNo = u.InventoryNo;
-              
-               
-                _importTrans_main_recordService.updateImportTransmain(model);
+                foreach (Entities.ImportTrans_main_record u in jsonlist)
+                {
+                    var model = _importTrans_main_recordService.getById(u.Id);
+
+
+
+                    model.InventoryNo = u.InventoryNo;
+
+
+                    _importTrans_main_recordService.updateImportTransmain(model);
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
             }
-            AjaxData.Status = true;
-            AjaxData.Message = "OK";
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
             return Json(AjaxData);
         }
         [HttpGet]
@@ -246,7 +252,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itConfirmedCustoms");
             if (!ModelState.IsValid)
                 return View(model);
-             if (!String.IsNullOrEmpty(model.Invcurr))
+            if (!String.IsNullOrEmpty(model.Invcurr))
                 model.Invcurr = model.Invcurr.Trim();
             if (!String.IsNullOrEmpty(model.Shipper))
                 model.Shipper = model.Shipper.Trim();
@@ -255,14 +261,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!String.IsNullOrEmpty(model.PoNo))
                 model.PoNo = model.PoNo.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
-                model.Buyer= model.PoNo.Substring(1, 2);
-            if (model.Id.Equals(0)) {
+                model.Buyer = model.PoNo.Substring(1, 2);
+            if (model.Id.Equals(0))
+            {
                 model.CreationTime = DateTime.Now;
                 model.IsDeleted = false;
                 model.Modifier = null;
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
-            _importTrans_main_recordService.insertImportTransmain(model);
+                _importTrans_main_recordService.insertImportTransmain(model);
             }
             else
             {
@@ -297,11 +304,11 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(model);
             //if (!String.IsNullOrEmpty(model.InvoiceNo))
-           //     model.InvoiceNo = model.InvoiceNo.Trim();
-           // if (!String.IsNullOrEmpty(model.MaterielNo))
+            //     model.InvoiceNo = model.InvoiceNo.Trim();
+            // if (!String.IsNullOrEmpty(model.MaterielNo))
             //    model.MaterielNo = model.MaterielNo.Trim();
             //if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-           //     model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+            //     model.PurchasingDocuments = model.PurchasingDocuments.Trim();
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;

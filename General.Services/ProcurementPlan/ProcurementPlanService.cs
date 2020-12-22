@@ -35,7 +35,7 @@ namespace General.Services.ProcurementPlan
                 if (!String.IsNullOrEmpty(arg.pono))
                     query = query.Where(o => o.Name.Contains(arg.pono));
             }
-            query = query.OrderBy(o => o.Name);
+            query = query.OrderBy(o => o.Id);
             return new PagedList<Entities.ProcurementPlan>(query, page, size);
         }
 
@@ -78,10 +78,11 @@ namespace General.Services.ProcurementPlan
         /// <param name="model"></param>
       public  void updateProcurementPlan(Entities.ProcurementPlan model)
         {
-            _sysProcurementPlanRepository.DbContext.Entry(model).State = EntityState.Unchanged;
-            _sysProcurementPlanRepository.DbContext.Entry(model).Property("Name").IsModified = true;
-            _sysProcurementPlanRepository.DbContext.Entry(model).Property("Item").IsModified = true;
-            _sysProcurementPlanRepository.DbContext.SaveChanges();
+            var item = _sysProcurementPlanRepository.getById(model.Id);
+            if (item == null)
+                return;
+            _sysProcurementPlanRepository.update(model);
+           
         }
     }
 }

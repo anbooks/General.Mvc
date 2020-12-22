@@ -55,21 +55,21 @@
                     <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
                         <thead>
                             <tr>
-                                <th width="60px"></th>
-                                <th width="50px"></th>
-                                <th width="150px">编号</th>
-                                <th width="150px">发货人</th>
-                                <th width="150px">合同号</th>
-                                <th width="150px">贸易条款</th>
-                                <th width="150px">货物类型</th>
-                                <th width="150px">发票金额</th>
-                                <th width="150px">发票币种</th>
-                                <th width="150px">实际收/提货日期</th>
-                                <th width="150px">件数(箱数)</th>
-                                <th width="150px">毛重</th>
-                                <th width="150px">运输方式</th>
-                                <th width="150px">要求送货日期</th>
-                                <th width="150px">口岸报关行</th>
+                                <th width="40px"></th>
+                                <th width="30px"></th>
+                                <th width="100px">编号</th>
+                                <th width="100px">发货人</th>
+                                <th width="100px">合同号</th>
+                                <th width="100px">贸易条款</th>
+                                <th width="100px">货物类型</th>
+                                <th width="100px">发票金额</th>
+                                <th width="60px">发票币种</th>
+                                <th width="60px">实际收/提货日期</th>
+                                <th width="60px">件数(箱数)</th>
+                                <th width="60px">毛重</th>
+                                <th width="100px">运输方式</th>
+                                <th width="100px">要求送货日期</th>
+                                <th width="100px">口岸报关行</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -192,7 +192,13 @@
                     data: { "kevin": JSON.stringify(subArray) },
                     success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
                         // 此处可对 data 作相关处理
-                        alert('提交成功！');
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
                     } 
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转

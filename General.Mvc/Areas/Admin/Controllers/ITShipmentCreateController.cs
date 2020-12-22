@@ -23,11 +23,9 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-
     [Route("admin/itShipmentCreate")]
     public class ITShipmentCreateController : AdminPermissionController
     {
-
         private readonly IHostingEnvironment _hostingEnvironment;
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysCustomizedListService _sysCustomizedListService;
@@ -46,27 +44,27 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult ITShipmentCreateIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
+            
+            
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Invcurr"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
             ViewBag.QX = USER.RoleName;
-
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
             return View(dataSource);//sysImport
         }
-        
         [HttpPost]
         [Route("itShipmentCreateList", Name = "itShipmentCreateList")]
         [Function("发运条目编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
-
         public ActionResult ITShipmentCreateList(string kevin)
         {
             string test = kevin;
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
             //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            try { 
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
@@ -80,14 +78,18 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.RealReceivingDate = u.RealReceivingDate;
                 model.Gw = u.Gw;
                 model.Pcs = u.Pcs;
-                model.Buyer = u.PoNo.Substring(1, 2);;
-               
+                model.Buyer = u.PoNo.Substring(1, 2);
                 _importTrans_main_recordService.updateImportTransmain(model);
                 //u就是jsonlist里面的一个实体类
             }
-           // return Redirect(Url.IsLocalUrl(null) ? null : Url.RouteUrl("itShipmentCreate"));
             AjaxData.Status = true;
             AjaxData.Message = "OK";
+        }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
             return Json(AjaxData);
         }
         [Route("downLoadInventory", Name = "downLoadInventory")]
@@ -100,9 +102,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             string sFileName = model.InventoryAttachment;
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
             FileStream fs = new FileStream(file.ToString(), FileMode.Create);
-
             return File(fs, "application/octet-stream", sFileName);
-
         }
         [HttpGet]
         [Route("edit", Name = "editITShipmentCreate")]
@@ -115,7 +115,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
-
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
@@ -156,22 +155,24 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             else
             {
-                string sWebRootFolder = _hostingEnvironment.WebRootPath;
-                var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-                string sFileName = excelfile.FileName;
-                FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-                using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-                {
-                    excelfile.CopyTo(fs);
-                    fs.Flush();
+                if (excelfile!=null) {
+                    string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                    var fileProfile = sWebRootFolder + "\\Files\\inventoryfile\\";
+                    string sFileName = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + excelfile.FileName;
+                    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                    {
+                        excelfile.CopyTo(fs);
+                        fs.Flush();
+                    }
+                    model.InventoryAttachment = sFileName;
                 }
-                model.InventoryAttachment = excelfile.FileName;
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;
                 _importTrans_main_recordService.updateImportTransmain(model);
             }
+            
             return Redirect(ViewBag.ReturnUrl);
         }
-       
     }
 }

@@ -20,11 +20,26 @@ namespace General.Entities
         public string Specification { get; set; }//材料规范
         public string Name { get; set; }//名称
         public string Size { get; set; }//规格
-        public string Unit { get; set; }//单位
+        public string Unit { get; set; }//订单单位
         public string UnitPrice { get; set; }//单价
         public string TotalPrice { get; set; }//总价
         public DateTime? LeadTime { get; set; }//
         public Guid? Creator { get; set; }//
         public DateTime? CreationTime { get; set; }//
+        public DateTime? OrderConfirmDate { get; set; }//订单确认日期
+        public string OrderSigner { get; set; }//订单签订人
+        public string SignerCard { get; set; }//签订人胸卡号 string TotalPrice { get; set; }//总价
+        public string TradeTerms { get; set; }//贸易条款
+        public string Transport { get; set; }//运输代理
+        public string Project { get; set; }//项目
+        public string MaterialCategory { get; set; }//物料类别
+        public string PartNo { get; set; }//牌号
+        public string Width { get; set; }//
+        public string Length { get; set; }//
+        public string Package { get; set; }//包装规格
+        public string Qty { get; set; }//订单数量
+        public string Currency { get; set; }//币种
+        public string Manufacturer { get; set; }//制造商
+        public string Origin { get; set; }//原产国
     }
 }

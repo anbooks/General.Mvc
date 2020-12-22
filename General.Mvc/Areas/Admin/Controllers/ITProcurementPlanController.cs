@@ -58,7 +58,6 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [Route("excelimportPlan", Name = "excelimportPlan")]
         [Function("导出采购计划Excel", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanIndex")]
-
         public FileResult Excel()
         {
             //获取list数据
@@ -86,19 +85,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             string sFileName = $"{DateTime.Now}.xlsx";
             return File(ms, "application/vnd.ms-excel", sFileName);
         }
-       
         [HttpPost]
         [Route("importexcelPlan", Name = "importexcelPlan")]
         [Function("Excel导入采购计划", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanIndex")]
-
         public ActionResult Import(Entities.ProcurementPlan modelplan,IFormFile excelfile,string excelbh, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanIndex");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
             string sFileName = excelfile.FileName;
-
-            //string sFileName = $"{Guid.NewGuid()}.xlsx";
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
             using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
             {
@@ -113,7 +108,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 int ColCount = worksheet.Dimension.Columns;
                 int materialno = 0; int partno = 0; int technical = 0; int item = 0; int width = 0; int name = 0; int size = 0;
                 int length = 0; int planno = 0; int planunit = 0; int planorderno = 0; int planorderunit = 0; int requireddockdate = 0;
-                int accovers = 0; int purchasing = 0; int application = 0; int remark1 = 0; int remark2 = 0;
+                int accovers = 0; int purchasing = 0; int application = 0; int remark1 = 0; int remark2 = 0; int packagea = 0; int single = 0;
                 for (int columns = 1; columns <= ColCount; columns++)
                 {
                     //Entities.Order model = new Entities.Order();
@@ -133,9 +128,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (worksheet.Cells[1, columns].Value.ToString() == "采购起止架份") { accovers = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "采购依据及批准人") { purchasing = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "申请号") { application = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { packagea = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "单机定额") { single = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "备注1") { remark1 = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "备注2") { remark2 = columns; }
-
                 }
                 for (int row = 2; row <= rowCount; row++)
                 {
@@ -145,22 +141,60 @@ namespace General.Mvc.Areas.Admin.Controllers
                         model.PlanItem = modelplan.PlanItem;
                         model.Prepare = modelplan.Prepare;
                         model.Project = modelplan.Project;
-                        model.Item = worksheet.Cells[row, item].Value.ToString();
-                        model.Materialno = worksheet.Cells[row, materialno].Value.ToString();
-                        model.Name = worksheet.Cells[row, name].Value.ToString();
-                        model.PartNo = worksheet.Cells[row, partno].Value.ToString();
-                        model.Technical = worksheet.Cells[row, technical].Value.ToString();
-                        model.Width = worksheet.Cells[row, width].Value.ToString();
-                        model.Size = worksheet.Cells[row, size].Value.ToString();
-                        model.Length = worksheet.Cells[row, length].Value.ToString();
-                        model.PlanNo = worksheet.Cells[row, planno].Value.ToString();
-                        model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
-                        model.PlanOrderNo = worksheet.Cells[row, planorderno].Value.ToString();
-                        model.PlanOrderUnit = worksheet.Cells[row, planorderunit].Value.ToString();
-                        model.RequiredDockDate =Convert.ToDateTime(worksheet.Cells[row,requireddockdate].Value.ToString()) ;
-                        model.ACCovers = worksheet.Cells[row, accovers].Value.ToString();
-                        model.Purchasing = worksheet.Cells[row, purchasing].Value.ToString();
-                        model.Application = worksheet.Cells[row, application].Value.ToString();
+                        if (worksheet.Cells[row, item].Value!=null){
+                            model.Item = worksheet.Cells[row, item].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, materialno].Value!=null){
+                            model.Materialno = worksheet.Cells[row, materialno].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, name].Value != null)
+                        { model.Name = worksheet.Cells[row, name].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, partno].Value != null)
+                        { model.PartNo = worksheet.Cells[row, partno].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, technical].Value != null)
+                        { model.Technical = worksheet.Cells[row, technical].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, width].Value != null)
+                        { model.Width = worksheet.Cells[row, width].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, size].Value != null)
+                        { model.Size = worksheet.Cells[row, size].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, length].Value != null)
+                        { model.Length = worksheet.Cells[row, length].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, planno].Value != null)
+                        { model.PlanNo = worksheet.Cells[row, planno].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, planunit].Value != null)
+                        { model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, planorderno].Value != null)
+                        { model.PlanOrderNo = worksheet.Cells[row, planorderno].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, planorderunit].Value != null)
+                        { model.PlanOrderUnit = worksheet.Cells[row, planorderunit].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, requireddockdate].Value != null)
+                        { model.RequiredDockDate =Convert.ToDateTime(worksheet.Cells[row,requireddockdate].Value.ToString()) ;
+                        }
+                        if (worksheet.Cells[row, accovers].Value != null)
+                        { model.ACCovers = worksheet.Cells[row, accovers].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, purchasing].Value != null)
+                        { model.Purchasing = worksheet.Cells[row, purchasing].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, application].Value != null)
+                        { model.Application = worksheet.Cells[row, application].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, single].Value != null)
+                        { model.SingleQuota = worksheet.Cells[row, single].Value.ToString();
+                        }
+                        if (worksheet.Cells[row, packagea].Value != null)
+                        { model.Package = worksheet.Cells[row, packagea].Value.ToString();
+                        }
                         if (worksheet.Cells[row, remark1].Value!=null)
                         {
                             model.Remark1 = worksheet.Cells[row, remark1].Value.ToString();
@@ -169,7 +203,6 @@ namespace General.Mvc.Areas.Admin.Controllers
                         {
                             model.Remark2 = worksheet.Cells[row, remark2].Value.ToString();
                         }
-                       
                         //  model.CreationTime = DateTime.Now;
                         //  model.Creator = WorkContext.CurrentUser.Id;
                         _sysProcurementPlanService.insertProcurementPlan(model);

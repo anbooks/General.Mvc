@@ -1,10 +1,4 @@
-﻿@*@{
-        ViewData["Title"] = "EditUser";
-    }
-
-    <h2>EditUser</h2>*@
-
-@using General.Entities
+﻿@using General.Entities
 @model ImportTrans_main_record
 @{
     ViewData["Title"] = "编辑发运条目";
@@ -15,11 +9,10 @@
             <i class="ace-icon fa fa-home home-icon"></i>
             <a href="@Url.RouteUrl("mainIndex")">首页</a>
         </li>
-        <li><a href="@ViewBag.ReturnUrl">系统用户列表</a></li>
+        <li><a href="@ViewBag.ReturnUrl">编辑发运条目</a></li>
         <li class="active">@ViewBag.Title</li>
     </ul>
 </div>
-
 <div class="page-content">
     <div class="page-header">
         <h1>
@@ -28,44 +21,51 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="editITTransport" method="post" class="form-horizontal">
+            <form asp-route="editITPorkCustoms" method="post" enctype="multipart/form-data" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
-
-
-
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()编号</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" asp-for="Itemno" placeholder="编号" />
+                        <input type="text" class="form-control" asp-for="Itemno" placeholder="编号" disabled/>
                     </div>
                     <span class="inline text-danger" asp-validation-for="Itemno"></span>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">发货人</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="Shipper" class="form-control" placeholder="发货人" />
+                        <input type="text" asp-for="Shipper" class="form-control" placeholder="发货人" disabled/>
                     </div>
                     <span asp-validation-for="Shipper" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">订单号</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号" />
+                        <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号" disabled/>
                     </div>
                     <span asp-validation-for="PoNo" class="inline text-danger "></span>
                 </div>
-                
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">货币类型</label>
-                    <div class="col-sm-3">
-                        <select asp-for="Invcurr" class="form-control" asp-items="ViewBag.Invcurrlist"></select>
-                    </div>
-                    <span asp-validation-for="Invcurr" class="inline text-danger"></span>
-                </div>
-
-
-
+                @if (ViewBag.FJ != 1)
+                {
+                    @if (ViewBag.note != null)
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label no-padding-right">破损记录附件上传(已上传)</div>
+                            <div class="col-sm-3">
+                                <input type="file" name="notefile" />
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="form-group">
+                            <div class="col-sm-2 control-label no-padding-right">破损记录附件上传</div>
+                            <div class="col-sm-3">
+                                <input type="file" name="notefile" />
+                            </div>
+                        </div>
+                    }
+                }
                 <div class="col-md-offset-2 col-md-9">
                     <button class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>

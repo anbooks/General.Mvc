@@ -23,6 +23,8 @@ namespace General.Entities
         public string Size { get; set; }
         public string Width { get; set; }
         public string Length { get; set; }
+        public string SingleQuota { get; set; }
+        public string Package { get; set; }
         public string PlanNo { get; set; }
         public string PlanUnit { get; set; }
         public string PlanOrderNo { get; set; }

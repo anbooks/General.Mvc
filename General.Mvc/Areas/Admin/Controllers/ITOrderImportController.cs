@@ -20,6 +20,8 @@ using General.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using General.Framework.Datatable;
 using General.Services.SysCustomizedList;
+using General.Services.Material;
+using General.Services.Project;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -31,19 +33,21 @@ namespace General.Mvc.Areas.Admin.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private ISysRoleService _sysRoleService;
         private IOrderService _sysOrderService;
-       
+        private IMaterialService _sysMaterialService;
+        private IProjectService _sysProjectService;
         private ISysCustomizedListService _sysCustomizedListService;
-        public ITOrderImportController(ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        public ITOrderImportController(IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
             this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysRoleService = sysRoleService;
+            this._sysProjectService = sysProjectService;
+            this._sysMaterialService = sysMaterialService;
             this._sysOrderService = sysOrderService;
             this._hostingEnvironment = hostingEnvironment;
         }
         [Route("", Name = "itOrderImportIndex")]
-        [Function("订单数据导入", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.DataImportController", Sort = 1)]
-
+        [Function("采购订单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.DataImportController", Sort = 1)]
         public IActionResult ITOrderImportIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
@@ -55,6 +59,25 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
             return View(dataSource);//sysImport
         }
+        [HttpGet]
+        [Route("edit", Name = "editITOrderImport")]
+        [Function("编辑采购订单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
+        public IActionResult EditITOrderImport(int? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
+            //var customizedList = _sysMaterialService.getByAccount("货币类型");
+            ViewBag.Person = WorkContext.CurrentUser.Name;
+            ViewBag.Card = WorkContext.CurrentUser.Account;
+            if (id != null)
+            {
+                ViewBag.Id = id;
+                var model = _sysOrderService.getById(id.Value);
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
         [Route("excelimport", Name = "excelimport")]
         public FileStreamResult Excel(int?id)
         {
@@ -64,60 +87,169 @@ namespace General.Mvc.Areas.Admin.Controllers
             string sFileName = model.Attachment;
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
             FileStream fs = new FileStream(file.ToString(), FileMode.Create);
-            
             return File(fs,"application/octet-stream", sFileName);
-
         }
         [HttpPost]
-        [Route("importexcel", Name = "importexcel")]
-        public ActionResult Import(IFormFile excelfile, string returnUrl = null)
+        [Route("importexcelorder", Name = "importexcelorder")]
+        [Function("采购订单修改、批量导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
+        public ActionResult Import(Entities.Order modelplan, IFormFile excelfile, string excelbh, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\profile\\";
-            string sFileName = excelfile.FileName;
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
+            if (excelfile!=null) {
+                string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+                string sFileName = excelfile.FileName;
+                FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                {
+                    excelfile.CopyTo(fs);
+                    fs.Flush();
+                }
+                using (ExcelPackage package = new ExcelPackage(file))
+                {
+                    StringBuilder sb = new StringBuilder();
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                    int rowCount = worksheet.Dimension.Rows;
+                    int ColCount = worksheet.Dimension.Columns;
+                    int materialno = 0; int partno = 0; int technical = 0; int item = 0; int lineitem = 0;
+                    int width = 0; int name = 0; int size = 0;
+                    int length = 0; int planno = 0; int planunit = 0; int packages = 0; int currency = 0; int unitprice = 0;
+                    int totamount = 0; int deliverydate = 0; int manufacturer = 0; int origin = 0;
+                    for (int columns = 1; columns <= ColCount; columns++)
+                    {
+                        //Entities.Order model = new Entities.Order();
+                        if (worksheet.Cells[1, columns].Value.ToString() == "订单行号") { item = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "索引号") { lineitem = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "物料代码") { materialno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "名称") { name = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "牌号") { partno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "规范") { technical = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "规格") { size = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "宽") { width = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "长") { length = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { packages = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "订单数量") { planno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "订单单位") { planunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "币种") { currency = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "单价") { unitprice = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "总价") { totamount = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "交货日期") { deliverydate = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "制造商") { manufacturer = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "原产国") { origin = columns; }
+                    }
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        try
+                        {
+                            Entities.Order model = new Entities.Order();
+                            model.OrderNo = modelplan.OrderNo;
+                            model.OrderConfirmDate = modelplan.OrderConfirmDate;
+                            model.OrderSigner = modelplan.OrderSigner;
+                            model.SignerCard = modelplan.SignerCard;
+                            model.SupplierCode = modelplan.SupplierCode;
+                            model.SupplierName = modelplan.SupplierName;
+                            model.TradeTerms = modelplan.TradeTerms;
+                            model.Transport = modelplan.Transport;
+                            var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
+                            model.Project = modelproject.Describe;
+                            var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
+                            model.MaterialCategory = modelMaterial.Describe;
+                            if (worksheet.Cells[row, item].Value != null)
+                            {
+                                model.Item = worksheet.Cells[row, item].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, materialno].Value != null)
+                            {
+                                model.MaterialCode = worksheet.Cells[row, materialno].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, name].Value != null)
+                            {
+                                model.Name = worksheet.Cells[row, name].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, lineitem].Value != null)
+                            {
+                                model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, technical].Value != null)
+                            {
+                                model.Specification = worksheet.Cells[row, technical].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, width].Value != null)
+                            {
+                                model.Width = worksheet.Cells[row, width].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, size].Value != null)
+                            {
+                                model.Size = worksheet.Cells[row, size].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, length].Value != null)
+                            {
+                                model.Length = worksheet.Cells[row, length].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, packages].Value != null)
+                            {
+                                model.Package = worksheet.Cells[row, packages].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, planno].Value != null)
+                            {
+                                model.Qty = worksheet.Cells[row, planno].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, planunit].Value != null)
+                            {
+                                model.Unit = worksheet.Cells[row, planunit].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, unitprice].Value != null)
+                            {
+                                model.UnitPrice = worksheet.Cells[row, unitprice].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, totamount].Value != null)
+                            {
+                                model.TotalPrice = worksheet.Cells[row, totamount].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, currency].Value != null)
+                            {
+                                model.Currency = worksheet.Cells[row, currency].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, deliverydate].Value != null)
+                            {
+                                model.LeadTime = Convert.ToDateTime(worksheet.Cells[row, deliverydate].Value.ToString());
+                            }
+                            if (worksheet.Cells[row, manufacturer].Value != null)
+                            {
+                                model.Manufacturer = worksheet.Cells[row, manufacturer].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, origin].Value != null)
+                            {
+                                model.Origin = worksheet.Cells[row, origin].Value.ToString();
+                            }
+                            if (worksheet.Cells[row, partno].Value != null)
+                            {
+                                model.PartNo = worksheet.Cells[row, partno].Value.ToString();
+                            }
+                            _sysOrderService.insertOrder(model);
+                        }
+                        catch (Exception e)
+                        {
+                            ViewData["IsShowAlert"] = "True";
+                        }
+                    }
+                   
+                }
+            } else {
+                var model = _sysOrderService.getById(modelplan.Id);
+                model.OrderNo = modelplan.OrderNo;
+                model.OrderConfirmDate = modelplan.OrderConfirmDate;
+                model.OrderSigner = modelplan.OrderSigner;
+                model.SignerCard = modelplan.SignerCard;
+                model.SupplierCode = modelplan.SupplierCode;
+                model.SupplierName = modelplan.SupplierName;
+                model.TradeTerms = modelplan.TradeTerms;
+                model.Transport = modelplan.Transport;
+                model.Project = modelplan.Project;
+                model.MaterialCategory = modelplan.MaterialCategory;
+                _sysOrderService.updateOrder(model);
             }
-           return Redirect(ViewBag.ReturnUrl);
-            
+            return Redirect(ViewBag.ReturnUrl);
         }
-        //[HttpPost]
-        //public JsonResult ExcelToUpload(HttpPostedFileBase file)
-        //{
-        //    DataTable excelTable = new DataTable();
-        //    string msg = string.Empty;
-        //    if (Request.Files.Count > 0)
-        //    {
-        //        try
-        //        {
-        //            HttpPostedFileBase mypost = Request.Files[0];
-        //            string fileName = Request.Files[0].FileName;
-        //            string serverpath = Server.MapPath(string.Format("~/{0}", "ExcelFiles"));
-        //            string path = Path.Combine(serverpath, fileName);
-        //            mypost.SaveAs(path);
-        //            excelTable = ImportExcel.GetExcelDataTable(path);
-
-        //            //注意Excel表内容格式，第一行必须为列名与数据库列名匹配
-        //            //接下来为各列名对应下来的内容  
-
-        //            msg = SaveExcelToDB.InsertDataToDB(excelTable, "Table");// 写入基础数据
-        //            //msg = SaveExcelToDB.InsAndDelDataToDB(excelTable, "Key", 1, ”Table“);// 写入基础数据，并删除其中的重复的项目                 
-        //            //msg = SaveExcelToDB.UpdateDataToDB(excelTable, "[GamesList]");// 修改对应列
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            msg = ex.Message;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        msg = "请选择文件";
-        //    }
-        //    return Json(msg);
-        //}
     }
 }

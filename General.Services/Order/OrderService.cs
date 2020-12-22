@@ -48,7 +48,7 @@ namespace General.Services.Order
         /// <returns></returns>
         public bool existAccount(string account)
         {
-            return _sysOrderRepository.Table.Any(o => o.Name == account );
+            return _sysOrderRepository.Table.Any(o => o.Name == account);
         }
         /// <summary>
         /// 获取用户详情
@@ -68,7 +68,7 @@ namespace General.Services.Order
         public void insertOrder(Entities.Order model)
         {
             //if (existAccount(model.Name))
-             //   return;
+            //   return;
             _sysOrderRepository.insert(model);
         }
 
@@ -76,12 +76,13 @@ namespace General.Services.Order
         /// 更新修改
         /// </summary>
         /// <param name="model"></param>
-      public  void updateOrder(Entities.Order model)
+        public void updateOrder(Entities.Order model)
         {
-            _sysOrderRepository.DbContext.Entry(model).State = EntityState.Unchanged;
-            _sysOrderRepository.DbContext.Entry(model).Property("Name").IsModified = true;
-            _sysOrderRepository.DbContext.Entry(model).Property("Item").IsModified = true;
-            _sysOrderRepository.DbContext.SaveChanges();
+            var item = _sysOrderRepository.getById(model.Id);
+            if (item == null)
+                return;
+            _sysOrderRepository.update(model);
         }
+
     }
 }

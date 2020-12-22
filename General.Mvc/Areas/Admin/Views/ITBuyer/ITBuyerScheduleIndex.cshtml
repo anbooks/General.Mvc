@@ -29,9 +29,17 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <a asp-route="itOrderBuyerIndex" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加明细</a>
+            <a asp-route="itOrderBuyerIndex" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入订单信息</a>
             <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a>
             <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a>
+            <form enctype="multipart/form-data" method="post" asp-route="importexcells">
+                <div align="left" style="float:left">
+                    <input type="file" name="excelfile" />
+                </div>
+                <div>
+                    <input type="submit" value="批量添加" />
+                </div>
+            </form>
         </div>
     </div>
     <div class="space-2"></div>
@@ -53,14 +61,12 @@
             </div>
         </div>
     </div>
-
     <form asp-route="itBuyerSchedule" method="post" id="formitBuyer" class="form-horizontal" onsubmit="return false;">
         @Html.AntiForgeryToken()
         @Html.Hidden("Id", 1)
         <div class="form-group" id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
             @if (Model != null)
             {
-
                 <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
                     <thead>
                         <tr>
@@ -99,193 +105,70 @@
                     <tbody>
                         @foreach (var item in Model.Data)
                         {
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
-                                <input type="hidden" name="checkboxValue" value="0" />
-                            </td>
-                            @if (ViewBag.QX == "01")
-                            {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
+                                </td>
                                 <td>
                                     <input type="text" name="Buyer" value="@item.Buyer" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Buyer" value="@item.Buyer" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="OrderNo" value="@item.OrderNo" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="OrderNo" value="@item.OrderNo" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="OrderLine" value="@item.OrderLine" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="OrderLine" value="@item.OrderLine" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="ReferenceNo" value="@item.ReferenceNo" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="ReferenceNo" value="@item.ReferenceNo" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="MaterialCode" value="@item.MaterialCode" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="MaterialCode" value="@item.MaterialCode" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Description" value="@item.Description" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Description" value="@item.Description" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Type" value="@item.Type" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Type" value="@item.Type" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Specification" value="@item.Specification" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Specification" value="@item.Specification" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Thickness" value="@item.Thickness" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Thickness" value="@item.Thickness" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Length" value="@item.Length" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Length" value="@item.Length" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Width" value="@item.Width" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Width" value="@item.Width" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 @if (@item.ShipmentDate == null)
                                 {
                                     <td>
@@ -297,167 +180,60 @@
                                         <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
                                     </td>}
 
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="datetime" name="ShipmentDate" value="@item.ShipmentDate" disabled />
-                                </td>
-                            }
-                           
-                            @if (ViewBag.QX == "01")
-                            {
                                 <td>
                                     <input type="text" name="Consignor" value="@item.Consignor" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Consignor" value="@item.Consignor" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
                                 <td>
                                     <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="BatchNo" value="@item.BatchNo" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="BatchNo" value="@item.BatchNo" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Waybill" value="@item.Waybill" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Waybill" value="@item.Waybill" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Books" value="@item.Books" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="Books" value="@item.Books" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="BooksItem" value="@item.BooksItem" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="BooksItem" value="@item.BooksItem" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:100px" />
-                                </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
-                                <td>
-                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" disabled style="width:100px" />
-                                </td>
-                            }
-                            @if (ViewBag.QX == "01")
-                            {
+
                                 <td>
                                     <input type="text" name="Qualification" value="@item.Qualification" style="width:100px" />
                                 </td>
-                            }
-                            else
-                            {
+
                                 <td>
-                                    <input type="text" name="Qualification" value="@item.Qualification" disabled style="width:100px" />
+                                    <a href="@Url.RouteUrl("editBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
                                 </td>
-                            }
-                            <td>
-                                <a href="@Url.RouteUrl("editBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                            </td>
-                        </tr>
+                            </tr>
                         }
                     </tbody>
                 </table>
                 <pager page-value="Model.Paging"></pager>
-
             }
         </div>
         <div class="col-md-offset-1">
@@ -546,7 +322,13 @@
                     data: { "kevin": JSON.stringify(subArray) },
                     success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
                         // 此处可对 data 作相关处理
-                        alert('提交成功！');
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload(); 
+                        }
                     }
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转

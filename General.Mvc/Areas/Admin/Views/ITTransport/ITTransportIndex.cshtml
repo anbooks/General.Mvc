@@ -324,7 +324,13 @@
                     data: { "kevin": JSON.stringify(subArray) },
                     success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
                         // 此处可对 data 作相关处理
-                        alert('提交成功！');
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
                     }
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转

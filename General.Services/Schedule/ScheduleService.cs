@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using General.Core;
 using General.Services.ScheduleService;
 using General.Services.SysUser;
+using General.Services.ImportTrans_main_recordService;
 
 namespace General.Services.ImportTrans_main_record
 {
@@ -21,11 +22,12 @@ namespace General.Services.ImportTrans_main_record
         private const string MODEL_KEY = "General.services.schedule";
 
         private IRepository<Entities.Schedule> _scheduleRepository;
-
+        private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysUserService _sysUserService;
-        public ScheduleService(ISysUserService sysUserService,IRepository<Entities.Schedule> scheduleRepository,
+        public ScheduleService(IImportTrans_main_recordService importTrans_main_recordService,ISysUserService sysUserService,IRepository<Entities.Schedule> scheduleRepository,
             IMemoryCache memoryCache)
         {
+            this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysUserService = sysUserService;
             this._memoryCache = memoryCache;
             this._scheduleRepository = scheduleRepository;
@@ -37,6 +39,9 @@ namespace General.Services.ImportTrans_main_record
         public void insertSchedule(Entities.Schedule model)
         {
             _scheduleRepository.insert(model);
+            var item = _importTrans_main_recordService.getById(model.MainId);
+            item.F_ShippingModeGiven = true;
+            _importTrans_main_recordService.updateImportTransmain(item);
             _memoryCache.Remove(MODEL_KEY);
         }
         /// <summary>
@@ -52,13 +57,13 @@ namespace General.Services.ImportTrans_main_record
              item.Buyer = model.Buyer;
              item.OrderLine = model.OrderLine;
              item.ReferenceNo = model.ReferenceNo;
-            item.MaterialCode = model.MaterialCode;
-            item.Description = model.Description;
-            item.Type = model.Type;
-            item.Specification = model.Specification;
-            item.Thickness = model.Thickness;
+             item.MaterialCode = model.MaterialCode;
+             item.Description = model.Description;
+             item.Type = model.Type;
+             item.Specification = model.Specification;
+             item.Thickness = model.Thickness;
             item.Length = model.Length;
-            item.Width = model.Width;
+             item.Width = model.Width;
             item.PurchaseQuantity = model.PurchaseQuantity;
             item.PurchaseUnit = model.PurchaseUnit;
             item.UnitPrice = model.UnitPrice;

@@ -37,7 +37,6 @@
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
                         <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
-                        @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -116,16 +115,23 @@
                                             <input type="date" name="RequestedArrivalTime" value="@item.RequestedArrivalTime" disabled />
                                         </td>
                                     }
-                                    
-                                    <td>
-                                        <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                    </td>
+                                    @if (@item.F_ShippingModeGiven!=true)
+                                    {
+                                        <td>
+                                            <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
+                                        </td> 
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
+                                        </td>
+                                    }
                                 </tr>
                             }
                         </tbody>
                     </table>
                     <pager page-value="Model.Paging"></pager>
-
                 }
             </div>
         </div>
@@ -135,7 +141,6 @@
                 确认创建
             </button>
         </div>
-
     </form>
     <script>
         $(function () {
@@ -165,12 +170,16 @@
                     data: { "kevin": JSON.stringify(subArray) },
                     success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
                         // 此处可对 data 作相关处理
-                        alert('提交成功！');
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
                     }
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
-
-
             });
 
         });

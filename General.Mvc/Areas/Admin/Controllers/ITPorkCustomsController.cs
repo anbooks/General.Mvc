@@ -49,8 +49,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("自行送货或外部提货");
             ViewData["ChooseDelivery"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            var customizedList2 = _sysCustomizedListService.getByAccount("是否调用明细表生成二检明细");
+            ViewData["DeliveryReceipt"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
+            var customizedList3 = _sysCustomizedListService.getByAccount("是否破损");
+            ViewData["BrokenRecord"] = new SelectList(customizedList3, "CustomizedValue", "CustomizedValue");
             //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
-             //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
+            //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
             ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
@@ -115,6 +119,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                 int ColCount = worksheet.Dimension.Columns;
                 for (int row = 2; row <= rowCount; row++)
                 {
+                    //string s = "abcdeabcdeabcde";
+                    //string[] sArray = s.Split('c');
+                    //foreach (string i in sArray)
+                    //Console.WriteLine(i.ToString());
 
                     model.Itemno = worksheet.Cells[row, 1].Value.ToString();
                     model.Shipper = worksheet.Cells[row, 2].Value.ToString();
@@ -149,8 +157,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
-                
-              
                 if (u.ChooseDelivery != "") { model.ChooseDelivery = u.ChooseDelivery; }
                 model.BlDate = u.BlDate;
                 model.DeclarationDate = u.DeclarationDate;
@@ -158,7 +164,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.CustomsDeclarationNo = u.CustomsDeclarationNo;
                 model.InspectionLotNo = u.InspectionLotNo;
                 model.ActualDeliveryDate = u.ActualDeliveryDate;
-               
+                if (u.DeliveryReceipt != "") { model.DeliveryReceipt = u.DeliveryReceipt; }
+                if (u.BrokenRecord != "") { model.BrokenRecord = u.BrokenRecord; }
                 _importTrans_main_recordService.updateImportTransmain(model);
             }
             AjaxData.Status = true;
@@ -176,15 +183,20 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
+                ViewBag.note = model.Note;
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
+            }
+            else
+            {
+                ViewBag.FJ = 1;
             }
             return View();
         }
         [HttpPost]
         [Route("edit")]
-        public ActionResult EditITPorkCustoms(Entities.ImportTrans_main_record model, string returnUrl = null)
+        public ActionResult EditITPorkCustoms(Entities.ImportTrans_main_record model, IFormFile notefile, string returnUrl = null)
         {
             ModelState.Remove("Id");
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
@@ -210,6 +222,16 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             else
             {
+                string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                var fileProfile = sWebRootFolder + "\\Files\\notefile\\";
+                string sFileName = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + notefile.FileName;
+                FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                {
+                    notefile.CopyTo(fs);
+                    fs.Flush();
+                }
+                model.Note = sFileName;
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;
                 _importTrans_main_recordService.updateImportTransmain(model);
@@ -243,9 +265,9 @@ namespace General.Mvc.Areas.Admin.Controllers
           //  if (!String.IsNullOrEmpty(model.InvoiceNo))
           //      model.InvoiceNo = model.InvoiceNo.Trim();
           //  if (!String.IsNullOrEmpty(model.MaterielNo))
-         //       model.MaterielNo = model.MaterielNo.Trim();
-         //   if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-         //       model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+          //      model.MaterielNo = model.MaterielNo.Trim();
+          //  if (!String.IsNullOrEmpty(model.PurchasingDocuments))
+          //      model.PurchasingDocuments = model.PurchasingDocuments.Trim();
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;

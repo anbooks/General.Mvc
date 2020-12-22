@@ -146,6 +146,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             string test = kevin;
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
+            try { 
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
@@ -199,6 +200,12 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             AjaxData.Status = true;
             AjaxData.Message = "OK";
+        }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
             return Json(AjaxData);
         }
         [HttpGet]

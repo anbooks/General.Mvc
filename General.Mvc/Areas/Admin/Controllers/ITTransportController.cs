@@ -70,7 +70,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View(dataSource);//sysImport
         }
         [Route("downLoadmbl", Name = "downLoadmbl")]
-        [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        [Function("下载主单附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
         public FileStreamResult DownLoadMbl(int? id)
         {
             var model = _importTrans_main_recordService.getById(id.Value);
@@ -82,7 +82,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             return File(fs, "application/octet-stream", sFileName);
         }
         [Route("downLoadhbl", Name = "downLoadhbl")]
-        [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        [Function("下载分单附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
         public FileStreamResult DownLoadHbl(int? id)
         {
             var model = _importTrans_main_recordService.getById(id.Value);
@@ -95,32 +95,41 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("itTransportList", Name = "itTransportList")]
+        [Function("运代数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
         public ActionResult ITTransportList(string kevin)
         {
             string test = kevin;
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-            foreach (Entities.ImportTrans_main_record u in jsonlist)
+            try
             {
-                var model = _importTrans_main_recordService.getById(u.Id);
-                
-                if (u.Status != "") { model.Status = u.Status; }
-                model.FlighVessel = u.FlighVessel;
-                model.Origin = u.Origin;
-                model.Dest = u.Dest;
-                model.Mbl = u.Mbl;
-                model.Hbl = u.Hbl;
-                model.Measurement = u.Measurement;
-                model.Ata = u.Ata;
-                model.Atd = u.Atd;
-                _importTrans_main_recordService.updateImportTransmain(model);
+                foreach (Entities.ImportTrans_main_record u in jsonlist)
+                {
+                    var model = _importTrans_main_recordService.getById(u.Id);
+
+                    if (u.Status != "") { model.Status = u.Status; }
+                    model.FlighVessel = u.FlighVessel;
+                    model.Origin = u.Origin;
+                    model.Dest = u.Dest;
+                    model.Mbl = u.Mbl;
+                    model.Hbl = u.Hbl;
+                    model.Measurement = u.Measurement;
+                    model.Ata = u.Ata;
+                    model.Atd = u.Atd;
+                    _importTrans_main_recordService.updateImportTransmain(model);
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
             }
-            AjaxData.Status = true;
-            AjaxData.Message = "OK";
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
             return Json(AjaxData);
         }
         [HttpGet]
         [Route("edit", Name = "editITTransport")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        [Function("运代编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
         public IActionResult EditITTransport(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itTransport");
@@ -174,8 +183,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 string sWebRootFolder = _hostingEnvironment.WebRootPath;
                 var fileProfilem = sWebRootFolder + "\\Files\\mbl\\";
                 var fileProfileh = sWebRootFolder + "\\Files\\hbl\\";
-                string sFileNamem = mblfile.FileName;
-                string sFileNameh = hblfile.FileName;
+                string sFileNamem = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + mblfile.FileName;
+                string sFileNameh = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + hblfile.FileName;
                 FileInfo filem = new FileInfo(Path.Combine(fileProfilem, sFileNamem));
                 FileInfo fileh = new FileInfo(Path.Combine(fileProfileh, sFileNameh));
                 using (FileStream fsm = new FileStream(filem.ToString(), FileMode.Create))
@@ -188,8 +197,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                     mblfile.CopyTo(fsh);
                     fsh.Flush();
                 }
-                model.MblAttachment = mblfile.FileName;
-                model.HblAttachment = hblfile.FileName;
+                model.MblAttachment = sFileNamem;
+                model.HblAttachment = sFileNameh;
                 model.Modifier = WorkContext.CurrentUser.Id;
                 model.ModifiedTime = DateTime.Now;
                 _importTrans_main_recordService.updateImportTransmain(model);
