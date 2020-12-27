@@ -47,12 +47,12 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult ITTransportIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
-            var customizedList = _sysCustomizedListService.getByAccount("运输方式");
-            ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
+            ViewData["Invcurr"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
             ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
-            ViewBag.QX = WorkContext.CurrentUser.Co;
-            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
+            
+            var pageList = _importTrans_main_recordService.searchListTransport(arg, page, size, WorkContext.CurrentUser.Co);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itTransport", arg);
             return View(dataSource);//sysImport
@@ -62,12 +62,76 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult ITTransportScheduleIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
-            ViewBag.Userid = id;
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            int? ida = id;
+            if (ida == 0)
+            {
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+            }
+            else
+            {
+                HttpContext.Session.SetInt32("import", id);
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+            }
+            //Session["username"] = id.ToString(); 
+            int importid = ViewBag.Import;
             RolePermissionViewModel model = new RolePermissionViewModel();
-            var pageList = _scheduleService.searchList(arg, page, size, id);
+            var pageList = _scheduleService.searchList(arg, page, size, importid);
+            var item = _importTrans_main_recordService.getById(importid);
+            if (pageList.Count > 0)
+            {
+                item.F_ShippingModeGiven = true;
+
+                _importTrans_main_recordService.updateImportTransmain(item);
+            }
+            ViewBag.orderno = item.PoNo;
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itTransportSchedule", arg);
             return View(dataSource);//sysImport
+        }
+        [HttpPost]
+        [Route("itTransportScheduleList", Name = "itTransportScheduleList")]
+        [Function("明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        public ActionResult ITTransportScheduleList(string kevin)
+        {
+            string test = kevin;
+            List<Entities.Schedule> jsonlist = JsonHelper.DeserializeJsonToList<Entities.Schedule>(test);
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            try
+            {
+                foreach (Entities.Schedule u in jsonlist)
+                {
+                    var model = _scheduleService.getById(u.Id);
+
+                    model.PurchaseQuantity = u.PurchaseQuantity;
+                    model.PurchaseUnit = u.PurchaseUnit;
+                    model.UnitPrice = u.UnitPrice;
+                    model.TotalPrice = u.TotalPrice;
+                    model.ShipmentDate = u.ShipmentDate;
+                    model.Consignor = u.Consignor;
+                    model.Manufacturers = u.Manufacturers;
+                    model.OriginCountry = u.OriginCountry;
+                    model.Books = u.Books;
+                    model.BooksItem = u.BooksItem;
+                    model.Waybill = u.Waybill;
+                    model.BatchNo = u.BatchNo;
+                    model.RecordUnit = u.RecordUnit;
+                    model.RecordUnitReducedPrice = u.RecordUnitReducedPrice;
+                    model.LegalUnits = u.LegalUnits;
+                    model.LegalUniteReducedPrice = u.LegalUniteReducedPrice;
+                    model.Qualification = u.Qualification;
+                    _scheduleService.updateSchedule(model);
+                    //u就是jsonlist里面的一个实体类
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
         }
         [Route("downLoadmbl", Name = "downLoadmbl")]
         [Function("下载主单附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
@@ -105,7 +169,14 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.ImportTrans_main_record u in jsonlist)
                 {
                     var model = _importTrans_main_recordService.getById(u.Id);
-
+                    model.Incoterms = u.Incoterms;
+                    model.CargoType = u.CargoType;
+                    model.Invamou = u.Invamou;
+                    if (u.Invcurr != "") { model.Invcurr = u.Invcurr; }
+                   
+                    model.RealReceivingDate = u.RealReceivingDate;
+                    model.Pcs = u.Pcs;
+                    model.Gw = u.Gw;
                     if (u.Status != "") { model.Status = u.Status; }
                     model.FlighVessel = u.FlighVessel;
                     model.Origin = u.Origin;
@@ -113,6 +184,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Mbl = u.Mbl;
                     model.Hbl = u.Hbl;
                     model.Measurement = u.Measurement;
+                    model.MeasurementUnit = u.MeasurementUnit;
                     model.Ata = u.Ata;
                     model.Atd = u.Atd;
                     _importTrans_main_recordService.updateImportTransmain(model);

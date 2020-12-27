@@ -20,6 +20,8 @@ using System.IO;
 using OfficeOpenXml;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Win32;
+using System.Diagnostics;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -42,10 +44,8 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("", Name = "itShipmentCreate")]
         [Function("创建发运条目(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
         [HttpGet]
-        public IActionResult ITShipmentCreateIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
-        {
-            
-            
+        public IActionResult ITShipmentCreateIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        { 
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Invcurr"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
@@ -92,14 +92,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Json(AjaxData);
         }
+       
         [Route("downLoadInventory", Name = "downLoadInventory")]
         [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
         public FileStreamResult DownLoadInventory(int? id)
         {
             var model = _importTrans_main_recordService.getById(id.Value);
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = model.InventoryAttachment;
+            var fileProfile = sWebRootFolder + "\\Files\\inventoryfile\\";
+            string sFileName = model.Id.ToString();
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
             FileStream fs = new FileStream(file.ToString(), FileMode.Create);
             return File(fs, "application/octet-stream", sFileName);
@@ -110,20 +111,25 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult EditITShipmentCreate(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
-            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
-            ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            var customizedList = _sysCustomizedListService.getByAccount("运输代理");
+            ViewData["Transportation"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             if (id != null)
             {
+                ViewBag.FJ = 1;
                 var model = _importTrans_main_recordService.getById(id.Value);
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
             }
-            else
-            {
-                ViewBag.FJ = 1;
-            }
+           
             return View();
+        }
+        private void DicCreate(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
         }
         [HttpPost]
         [Route("edit")]
@@ -151,15 +157,22 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Modifier = null;
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
+                if (model.PoNo==null||model.Shipper==null||model.Transportation==null) {
+                   
+                    return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITShipmentCreate"));
+                }
                 _importTrans_main_recordService.insertImportTransmain(model);
+               
             }
             else
             {
                 if (excelfile!=null) {
                     string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                    var dirpath = sWebRootFolder + "\\Files\\inventoryfile\\"+model.Id+"\\";
                     var fileProfile = sWebRootFolder + "\\Files\\inventoryfile\\";
+                    DicCreate(Path.Combine(fileProfile, dirpath));
                     string sFileName = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + excelfile.FileName;
-                    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                    FileInfo file = new FileInfo(Path.Combine(dirpath, sFileName));
                     using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
                     {
                         excelfile.CopyTo(fs);

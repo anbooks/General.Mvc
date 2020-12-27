@@ -26,7 +26,7 @@
 
     <div>
         <div class="col-lg-12">
-            <a asp-route="editITProcurementPlan" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>批量添加</a>
+            <a asp-route="itProcurementPlanMainIndex" class="btn btn-sm btn-pink">返回</a>
         </div>
         <div class="space-2"></div>
         <div class="row">
@@ -35,10 +35,9 @@
                     <div class="panel-body">
                         <form asp-route="itProcurementPlanIndex" method="get" class="form-inline">
                             <label>关键字</label>
-                            <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
-                            <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
-                            @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
+                            <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="序号" />
+                            <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="物料编码" />
+                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="名称" />
                             <button type="submit" class="btn btn-purple btn-sm">
                                 查询
                                 <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -49,6 +48,8 @@
             </div>
         </div>
         <form asp-route="itProcurementPlanIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
+            @Html.AntiForgeryToken()
+            @Html.Hidden("Id", 1)
             <div class="form-group">
                 @if (Model != null)
                 {
@@ -85,56 +86,37 @@
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="sysResource" value="@item.Id" />
-                                </td>
-                                <td>@item.PlanItem</td>
-                                <td>@item.Prepare</td>
-                                <td>@item.Project</td>
-                                <td>@item.Item</td>
-                                <td>@item.Materialno</td>
-                                <td>@item.Name</td>
-                                <td>@item.PartNo</td>
-                                <td>@item.Technical</td>
-                                <td>@item.Size</td>
-                                <td>@item.Width</td>
-                                <td>@item.Length</td>
-                                <td>@item.SingleQuota</td>
-                                <td>@item.Package</td>
-                                <td>@item.PlanNo</td>
-                                <td>@item.PlanUnit</td>
-                                <td>@item.PlanOrderNo</td>
-                                <td>@item.PlanOrderUnit</td>
-                                @if (ViewBag.QX == "01")
-                                {
-                                    @if (@item.RequiredDockDate == null)
-                                    {
-                                        <td>
-                                            <input type="date" name="RequiredDockDate" value="@item.RequiredDockDate" />
-                                        </td>}
-                                    else
-                                    {
-                                        <td>
-                                            <input type="date" name="RequiredDockDate" value="@item.RequiredDockDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-
-                                }
-                                else
-                                {
+                                <tr>
                                     <td>
-                                        <input type="datetime" name="RequiredDockDate" value="@item.RequiredDockDate" disabled />
+                                        <input type="checkbox" name="sysResource" value="@item.Id" />
                                     </td>
-                                }
-                                <td>@item.ACCovers</td>
-                                <td>@item.Purchasing</td>
-                                <td>@item.Application</td>
-                                <td>@item.Remark1</td>
-                                <td>@item.Remark2</td>
-                                <td>
-                                    <a href="@Url.RouteUrl("editITProcurementPlan", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                                </td>
-                            </tr>
+                                    <td>@item.PlanMain.PlanItem</td>
+                                    <td>@item.PlanMain.Prepare</td>
+                                    <td>@item.PlanMain.Project</td>
+                                    <td>@item.Item</td>
+                                    <td>@item.Materialno</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.PartNo</td>
+                                    <td>@item.Technical</td>
+                                    <td>@item.Size</td>
+                                    <td>@item.Width</td>
+                                    <td>@item.Length</td>
+                                    <td>@item.SingleQuota</td>
+                                    <td>@item.Package</td>
+                                    <td>@item.PlanNo</td>
+                                    <td>@item.PlanUnit</td>
+                                    <td>@item.PlanOrderNo</td>
+                                    <td>@item.PlanOrderUnit</td>
+                                    <td>@item.RequiredDockDate</td>
+                                    <td>@item.ACCovers</td>
+                                    <td>@item.Purchasing</td>
+                                    <td>@item.Application</td>
+                                    <td>@item.Remark1</td>
+                                    <td>@item.Remark2</td>
+                                    <td>
+                                        <a href="@Url.RouteUrl("editITProcurementPlan", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>

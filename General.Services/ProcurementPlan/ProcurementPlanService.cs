@@ -27,11 +27,16 @@ namespace General.Services.ProcurementPlan
         /// <param name="page"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public IPagedList<Entities.ProcurementPlan> searchProcurementPlan(SysCustomizedListSearchArg arg, int page, int size)
+        public IPagedList<Entities.ProcurementPlan> searchProcurementPlan(SysCustomizedListSearchArg arg, int page, int size,int id)
         {
-            var query = _sysProcurementPlanRepository.Table;
+            
+            var query = _sysProcurementPlanRepository.Table.Include(p=>p.PlanMain).Where(o=>o.IsDeleted!=true&&o.MainId==id);
             if (arg != null)
             {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Item.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Materialno.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
                     query = query.Where(o => o.Name.Contains(arg.pono));
             }

@@ -31,36 +31,28 @@
             <form asp-route="editITShipmentCreate" method="post" enctype="multipart/form-data" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
-                @if (ViewBag.FJ != 1)
+                @if (ViewBag.FJ == 1)
                 {
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()订单号</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号" disabled />
+                    </div>ViewBag.pono
+                    <span asp-validation-for="PoNo" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()发货人</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Shipper" class="form-control" placeholder="发货人" disabled />
+                    </div>ViewBag.shipper
+                    <span asp-validation-for="Shipper" class="inline text-danger "></span>
+                </div> 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()编号</label>
+                        <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()运输代理</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" asp-for="Itemno" placeholder="编号" disabled/>
-                        </div>
-                        <span class="inline text-danger" asp-validation-for="Itemno"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">发货人</label>
-                        <div class="col-sm-3">
-                            <input type="text" asp-for="Shipper" class="form-control" placeholder="发货人" disabled/>
-                        </div>
-                        <span asp-validation-for="Shipper" class="inline text-danger "></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">订单号</label>
-                        <div class="col-sm-3">
-                            <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号" disabled/>
-                        </div>
-                        <span asp-validation-for="PoNo" class="inline text-danger "></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">货币类型</label>
-                        <div class="col-sm-3">
-                            <select asp-for="Invcurr" class="form-control" disabled asp-items="ViewBag.Invcurrlist"></select>
-                        </div>
-                        <span asp-validation-for="Invcurr" class="inline text-danger"></span>
+                            <select asp-for="Transportation" class="form-control" disabled asp-items="ViewBag.Transportation"></select>
+                        </div>ViewBag.transportation
+                        <span asp-validation-for="Transportation" class="inline text-danger"></span>
                     </div>
 
                     <div class="form-group">
@@ -73,33 +65,29 @@
                 else
                 {
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()编号</label>
+                        <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()订单号</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" asp-for="Itemno" placeholder="编号" />
-                        </div>
-                        <span class="inline text-danger" asp-validation-for="Itemno"></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">发货人</label>
-                        <div class="col-sm-3">
-                            <input type="text" asp-for="Shipper" class="form-control" placeholder="发货人" />
-                        </div>
-                        <span asp-validation-for="Shipper" class="inline text-danger "></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">订单号</label>
-                        <div class="col-sm-3">
-                            <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号" />
+                            <input type="text" asp-for="PoNo" class="form-control" placeholder="订单号不能为空" />
                         </div>
                         <span asp-validation-for="PoNo" class="inline text-danger "></span>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">货币类型</label>
+                        <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()发货人</label>
                         <div class="col-sm-3">
-                            <select asp-for="Invcurr" class="form-control" asp-items="ViewBag.Invcurrlist"></select>
-                        </div>
-                        <span asp-validation-for="Invcurr" class="inline text-danger"></span>
+                            <input type="text" asp-for="Shipper" class="form-control" placeholder="发货人不能为空" />
+                        </div>@ViewBag.shipper
+                        <span asp-validation-for="Shipper" class="inline text-danger "></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()运输代理</label>
+                        <div class="col-sm-3">
+                            @Html.DropDownList("Transportation", ViewData["Transportation"] as SelectList, "-请选择运输代理-", new { @class = "form-control" })
+
+                            <!--<select asp-for="Transportation" class="form-control" asp-value="运输代理" asp-items="ViewBag.Transportation" placeholder="运输代理不能为空"></select>
+                        --></div>
+                        <span asp-validation-for="Transportation" class="inline text-danger"></span>
                     </div>
                 }
                 <div class="col-md-offset-2 col-md-9">

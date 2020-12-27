@@ -11,10 +11,11 @@ namespace General.Entities
     public class ImportTrans_main_record
     {
          public int Id { get; set; }//数据库建表主键必须命名为Id
+      //  [Required(ErrorMessage = "请输入订单号")]
         public string OrderNo { get; set; }//订单号
         public string Itemno { get; set; }//编号
          public string Shipper { get; set; }//发货人
-         public string PoNo { get; set; }//合同号
+         public string PoNo { get; set; }//订单号
         public string Buyer { get; set; }//采购员
         public string Incoterms { get; set; }//贸易条款
          public string CargoType { get; set; }//货物类型
@@ -23,6 +24,7 @@ namespace General.Entities
          public string Pcs { get; set; }//件数(箱数)
          public string Gw { get; set; }//毛重
         public DateTime? RealReceivingDate { get; set; }//实际提货/收货日期
+        public string Transportation { get; set; }
         public Guid Creator { get; set; }
         public DateTime CreationTime { get; set; }
         public Guid? Modifier { get; set; }
@@ -51,6 +53,7 @@ namespace General.Entities
         public string Hbl { get; set; }//分单号
         public string HblAttachment { get; set; }//分单附件
         public string Measurement { get; set; }//计费重量
+        public string MeasurementUnit { get; set; }//计费重量单位
         public DateTime? Atd { get; set; }//
         public DateTime? Ata { get; set; }//
         public string Forwarder { get; set; }//口岸报关行
@@ -82,7 +85,7 @@ namespace General.Entities
         public bool? F_DeliveryReceipt { get; set; }
         public Guid? DeliveryReceipter { get; set; }
         public DateTime? DeliveryReceiptTime { get; set; }
-        public bool? CheckAndPass { get; set; }//是否核放
+        public string CheckAndPass { get; set; }//是否核放
         public Guid? CheckAndPassor { get; set; }
         public DateTime? CheckAndPassTime { get; set; }
         public bool? F_CheckAndPass { get; set; }

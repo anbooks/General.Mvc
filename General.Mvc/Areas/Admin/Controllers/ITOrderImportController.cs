@@ -22,6 +22,7 @@ using General.Framework.Datatable;
 using General.Services.SysCustomizedList;
 using General.Services.Material;
 using General.Services.Project;
+using General.Services.OrderMain;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -33,10 +34,11 @@ namespace General.Mvc.Areas.Admin.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private ISysRoleService _sysRoleService;
         private IOrderService _sysOrderService;
+        private IOrderMainService _sysOrderMainService;
         private IMaterialService _sysMaterialService;
         private IProjectService _sysProjectService;
         private ISysCustomizedListService _sysCustomizedListService;
-        public ITOrderImportController(IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        public ITOrderImportController(IOrderMainService sysOrderMainService,IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
             this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
@@ -44,34 +46,113 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysProjectService = sysProjectService;
             this._sysMaterialService = sysMaterialService;
             this._sysOrderService = sysOrderService;
+            this._sysOrderMainService = sysOrderMainService;
             this._hostingEnvironment = hostingEnvironment;
         }
-        [Route("", Name = "itOrderImportIndex")]
+        [Route("itOrderImportIndex", Name = "itOrderImportIndex")]
+        [Function("采购订单详细", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
+        public IActionResult ITOrderImportIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            string s;
+            if (id != 0)
+            {
+                Response.Cookies.Append("Order", Convert.ToString(id));
+                s = Convert.ToString(id);
+            }
+            else
+            {
+                Request.Cookies.TryGetValue("Order", out s);
+            }
+            int ida = Convert.ToInt32(s);
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            var pageList = _sysOrderService.searchOrder(arg, page, size,ida);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
+            return View(dataSource);//sysImport
+        }
+        [Route("", Name = "itOrderImportMainIndex")]
         [Function("采购订单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.DataImportController", Sort = 1)]
-        public IActionResult ITOrderImportIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITOrderImportMainIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
 
-            var pageList = _sysOrderService.searchOrder(arg, page, size);
+            var pageList = _sysOrderMainService.searchOrderMain(arg, page, size);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.OrderMain, SysCustomizedListSearchArg>("itOrderImportMainIndex", arg);
             return View(dataSource);//sysImport
         }
+
         [HttpGet]
-        [Route("edit", Name = "editITOrderImport")]
-        [Function("编辑采购订单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
+        [Route("edit2", Name = "editITOrderImport")]
+        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
         public IActionResult EditITOrderImport(int? id, string returnUrl = null)
         {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITOrderImport");
+
+            if (id != null)
+            {
+                ViewBag.fw = 1;
+                var model = _sysOrderService.getById(id.Value);
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
+        [HttpPost]
+        [Route("edit2")]
+        public ActionResult EditITOrderImport(Entities.Order model, string returnUrl = null)
+        {
+            ModelState.Remove("Id");
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
-            //var customizedList = _sysMaterialService.getByAccount("货币类型");
+            if (!ModelState.IsValid)
+                return View(model);
+            if (model.Id.Equals(0))
+            {
+            }
+            else
+            {
+                var modela = _sysOrderService.getById(model.Id);
+                modela.Item = model.Item;
+                modela.PlanItem = model.PlanItem;
+                modela.MaterialCode = model.MaterialCode;
+                modela.Name = model.Name;
+                modela.PartNo = model.PartNo;
+                modela.Specification = model.Specification;
+                modela.Size = model.Size;
+                modela.Width = model.Width;
+                modela.Length = model.Length;
+                modela.Package = model.Package;
+                modela.Qty = model.Qty;
+                modela.Unit = model.Unit;
+                modela.Currency = model.Currency;
+                modela.UnitPrice = model.UnitPrice;
+                modela.TotalPrice = model.TotalPrice;
+                modela.LeadTime = model.LeadTime;
+                modela.Manufacturer = model.Manufacturer;
+                modela.Origin = model.Origin;
+                modela.Modifier = WorkContext.CurrentUser.Id;
+                modela.ModifiedTime = DateTime.Now;
+                _sysOrderService.updateOrder(modela);
+            }
+            return Redirect(ViewBag.ReturnUrl);
+        }
+        [HttpGet]
+        [Route("edit", Name = "editITOrderImportMain")]
+        [Function("编辑采购订单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        public IActionResult EditITOrderImportMain(int? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
+            var customizedList = _sysCustomizedListService.getByAccount("运输代理");
+            ViewData["Transport"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             ViewBag.Person = WorkContext.CurrentUser.Name;
             ViewBag.Card = WorkContext.CurrentUser.Account;
             if (id != null)
             {
                 ViewBag.Id = id;
-                var model = _sysOrderService.getById(id.Value);
+                var model = _sysOrderMainService.getById(id.Value);
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
@@ -91,10 +172,10 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("importexcelorder", Name = "importexcelorder")]
-        [Function("采购订单修改、批量导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
-        public ActionResult Import(Entities.Order modelplan, IFormFile excelfile, string excelbh, string returnUrl = null)
+        [Function("采购订单修改、批量导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        public ActionResult Import(Entities.OrderMain modelplan, IFormFile excelfile, string excelbh, string returnUrl = null)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
             if (excelfile!=null) {
                 string sWebRootFolder = _hostingEnvironment.WebRootPath;
                 var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
@@ -137,23 +218,43 @@ namespace General.Mvc.Areas.Admin.Controllers
                         if (worksheet.Cells[1, columns].Value.ToString() == "制造商") { manufacturer = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "原产国") { origin = columns; }
                     }
+                    Entities.OrderMain modelmain = new Entities.OrderMain();
+                    var listmain = _sysOrderMainService.existAccount(modelplan.OrderNo);
+                    if (listmain == true) { return Redirect(ViewBag.ReturnUrl); }
+                    modelmain.OrderNo = modelplan.OrderNo;
+                    modelmain.OrderConfirmDate = modelplan.OrderConfirmDate;
+                    modelmain.OrderSigner = modelplan.OrderSigner;
+                    modelmain.SignerCard = modelplan.SignerCard;
+                    modelmain.SupplierCode = modelplan.SupplierCode;
+                    modelmain.SupplierName = modelplan.SupplierName;
+                    modelmain.TradeTerms = modelplan.TradeTerms;
+                    modelmain.Transport = modelplan.Transport;
+                    var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
+                    modelmain.Project = modelproject.Describe;
+                    var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
+                    modelmain.MaterialCategory = modelMaterial.Describe;
+                    modelmain.CreationTime = DateTime.Now;
+                    modelmain.Creator = WorkContext.CurrentUser.Id;
+                    _sysOrderMainService.insertOrderMain(modelmain);
                     for (int row = 2; row <= rowCount; row++)
                     {
                         try
                         {
                             Entities.Order model = new Entities.Order();
-                            model.OrderNo = modelplan.OrderNo;
-                            model.OrderConfirmDate = modelplan.OrderConfirmDate;
-                            model.OrderSigner = modelplan.OrderSigner;
-                            model.SignerCard = modelplan.SignerCard;
-                            model.SupplierCode = modelplan.SupplierCode;
-                            model.SupplierName = modelplan.SupplierName;
-                            model.TradeTerms = modelplan.TradeTerms;
-                            model.Transport = modelplan.Transport;
-                            var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
-                            model.Project = modelproject.Describe;
-                            var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
-                            model.MaterialCategory = modelMaterial.Describe;
+                            var main = _sysOrderMainService.getByAccount(modelplan.OrderNo);
+                            model.MainId = main.Id;
+                            model.OrderNo = main.OrderNo;
+                            model.OrderConfirmDate = main.OrderConfirmDate;
+                            model.OrderSigner = main.OrderSigner;
+                            model.SignerCard = main.SignerCard;
+                            model.SupplierCode = main.SupplierCode;
+                            model.SupplierName = main.SupplierName;
+                            model.TradeTerms = main.TradeTerms;
+                            model.Transport = main.Transport;
+                            //var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
+                            model.Project = main.Project;
+                            //var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
+                            model.MaterialCategory = main.MaterialCategory;
                             if (worksheet.Cells[row, item].Value != null)
                             {
                                 model.Item = worksheet.Cells[row, item].Value.ToString();
@@ -166,10 +267,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                             {
                                 model.Name = worksheet.Cells[row, name].Value.ToString();
                             }
-                            if (worksheet.Cells[row, lineitem].Value != null)
-                            {
+                           
                                 model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
-                            }
+                            
                             if (worksheet.Cells[row, technical].Value != null)
                             {
                                 model.Specification = worksheet.Cells[row, technical].Value.ToString();
@@ -226,6 +326,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                             {
                                 model.PartNo = worksheet.Cells[row, partno].Value.ToString();
                             }
+                            model.CreationTime = DateTime.Now;
+                            model.Creator = WorkContext.CurrentUser.Id;
                             _sysOrderService.insertOrder(model);
                         }
                         catch (Exception e)
@@ -236,7 +338,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                    
                 }
             } else {
-                var model = _sysOrderService.getById(modelplan.Id);
+                if (modelplan.Id.Equals(0)) { }
+                var model = _sysOrderMainService.getById(modelplan.Id);
                 model.OrderNo = modelplan.OrderNo;
                 model.OrderConfirmDate = modelplan.OrderConfirmDate;
                 model.OrderSigner = modelplan.OrderSigner;
@@ -247,7 +350,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Transport = modelplan.Transport;
                 model.Project = modelplan.Project;
                 model.MaterialCategory = modelplan.MaterialCategory;
-                _sysOrderService.updateOrder(model);
+                model.Modifier = WorkContext.CurrentUser.Id;
+                model.ModifiedTime = DateTime.Now;
+                _sysOrderMainService.updateOrderMain(model);
             }
             return Redirect(ViewBag.ReturnUrl);
         }

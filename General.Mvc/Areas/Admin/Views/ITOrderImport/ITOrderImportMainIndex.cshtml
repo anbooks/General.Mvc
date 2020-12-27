@@ -1,9 +1,9 @@
 ﻿@using General.Framework.Menu
 @using General.Framework.Datatable
 @using General.Entities
-@model DataSourceResult<Order, SysCustomizedListSearchArg>
+@model DataSourceResult<OrderMain, SysCustomizedListSearchArg>
 @{
-    ViewData["Title"] = "订单导入";
+    ViewData["Title"] = "采购订单";
 }
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
@@ -23,7 +23,7 @@
             @ViewData["Title"]
         </h1>
     </div>
-    <a asp-route="itOrderImportMainIndex" class="btn btn-sm btn-pink">返回</a>
+    <a asp-route="editITOrderImport" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>批量添加</a>
     
     <div class="space-2"></div>
     <div class="row">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-    <form asp-route="itOrderImportIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="itOrderImportMainIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;"class="form-group">
             @if (Model != null)
             {
@@ -54,26 +54,15 @@
                         <tr>
                             <th width="30px"></th>
                             <th width="80px">订单号</th>
-                            <th width="80px">订单行号</th>
-                            <th width="80px">索引号</th>
+                            <th width="80px">供应商代码</th>
+                            <th width="80px">供应商名称</th>
+                            <th width="80px">订单确认日期</th>
+                            <th width="80px">订单签订人</th>
+                            <th width="80px">签订人胸卡号</th>
+                            <th width="80px">贸易条款</th>
+                            <th width="80px">运输代理</th>
                             <th width="80px">项目</th>
                             <th width="80px">物料类别</th>
-                            <th width="80px">物料代码</th>
-                            <th width="80px">名称</th>
-                            <th width="80px">牌号</th>
-                            <th width="80px">规范</th>
-                            <th width="80px">规格</th>
-                            <th width="80px">宽</th>
-                            <th width="80px">长</th>
-                            <th width="80px">包装规格</th>
-                            <th width="80px">订单数量</th>
-                            <th width="80px">订单单位</th>
-                            <th width="80px">币种</th>
-                            <th width="80px">单价</th>
-                            <th width="80px">总价</th>
-                            <th width="80px">交货日期</th>
-                            <th width="80px">制造商</th>
-                            <th width="80px">原产国</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -82,29 +71,19 @@
                         {
                         <tr>
                             <td><input type="checkbox" name="sysResource" value="@item.Id" /></td>
-                            <td>@item.Main.OrderNo</td>
-                            <td>@item.Item</td>
-                            <td>@item.PlanItem</td>
+                            <td>@item.OrderNo</td>
+                            <td>@item.SupplierCode</td>
+                            <td>@item.SupplierName</td>
+                            <td>@item.OrderConfirmDate</td>
+                            <td>@item.OrderSigner</td>
+                            <td>@item.SignerCard</td>
+                            <td>@item.TradeTerms</td>
+                            <td>@item.Transport</td>
                             <td>@item.Project</td>
                             <td>@item.MaterialCategory</td>
-                            <td>@item.MaterialCode</td>
-                            <td>@item.Name</td>
-                            <td>@item.PartNo</td>
-                            <td>@item.Specification</td>
-                            <td>@item.Size</td>
-                            <td>@item.Width</td>
-                            <td>@item.Length</td>
-                            <td>@item.Package</td>
-                            <td>@item.Qty</td>
-                            <td>@item.Unit</td>
-                            <td>@item.Currency</td>
-                            <td>@item.UnitPrice</td>
-                            <td>@item.TotalPrice</td>
-                            <td>@item.LeadTime</td>
-                            <td>@item.Manufacturer</td>
-                            <td>@item.Origin</td>
                             <td>
-                                <a href="@Url.RouteUrl("editITOrderImport", new { id = item.Id })"  class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
+                                <a href="@Url.RouteUrl("itOrderImportIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>订单数据</a>
+                                <a href="@Url.RouteUrl("editITOrderImportMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改数据</a>
                             </td>
                         </tr>
                         }

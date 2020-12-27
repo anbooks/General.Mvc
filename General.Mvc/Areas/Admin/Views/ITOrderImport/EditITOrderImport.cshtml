@@ -21,90 +21,125 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="importexcelorder" enctype="multipart/form-data" method="post" class="form-horizontal">
+            <form asp-route="editITOrderImport" enctype="multipart/form-data" method="post" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()订单号</label>
+                    <label class="col-sm-2 control-label no-padding-right">订单行号</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" asp-for="OrderNo" placeholder="订单号" />
+                        <input type="text" class="form-control" asp-for="Item" placeholder="订单行号" />
                     </div>
-                    <span class="inline text-danger" asp-validation-for="OrderNo"></span>
+                    <span class="inline text-danger" asp-validation-for="Item"></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">订单确认日期</label>
+                    <label class="col-sm-2 control-label no-padding-right">索引号</label>
                     <div class="col-sm-3">
-                        <input type="date" asp-for="OrderConfirmDate" class="form-control" placeholder="订单确认日期" />
+                        <input type="text" asp-for="PlanItem" class="form-control" placeholder="索引号" />
                     </div>
-                    <span asp-validation-for="OrderConfirmDate" class="inline text-danger "></span>
+                    <span asp-validation-for="PlanItem" class="inline text-danger "></span>
+                </div>
+               
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">物料代码</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="MaterialCode" class="form-control" placeholder="物料代码" />
+                    </div>
+                    <span asp-validation-for="MaterialCode" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">订单签订人</label>
+                    <label class="col-sm-2 control-label no-padding-right">名称</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="OrderSigner" class="form-control" value="@ViewBag.Person" placeholder="订单签订人" />
+                        <input type="text" asp-for="Name" class="form-control" placeholder="名称" />
                     </div>
-                    <span asp-validation-for="OrderSigner" class="inline text-danger "></span>
+                    <span asp-validation-for="Name" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">签订人胸卡号</label>
+                    <label class="col-sm-2 control-label no-padding-right">牌号</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="SignerCard" class="form-control" value="@ViewBag.Card" placeholder="签订人胸卡号" />
+                        <input type="text" asp-for="PartNo" class="form-control" placeholder="牌号" />
                     </div>
-                    <span asp-validation-for="SignerCard" class="inline text-danger "></span>
+                    <span asp-validation-for="PartNo" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">供应商代码</label>
+                    <label class="col-sm-2 control-label no-padding-right">规范</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="SupplierCode" class="form-control" placeholder="供应商代码" />
+                        <input type="text" asp-for="Specification" class="form-control" placeholder="规范" />
                     </div>
-                    <span asp-validation-for="SupplierCode" class="inline text-danger "></span>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">供应商名称</label>
+                    <span asp-validation-for="Specification" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">规格</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="SupplierName" class="form-control" placeholder="供应商名称" />
+                        <input type="text" asp-for="Size" class="form-control" placeholder="规格" />
                     </div>
-                    <span asp-validation-for="SupplierName" class="inline text-danger "></span>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">贸易条款</label>
+                    <span asp-validation-for="Size" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">宽</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="TradeTerms" class="form-control" placeholder="贸易条款" />
+                        <input type="text" asp-for="Width" class="form-control" placeholder="宽" />
                     </div>
-                    <span asp-validation-for="TradeTerms" class="inline text-danger "></span>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">运输代理</label>
+                    <span asp-validation-for="Width" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">长</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="Transport" class="form-control" placeholder="运输代理" />
+                        <input type="text" asp-for="Length" class="form-control" placeholder="长" />
                     </div>
-                    <span asp-validation-for="Transport" class="inline text-danger "></span>
+                    <span asp-validation-for="Length" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">包装规格</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Package" class="form-control" placeholder="包装规格" />
+                    </div>
+                    <span asp-validation-for="Package" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">订单数量</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Qty" class="form-control" placeholder="订单数量" />
+                    </div>
+                    <span asp-validation-for="Qty" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">订单单位</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Unit" class="form-control" placeholder="订单单位" />
+                    </div>
+                    <span asp-validation-for="Unit" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">币种</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Currency" class="form-control" placeholder="币种" />
+                    </div>
+                    <span asp-validation-for="Currency" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">单价</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="UnitPrice" class="form-control" placeholder="单价" />
+                    </div>
+                    <span asp-validation-for="UnitPrice" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">总价</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="TotalPrice" class="form-control" placeholder="总价" />
+                    </div>
+                    <span asp-validation-for="TotalPrice" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">交货日期</label>
+                    <div class="col-sm-3">
+                        <input type="date" asp-for="LeadTime" class="form-control" placeholder="交货日期" />
+                    </div>
+                    <span asp-validation-for="LeadTime" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">制造商</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Manufacturer" class="form-control" placeholder="制造商" />
+                    </div>
+                    <span asp-validation-for="Manufacturer" class="inline text-danger "></span>
+                </div> <div class="form-group">
+                           <label class="col-sm-2 control-label no-padding-right">原产国</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Origin" class="form-control" placeholder="原产国" />
+                    </div>
+                    <span asp-validation-for="Origin" class="inline text-danger "></span>
                 </div>
-                @if (ViewBag.Id != null)
-                {<div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">项目</label>
-                        <div class="col-sm-3">
-                            <input type="text" asp-for="Project" class="form-control" placeholder="项目" />
-                        </div>
-                        <span asp-validation-for="Project" class="inline text-danger "></span>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label no-padding-right">物料类别</label>
-                        <div class="col-sm-3">
-                            <input type="text" asp-for="MaterialCategory" class="form-control" placeholder="物料类别" />
-                        </div>
-                        <span asp-validation-for="MaterialCategory" class="inline text-danger "></span>
-                    </div>
-                }
-                @if (ViewBag.Id == null)
-                {
-                    <div class="form-group">
-                        <div class="col-sm-2 control-label no-padding-right">附件</div>
-                        <div class="col-sm-3">
-                            <input type="file" name="excelfile" />
-                        </div>
-                    </div>
-                }
+
                 <div class="col-md-offset-2 col-md-9">
                     <button class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>

@@ -29,10 +29,22 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <a asp-route="itOrderBuyerIndex" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入订单信息</a>
-            <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a>
-            <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a>
-            <form enctype="multipart/form-data" method="post" asp-route="importexcells">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form asp-route="itOrderBuyerIndex" method="get" class="form-inline">
+                                <input type="text" class="form-control" name="orderno" style="width:180px;" value="@ViewBag.orderno" placeholder="订单号" />
+                                <button type="submit" class="btn btn-sm btn-pink">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    导入订单信息
+                                </button>  <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a> <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a>
+                            </form> 
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <form enctype="multipart/form-data" method="post" asp-route="importexcelschedule">
                 <div align="left" style="float:left">
                     <input type="file" name="excelfile" />
                 </div>
@@ -62,19 +74,27 @@
         </div>
     </div>
     <form asp-route="itBuyerSchedule" method="post" id="formitBuyer" class="form-horizontal" onsubmit="return false;">
+        <div class="panel panel-default">
+            <div class="form-inline">
+                <button class="btn btn-info btn-sm" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    确认修改
+                </button>
+            </div>
+        </div>
         @Html.AntiForgeryToken()
         @Html.Hidden("Id", 1)
         <div class="form-group" id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
             @if (Model != null)
             {
-                <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                <table id="user_datatable" style="table-layout:fixed" class="table table-striped table-bordered table-hover dataTable no-footer">
                     <thead>
                         <tr>
                             <th width="40px"></th>
-                            <th width="100px">采购员</th>
+                            <th width="80px">采购员</th>
                             <th width="100px">订单号</th>
-                            <th width="100px">订单行号</th>
-                            <th width="100px">索引号</th>
+                            <th width="50px">订单行号</th>
+                            <th width="120px">索引号</th>
                             <th width="100px">物料代码</th>
                             <th width="100px">品名</th>
                             <th width="100px">型号</th>
@@ -86,7 +106,7 @@
                             <th width="100px">采购单位</th>
                             <th width="100px">单价</th>
                             <th width="100px">总价</th>
-                            <th width="100px">发运日期</th>
+                            <th width="150px">发运日期</th>
                             <th width="100px">发货人</th>
                             <th width="100px">制造商</th>
                             <th width="100px">原产国</th>
@@ -99,7 +119,6 @@
                             <th width="100px">法定单位</th>
                             <th width="100px">按法定单位折算单价</th>
                             <th width="100px">合格证号</th>
-                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,63 +129,55 @@
                                     <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
                                 </td>
                                 <td>
-                                    <input type="text" name="Buyer" value="@item.Buyer" style="width:100px" />
+                                    @item.Buyer
                                 </td>
 
                                 <td>
-                                    <input type="text" name="OrderNo" value="@item.OrderNo" style="width:100px" />
+                                    @item.OrderNo
                                 </td>
 
                                 <td>
-                                    <input type="text" name="OrderLine" value="@item.OrderLine" style="width:100px" />
+                                    @item.OrderLine
                                 </td>
 
                                 <td>
-                                    <input type="text" name="ReferenceNo" value="@item.ReferenceNo" style="width:100px" />
+                                    @item.ReferenceNo
+                                </td>
+                                <td>
+                                    @item.MaterialCode
+                                </td>
+                                <td>
+                                    @item.Description
+                                </td>
+                                <td>
+                                    @item.Type
+                                </td>
+                                <td>
+                                    @item.Specification
+                                </td>
+                                <td>
+                                    @item.Thickness
+                                </td>
+                                <td>
+                                    @item.Length
+                                </td>
+                                <td>
+                                    @item.Width
+                                </td>
+                                <td>
+                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="MaterialCode" value="@item.MaterialCode" style="width:100px" />
+                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="Description" value="@item.Description" style="width:100px" />
+                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="Type" value="@item.Type" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Specification" value="@item.Specification" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Thickness" value="@item.Thickness" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Length" value="@item.Length" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Width" value="@item.Width" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:100px" />
+                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
                                 </td>
 
                                 @if (@item.ShipmentDate == null)
@@ -181,53 +192,49 @@
                                     </td>}
 
                                 <td>
-                                    <input type="text" name="Consignor" value="@item.Consignor" style="width:100px" />
+                                    <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:100px" />
+                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
                                 </td>
                                 <td>
-                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:100px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="BatchNo" value="@item.BatchNo" style="width:100px" />
+                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="Waybill" value="@item.Waybill" style="width:100px" />
+                                    <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="Books" value="@item.Books" style="width:100px" />
+                                    <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="BooksItem" value="@item.BooksItem" style="width:100px" />
+                                    <input type="text" name="Books" value="@item.Books" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:100px" />
+                                    <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:100px" />
+                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:100px" />
-
-                                <td>
-                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:100px" />
+                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <input type="text" name="Qualification" value="@item.Qualification" style="width:100px" />
+                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
+
+                                <td>
+                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:80px" />
                                 </td>
 
                                 <td>
-                                    <a href="@Url.RouteUrl("editBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                                    <input type="text" name="Qualification" value="@item.Qualification" style="width:80px" />
                                 </td>
                             </tr>
                         }
@@ -236,12 +243,7 @@
                 <pager page-value="Model.Paging"></pager>
             }
         </div>
-        <div class="col-md-offset-1">
-            <button class="btn btn-info" type="submit">
-                <i class="ace-icon fa fa-check bigger-110"></i>
-                确认创建
-            </button>
-        </div>
+       
     </form>
     <script>
         $(function () {
@@ -252,17 +254,7 @@
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
-                    var buyer = $(this).closest("tr").find("td").eq(1).find("input:text");
-                    var orderno = $(this).closest("tr").find("td").eq(2).find("input:text");
-                    var orderline = $(this).closest("tr").find("td").eq(3).find("input:text");
-                    var referenceno = $(this).closest("tr").find("td").eq(4).find("input:text");
-                    var materialcode = $(this).closest("tr").find("td").eq(5).find("input:text");
-                    var description = $(this).closest("tr").find("td").eq(6).find("input:text");
-                    var type = $(this).closest("tr").find("td").eq(7).find("input:text");
-                    var specification = $(this).closest("tr").find("td").eq(8).find("input:text");
-                    var thickness = $(this).closest("tr").find("td").eq(9).find("input:text");
-                    var length = $(this).closest("tr").find("td").eq(10).find("input:text");
-                    var width = $(this).closest("tr").find("td").eq(11).find("input:text");
+
                     var purchasequantity = $(this).closest("tr").find("td").eq(12).find("input:text");
                     var purchaseunit = $(this).closest("tr").find("td").eq(13).find("input:text");
                     var unitprice = $(this).closest("tr").find("td").eq(14).find("input:text");
@@ -282,17 +274,7 @@
                     var qualification = $(this).closest("tr").find("td").eq(28).find("input:text");
                     var mSub = {
                         id: id.val(),
-                        buyer: buyer.val(),
-                        orderno: orderno.val(),
-                        orderline: orderline.val(),
-                        referenceno: referenceno.val(),
-                        materialcode: materialcode.val(),
-                        description: description.val(),
-                        type: type.val(),
-                        specification: specification.val(),
-                        thickness: thickness.val(),
-                        length: length.val(),
-                        width: width.val(),
+
                         purchasequantity: purchasequantity.val(),
                         purchaseunit: purchaseunit.val(),
                         unitprice: unitprice.val(),
@@ -327,7 +309,7 @@
                             alert('提交成功！');
                         } else {
                             alert('提交失败！数据有误！！！');
-                            window.parent.location.reload(); 
+                            window.parent.location.reload();
                         }
                     }
                 });

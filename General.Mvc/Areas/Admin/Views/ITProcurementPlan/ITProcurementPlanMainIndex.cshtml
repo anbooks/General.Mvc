@@ -1,0 +1,107 @@
+﻿@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<ProcurementPlanMain, SysCustomizedListSearchArg>
+@{
+    ViewData["Title"] = "采购计划";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+            <a href="">进口运输</a>
+        </li>
+        <li class="active">采购计划</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div>
+        <div class="col-lg-12">
+            <a asp-route="editITProcurementPlanMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>批量添加</a>
+        </div>
+        <div class="space-2"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-route="itProcurementPlanMainIndex" method="get" class="form-inline">
+                            <label>关键字</label>
+                            <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="采购计划编号" />
+                            <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="采购计划编制人" />
+                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="项目" />
+                            <button type="submit" class="btn btn-purple btn-sm">
+                                查询
+                                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form asp-route="itProcurementPlanMainIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
+            <div class="form-group">
+                @if (Model != null)
+                {
+                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th width="30px"></th>
+                                <th width="100px">采购计划编号</th>
+                                <th width="100px">采购计划编制人</th>
+                                <th width="100px">项目</th>
+                               
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Data)
+                            {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="sysResource" value="@item.Id" />
+                                </td>
+                                <td>@item.PlanItem</td>
+                                <td>@item.Prepare</td>
+                                <td>@item.Project</td>
+                                <td>
+                                    <a href="@Url.RouteUrl("itProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>计划数据</a>
+                                    <a href="@Url.RouteUrl("editITProcurementPlanMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改数据</a>
+                                   
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <pager page-value="Model.Paging"></pager>
+                }
+            </div>
+            <div class="col-md-offset-1">
+                <button class="btn btn-info" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    确认创建
+                </button>
+            </div>
+        </form>
+        <script>
+            $(function () {
+                $('#formitInventoryInput').submit(function () {
+                    var form = $(this);
+                    $.modal.confirm('您确定要保存此用户角色数据？', function () {
+                        form.ajaxSubmit(function (data) {
+                            $.modal.alert(data);
+                        });
+                    });
+                });
+            });
+        </script>
+    </div>
+
+</div>

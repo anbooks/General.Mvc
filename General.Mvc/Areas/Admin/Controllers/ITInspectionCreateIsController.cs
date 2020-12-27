@@ -33,7 +33,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
 
-            var pageList = _importTrans_main_recordService.searchListDeclaration(arg, page, size);
+            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itInspectionCreateIs", arg);
             return View(dataSource);//sysImport

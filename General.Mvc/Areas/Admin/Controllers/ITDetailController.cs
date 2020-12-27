@@ -46,7 +46,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
             ViewBag.Role = USER.RoleName;
-            var pageList = _importTrans_main_recordService.searchListSecondCheck(arg, page, size, USER.RoleName);
+            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itDetail", arg);
             return View(dataSource);//sysImport

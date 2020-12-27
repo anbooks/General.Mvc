@@ -52,7 +52,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
              //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
             ViewBag.QX = WorkContext.CurrentUser.Co;
-            var pageList = _importTrans_main_recordService.searchList(arg, page, size);
+            var pageList = _importTrans_main_recordService.searchListLogistics(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itLogistics", arg);
             return View(dataSource);//sysImport
@@ -62,12 +62,75 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult ITLogisticsScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
-            ViewBag.Userid = id;
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            int? ida = id;
+            if (ida == 0)
+            {
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+            }
+            else
+            {
+                HttpContext.Session.SetInt32("import", id);
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+            }
+            //Session["username"] = id.ToString(); 
+            int importid = ViewBag.Import;
             RolePermissionViewModel model = new RolePermissionViewModel();
-             var pageList = _scheduleService.searchList(arg, page, size,id);
+            var pageList = _scheduleService.searchList(arg, page, size, importid);
+            var item = _importTrans_main_recordService.getById(importid);
+            if (pageList.Count > 0)
+            {
+                item.F_ShippingModeGiven = true;
+
+                _importTrans_main_recordService.updateImportTransmain(item);
+            }
+            ViewBag.orderno = item.PoNo;
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itLogisticsSchedule", arg);
             return View(dataSource);//sysImport
+        }
+        [HttpPost]
+        [Route("itLogisticsScheduleList", Name = "itLogisticsScheduleList")]
+        [Function("明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
+        public ActionResult ITConfirmedCustomsScheduleList(string kevin)
+        {
+            string test = kevin;
+            List<Entities.Schedule> jsonlist = JsonHelper.DeserializeJsonToList<Entities.Schedule>(test);
+            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
+            try
+            {
+                foreach (Entities.Schedule u in jsonlist)
+                {
+                    var model = _scheduleService.getById(u.Id);
+                    model.PurchaseQuantity = u.PurchaseQuantity;
+                    model.PurchaseUnit = u.PurchaseUnit;
+                    model.UnitPrice = u.UnitPrice;
+                    model.TotalPrice = u.TotalPrice;
+                    model.ShipmentDate = u.ShipmentDate;
+                    model.Consignor = u.Consignor;
+                    model.Manufacturers = u.Manufacturers;
+                    model.OriginCountry = u.OriginCountry;
+                    model.Books = u.Books;
+                    model.BooksItem = u.BooksItem;
+                    model.Waybill = u.Waybill;
+                    model.BatchNo = u.BatchNo;
+                    model.RecordUnit = u.RecordUnit;
+                    model.RecordUnitReducedPrice = u.RecordUnitReducedPrice;
+                    model.LegalUnits = u.LegalUnits;
+                    model.LegalUniteReducedPrice = u.LegalUniteReducedPrice;
+                    model.Qualification = u.Qualification;
+                    _scheduleService.updateSchedule(model);
+                    //u就是jsonlist里面的一个实体类
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
         }
         [Route("excelLogistics", Name = "excelLogistics")]
         public FileResult Excel()

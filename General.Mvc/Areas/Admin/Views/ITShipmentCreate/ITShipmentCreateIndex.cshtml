@@ -35,9 +35,18 @@
                 <div class="panel-body">
                     <form asp-route="itShipmentCreate" method="get" class="form-inline">
                         <label>关键字</label>
-                        <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
-                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
+                        <input type="text" class="form-control" name="itemno" style="width:100px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
+                        <input type="text" class="form-control" name="shipper" style="width:100px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
+                        <input type="text" class="form-control" name="pono" style="width:100px;" value="@Model.Paging.RouteArg.pono" placeholder="订单号" />
+                        @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
+                        {
+                            <label>实际到货日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
+                            <label>----</label> <input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdateend.ToString("yyyy-MM-dd")" placeholder="" />
+                        }
+                        else
+                        {   <label>实际到货日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
+                            <label>----</label><input type="date" class="form-control" name="realreceivingdateend" style="width:120px;"  placeholder="" />
+                        }
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -52,125 +61,105 @@
             <div class="form-group">
                 @if (Model != null)
                 {
-                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                    <table id="user_datatable" style="table-layout:fixed;margin-left:20px;" class="table table-striped table-bordered table-hover dataTable no-footer">
                         <thead>
                             <tr>
-                                <th width="50px"></th>
-                                <th width="30px"></th>
-                                <th width="100px">编号</th>
-                                <th width="100px">发货人</th>
-                                <th width="100px">合同号</th>
-                                <th width="100px">贸易条款</th>
-                                <th width="100px">货物类型</th>
-                                <th width="100px">发票金额</th>
-                                <th width="100px">发票币种</th>
-                                <th width="150px">实际收/提货日期</th>
-                                <th width="100px">件数(箱数)</th>
-                                <th width="100px">毛重</th>
-                                
-                                <th width="100px">箱单发票</th>
+                                <th style="width:50px"></th>
+                                <th style="width:100px">编号</th>
+                                <th style="width:100px">发货人</th>
+                                <th style="width:100px">订单号</th>
+                                <th style="width:100px">贸易条款</th>
+                                <th style="width:100px">货物类型</th>
+                                <th style="width:100px">发票金额</th>
+                                <th style="width:100px">发票币种</th>
+                                <th style="width:100px">实际收/提货日期</th>
+                                <th style="width:100px">件数(箱数)</th>
+                                <th style="width:100px">毛重</th>
+                                <th style="width:100px">采购员</th>
+                                <th style="width:100px">要求到货时间</th>
+                                <th style="width:100px">运输方式</th>
+                                <th style="width:100px">运输状态</th>
+                                <th style="width:100px">航班号/船名</th>
+                                <th style="width:100px">起运港</th>
+                                <th style="width:100px">目的港</th>
+                                <th style="width:100px">主单号</th>
+                                <th style="width:100px">分单号</th>
+                                <th style="width:100px">计费重量</th>
+                                <th style="width:100px">实际发运日期</th>
+                                <th style="width:100px">实际到港日期</th>
+                                <th style="width:100px">（口岸）报关行</th>
+                                <th style="width:100px">核注清单号</th>
+                                <th style="width:100px">提单日期</th>
+                                <th style="width:100px">申报日期</th>
+                                <th style="width:100px">放行日期</th>
+                                <th style="width:100px">报关单号</th>
+                                <th style="width:100px">报检单号</th>
+                                <th style="width:100px">生成二检明细</th>
+                                <th style="width:100px">要求送货日期</th>
+                                <th style="width:100px">选择自行送货或外部提货</th>
+                                <th style="width:100px">实际提/送货日期</th>
+                                <th style="width:100px">是否核放</th>
+                                <th style="width:100px">是否已生成报检单</th>
+                                <th style="width:100px">操作</th>
                             </tr>
                         </thead>
                         <tbody>
+
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <a href="@Url.RouteUrl("editITShipmentCreate", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
-                                </td>
-                                @if (ViewBag.QX == "管理员")
-                                {
-                                    @if (@item.Itemno == "捷诚伯仲-2020-300")
+                                <tr>
+                                    @if (item.CheckAndPass == null)
                                     {
-                                        <td>
-                                            <input type="text" name="Itemno" style="background-color:red;width:120px" value="@item.Itemno" />
-                                        </td>
+                                        <td style="width:80px;color:red;font-size:20px" >   ★</td>
                                     }
-                                    else
-                                    {
-                                        <td>
-                                            <input style="width:120px"type="text" name="Itemno" value="@item.Itemno" disabled />
-                                        </td>
-                                    }
-                                }
-                                else
-                                {
+                                    else {<td style="width:80px;color:red;font-size:20px"></td> }
+                                    
+                                    <td style="width:80px">@item.Id</td>
+                                    <td style="width:80px">@item.Shipper</td>
+                                    <td style="width:80px">@item.PoNo</td>
+                                    <td style="width:80px">@item.Incoterms</td>
+                                    <td style="width:80px">@item.CargoType</td>
+                                    <td style="width:80px">@item.Invamou</td>
+                                    <td style="width:80px">@item.Invcurr</td>
+                                    <td style="width:90px">@item.RealReceivingDate</td>
+                                    <td style="width:80px">@item.Pcs</td>
+                                    <td style="width:80px">@item.Gw</td>
+                                    <td style="width:80px">@item.Buyer</td>
+                                    <td style="width:90px">@item.RequestedArrivalTime</td>
+                                    <td style="width:80px">@item.ShippingMode</td>
+                                    <td style="width:80px">@item.Status</td>
+                                    <td style="width:80px">@item.FlighVessel</td>
+                                    <td style="width:80px">@item.Origin</td>
+                                    <td style="width:80px">@item.Dest</td>
+                                    <td style="width:80px">@item.Mbl</td>
+                                    <td style="width:80px">@item.Hbl</td>
+                                    <td style="width:80px">@item.Measurement</td>
+                                    <td style="width:80px">@item.Atd</td>
+                                    <td style="width:80px">@item.Ata</td>
+                                    <td style="width:80px">@item.Forwarder</td>
+                                    <td style="width:80px">@item.InventoryNo</td>
+                                    <td style="width:80px">@item.BlDate</td>
+                                    <td style="width:80px">@item.DeclarationDate</td>
+                                    <td style="width:80px">@item.ReleaseDate</td>
+                                    <td style="width:80px">@item.CustomsDeclarationNo</td>
+                                    <td style="width:80px">@item.InspectionLotNo</td>
+                                    <td style="width:80px">@item.IsNeedSecondCheck</td>
+                                    <td style="width:80px">@item.DeliveryRequiredDate</td>
+                                    <td style="width:80px">@item.ChooseDelivery</td>
+                                    <td style="width:80px">@item.ActualDeliveryDate</td>
+                                    <td style="width:80px">@item.CheckAndPass</td>
+                                    <td style="width:80px">@item.Declaration</td>
                                     <td>
-                                        <input style="width:120px"type="text" name="Itemno" value="@item.Itemno" disabled />
+                                        <a href="@Url.RouteUrl("itShipmentCreateSchedule", new { id = item.Id })" class="btn btn-xs btn-purple">
+                                            <i class="fa fa-bolt"></i>查看明细表
+                                        </a>
                                     </td>
-                                }
-                              
-                                    <td>
-                                        <input style="width:100px"type="text" name="Shipper" value="@item.Shipper" />
-                                    </td>
-                              
-                             
-                                    <td>
-                                        <input style="width:100px"type="text" name="PoNo" value="@item.PoNo" />
-                                    </td>
-                              
-                              
-                                    <td>
-                                        <input style="width:100px"type="text" name="Incoterms" value="@item.Incoterms" />
-                                    </td>
-                               
-                             
-                                    <td>
-                                        <input style="width:100px"type="text" name="CargoType" value="@item.CargoType" />
-                                    </td>
-                               
-                                    <td>
-                                        <input style="width:100px"type="text" name="Invamou" value="@item.Invamou" />
-                                    </td>
-                              
-                                    @if (@item.Invcurr == null)
-                                    {
-                                        <td>
-                                            @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, @item.Invcurr, new { @class = "form-control  input-small" })
-                                        </td>
-                                    }
-                                    @if (@item.RealReceivingDate == null)
-                                    {
-                                        <td>
-                                            <input style="width:130px"type="date" name="RealReceivingDate" value="@item.RealReceivingDate" />
-                                        </td>}
-                                    else
-                                    {
-                                        <td>
-                                            <input style="width:130px"type="date" name="RealReceivingDate" value="@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-                              
-                                    <td>
-                                        <input style="width:100px"type="text" name="Pcs" value="@item.Pcs" />
-                                    </td>
-                               
-                                    <td>
-                                        <input style="width:100px"type="text" name="Gw" value="@item.Gw" />
-                                    </td>
-                                <td>
-                                    @if (@item.InventoryAttachment != null&& @item.InventoryAttachment !="")
-                                    {
-                                        <a href="@Url.RouteUrl("downLoadInventory", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
-                                    }
-                                    else
-                                    {
-                                        <a href="@Url.RouteUrl("editITShipmentCreate", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                    }
-                                </td>
-                            </tr>
+                                </tr>
                             }
                         </tbody>
                     </table>
                     <pager page-value="Model.Paging"></pager>
+
                 }
             </div>
         </div>

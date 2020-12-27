@@ -4,19 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace General.Services.ProcurementPlan
+namespace General.Services.OrderMain
 {
-    public interface IProcurementPlanService
+    public interface IOrderMainService
     {
-        IPagedList<Entities.ProcurementPlan> searchProcurementPlan(SysCustomizedListSearchArg arg, int page, int size,int id);
+        IPagedList<Entities.OrderMain> searchOrderMain(SysCustomizedListSearchArg arg, int page, int size);
 
-       
+        Entities.OrderMain getByAccount(string account);
         /// <summary>
         /// 获取详情
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Entities.ProcurementPlan getById(int id);
+        Entities.OrderMain getById(int id);
 
         /// <summary>
         /// 验证账号是否已经存在
@@ -28,13 +28,13 @@ namespace General.Services.ProcurementPlan
         /// 新增，插入
         /// </summary>
         /// <param name="model"></param>
-        void insertProcurementPlan(Entities.ProcurementPlan model);
+        void insertOrderMain(Entities.OrderMain model);
 
         /// <summary>
         /// 更新修改
         /// </summary>
         /// <param name="model"></param>
-        void updateProcurementPlan(Entities.ProcurementPlan model);
+        void updateOrderMain(Entities.OrderMain model);
         
     }
 }

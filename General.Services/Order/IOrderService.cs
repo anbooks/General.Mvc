@@ -8,9 +8,9 @@ namespace General.Services.Order
 {
     public interface IOrderService
     {
-        IPagedList<Entities.Order> searchOrder(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.Order> searchOrder(SysCustomizedListSearchArg arg, int page, int size, int id);
 
-
+        IPagedList<Entities.Order> searchOrderD(SysCustomizedListSearchArg arg, int page, int size, string orderno);
         /// <summary>
         /// 获取详情
         /// </summary>

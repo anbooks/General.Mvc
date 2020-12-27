@@ -27,9 +27,9 @@ namespace General.Services.Order
         /// <param name="page"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public IPagedList<Entities.Order> searchOrder(SysCustomizedListSearchArg arg, int page, int size)
+        public IPagedList<Entities.Order> searchOrder(SysCustomizedListSearchArg arg, int page, int size, int id)
         {
-            var query = _sysOrderRepository.Table;
+            var query = _sysOrderRepository.Table.Include(p=>p.Main).Where(o=>o.IsDeleted!=true && o.MainId == id);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.pono))
@@ -38,7 +38,17 @@ namespace General.Services.Order
             query = query.OrderBy(o => o.Name);
             return new PagedList<Entities.Order>(query, page, size);
         }
-
+        public IPagedList<Entities.Order> searchOrderD(SysCustomizedListSearchArg arg, int page, int size, string orderno)
+        {
+            var query = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.IsDeleted != true && o.Main.OrderNo == orderno);
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.Name.Contains(arg.pono));
+            }
+            query = query.OrderBy(o => o.Name);
+            return new PagedList<Entities.Order>(query, page, size);
+        }
 
         /// <summary>
         /// 验证账号是否已经存在

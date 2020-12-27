@@ -1,7 +1,7 @@
 ﻿@using General.Entities
 @model ProcurementPlan
 @{
-    ViewData["Title"] = "编辑发运条目";
+    ViewData["Title"] = "编辑采购计划";
 }
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
@@ -21,36 +21,151 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="importexcelPlan" enctype="multipart/form-data"  method="post" class="form-horizontal">
+            <form asp-route="editITProcurementPlan" enctype="multipart/form-data" method="post" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()采购计划编号</label>
+                    <label class="col-sm-2 control-label no-padding-right">序号</label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" asp-for="PlanItem" placeholder="采购计划编号" />
+                        <input type="text" class="form-control" asp-for="Item" placeholder="序号" />
                     </div>
-                    <span class="inline text-danger" asp-validation-for="PlanItem"></span>
+                    <span class="inline text-danger" asp-validation-for="Item"></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">采购计划发货人</label>
+                    <label class="col-sm-2 control-label no-padding-right">物流编码</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="Prepare" class="form-control" placeholder="采购计划发货人" />
+                        <input type="text" asp-for="Materialno" class="form-control" placeholder="物流编码" />
                     </div>
-                    <span asp-validation-for="Prepare" class="inline text-danger "></span>
+                    <span asp-validation-for="Materialno" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">项目</label>
+                    <label class="col-sm-2 control-label no-padding-right">名称</label>
                     <div class="col-sm-3">
-                        <input type="text" asp-for="Project" class="form-control" placeholder="项目" />
+                        <input type="text" asp-for="Name" class="form-control" placeholder="名称" />
                     </div>
-                    <span asp-validation-for="Project" class="inline text-danger "></span>
+                    <span asp-validation-for="Name" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-2 control-label no-padding-right">附件</div>
+                    <label class="col-sm-2 control-label no-padding-right">牌号</label>
                     <div class="col-sm-3">
-                        <input type="file" name="excelfile" />
+                        <input type="text" asp-for="PartNo" class="form-control" placeholder="牌号" />
                     </div>
+                    <span asp-validation-for="PartNo" class="inline text-danger "></span>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">技术规范</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Technical" class="form-control" placeholder="技术规范" />
+                    </div>
+                    <span asp-validation-for="Technical" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">规格</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Size" class="form-control" placeholder="规格" />
+                    </div>
+                    <span asp-validation-for="Size" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">宽</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Width" class="form-control" placeholder="宽" />
+                    </div>
+                    <span asp-validation-for="Width" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">长</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Length" class="form-control" placeholder="长" />
+                    </div>
+                    <span asp-validation-for="Length" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">单机定额</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="SingleQuota" class="form-control" placeholder="单机定额" />
+                    </div>
+                    <span asp-validation-for="SingleQuota" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">包装规格</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Package" class="form-control" placeholder="包装规格" />
+                    </div>
+                    <span asp-validation-for="Package" class="inline text-danger "></span>
+                </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">计划数量</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="PlanNo" class="form-control" placeholder="计划数量" />
+                        </div>
+                        <span asp-validation-for="PlanNo" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">计划单位</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="PlanUnit" class="form-control" placeholder="计划单位" />
+                        </div>
+                        <span asp-validation-for="PlanUnit" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">采购订单数量</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="PlanOrderNo" class="form-control" placeholder="采购订单数量" />
+                        </div>
+                        <span asp-validation-for="PlanOrderNo" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">采购订单单位</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="PlanOrderUnit" class="form-control" placeholder="采购订单单位" />
+                        </div>
+                        <span asp-validation-for="PlanOrderUnit" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">要求到货时间</label>
+                        <div class="col-sm-3">
+                            <input type="date" asp-for="RequiredDockDate" class="form-control" placeholder="要求到货时间" />
+                        </div>
+                        <span asp-validation-for="RequiredDockDate" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">采购起止架份</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="ACCovers" class="form-control" placeholder="采购起止架份" />
+                        </div>
+                        <span asp-validation-for="ACCovers" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">采购依据及批准人</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="Purchasing" class="form-control" placeholder="采购依据及批准人" />
+                        </div>
+                        <span asp-validation-for="Purchasing" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">申请号</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="Application" class="form-control" placeholder="申请号" />
+                        </div>
+                        <span asp-validation-for="Application" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">备注1</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="Remark1" class="form-control" placeholder="备注1" />
+                        </div>
+                        <span asp-validation-for="Remark1" class="inline text-danger "></span>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">备注2</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="Remark2" class="form-control" placeholder="备注2" />
+                        </div>
+                        <span asp-validation-for="Remark2" class="inline text-danger "></span>
+                    </div>
+                
+
                 <div class="col-md-offset-2 col-md-9">
                     <button class="btn btn-info" type="submit">
                         <i class="ace-icon fa fa-check bigger-110"></i>

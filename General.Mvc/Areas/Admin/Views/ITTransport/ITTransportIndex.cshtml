@@ -26,7 +26,7 @@
             @ViewData["Title"]
         </h1>
     </div>
-   
+
     <div class="space-2"></div>
     <div class="row">
         <div class="col-sm-12">
@@ -37,10 +37,7 @@
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
-                        @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
-
-
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="订单号" />
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -52,19 +49,27 @@
     </div>
 
     <form asp-route="itTransport" method="post" id="formitTransport" class="form-horizontal" onsubmit="return false;">
+        <div class="panel panel-default">
+            <div class="form-inline">
+                <button class="btn btn-info btn-sm" type="submit">
+                    <i class="ace-icon fa fa-check bigger-110"></i>
+                    确认修改
+                </button>
+            </div>
+        </div>
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
             <div class="form-group">
                 @if (Model != null)
                 {
 
-                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="margin-left:20px;">
                         <thead>
                             <tr>
-                                <th width="60px"></th>
+
                                 <th width="50px"></th>
                                 <th width="150px">编号</th>
                                 <th width="150px">发货人</th>
-                                <th width="150px">合同号</th>
+                                <th width="150px">订单号</th>
                                 <th width="150px">贸易条款</th>
                                 <th width="150px">货物类型</th>
                                 <th width="150px">发票金额</th>
@@ -80,6 +85,7 @@
                                 <th width="150px">分单号</th>
                                 <th width="150px">运单附件上传</th>
                                 <th width="150px">计费重量</th>
+                                <th width="150px">计费重量单位</th>
                                 <th width="150px">实际发运日期</th>
                                 <th width="150px">实际到港日期</th>
                                 <th>操作</th>
@@ -89,184 +95,136 @@
 
                             @foreach (var item in Model.Data)
                             {
-                                <tr>
-                                    <td>
-                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
-                                    </td>
-                                    <td>
-                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
-                                        <input type="hidden" name="checkboxValue" value="0" />
-                                    </td>
-                                    <td>
-                                        @item.Itemno
-                                    </td>
-                                    <td>
-                                        @item.Shipper
-                                    </td>
-                                    <td>@item.PoNo</td>
-                                    <td>@item.Incoterms</td>
-                                    <td>@item.CargoType</td>
-                                    <td>@item.Invamou</td>
-                                    <td>
-                                        @item.Invcurr
-                                    </td>
-                                    <td>
-                                        @item.RealReceivingDate
-                                    </td>
-                                    <td>@item.Pcs</td>
-                                    <td>@item.Gw</td>
+                            <tr>
 
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        @if (@item.Status == null)
-                                        {
-                                            <td>
-                                                @Html.DropDownList("Status", ViewData["Status"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td>
-                                                @Html.DropDownList("Status", ViewData["Status"] as SelectList, @item.Status, new { @class = "form-control  input-small" })
-                                            </td>
-                                        }
+                                <td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
 
-                                    }
-                                    else
-                                    {
-                                        <td>
-
-                                            <input type="text" name="Status" value="@item.Status" disabled style="width:80px" />
-                                        </td>
-                                    }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        <td>
-                                            <input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px" />
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="text" name="FlighVessel" value="@item.FlighVessel" disabled style="width:80px" />
-                                        </td>
-                                    }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        <td>
-                                            <input type="text" name="Origin" value="@item.Origin" style="width:80px" />
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="text" name="Origin" value="@item.Origin" disabled style="width:80px" />
-                                        </td>
-                                    }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        <td>
-                                            <input type="text" name="Dest" value="@item.Dest" style="width:80px" />
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="text" name="Dest" value="@item.Dest" disabled style="width:80px" />
-                                        </td>
-                                    }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        <td>
-                                            <input type="text" name="Mbl" value="@item.Mbl" style="width:80px" />
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="text" name="Mbl" value="@item.Mbl" disabled style="width:80px" />
-                                        </td>
-                                    }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        <td>
-                                            <input type="text" name="Hbl" value="@item.Hbl" style="width:80px" />
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="text" name="Hbl" value="@item.Hbl" disabled style="width:80px" />
-                                        </td>
-                                    }
+                                </td>
+                                <td>
+                                    @item.Id
+                                </td>
+                                <td>
+                                    @item.Shipper
+                                </td>
+                                <td>
+                                    @item.PoNo
+                                </td>
+                                <td>
+                                    <input type="text" name="Incoterms" value="@item.Incoterms" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="CargoType" value="@item.CargoType" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="number" name="Invamou" value="@item.Invamou" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                @if (@item.Invcurr == null)
+                                {
                                     <td>
-                                        @if (@item.HblAttachment != null && @item.HblAttachment != ""&& @item.MblAttachment != null && @item.MblAttachment != "")
-                                        {
-                                            <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>上传附件</a>
-                                        }
-                                        else
-                                        {
-                                            <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                        }
+                                        @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
                                     </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, @item.Invcurr, new { @class = "form-control  input-small" })
+                                    </td>
+                                }
 
-                                    @if (ViewBag.QX == "01")
+                                @if (@item.RealReceivingDate == null)
+                                {
+                                    <td>
+                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+                                <td>
+                                    <input type="number" name="Pcs" value="@item.Pcs" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="number" name="Gw" value="@item.Gw" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                @if (@item.Status == null)
+                                {
+                                    <td>
+                                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, @item.Status, new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+                                <td>
+                                    <input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Origin" value="@item.Origin" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Dest" value="@item.Dest" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Mbl" value="@item.Mbl" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Hbl" value="@item.Hbl" style="width:80px" />
+                                </td>
+                                <td>
+                                    @if (@item.HblAttachment != null && @item.HblAttachment != "" && @item.MblAttachment != null && @item.MblAttachment != "")
                                     {
-                                        <td>
-                                            <input type="text" name="Measurement" value="@item.Measurement" style="width:80px" />
-                                        </td>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>上传附件</a>
                                     }
                                     else
                                     {
-                                        <td>
-                                            <input type="text" name="Measurement" value="@item.Measurement" disabled style="width:80px" />
-                                        </td>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
                                     }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        @if (@item.Atd == null)
-                                        {
-                                            <td>
-                                                <input type="date" name="Atd" value="@item.Atd" />
-                                            </td>}
-                                        else
-                                        {
-                                            <td>
-                                                <input type="date" name="Atd" value="@item.Atd.Value.ToString("yyyy-MM-dd")" />
-                                            </td>}
-
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="datetime" name="Atd" value="@item.Atd" disabled />
-                                        </td>
-                                    }
-                                    @if (ViewBag.QX == "01")
-                                    {
-                                        @if (@item.Ata == null)
-                                        {
-                                            <td>
-                                                <input type="date" name="Ata" value="@item.Atd" />
-                                            </td>}
-                                        else
-                                        {
-                                            <td>
-                                                <input type="date" name="Ata" value="@item.Ata.Value.ToString("yyyy-MM-dd")" />
-                                            </td>}
-
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="datetime" name="Ata" value="@item.Ata" disabled />
-                                        </td>
-                                    }
-
+                                </td>
+                                <td>
+                                    <input type="number" name="Measurement" value="@item.Measurement" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="MeasurementUnit" value="@item.MeasurementUnit" style="width:80px" />
+                                </td>
+                                @if (@item.Atd == null)
+                                {
+                                    <td>
+                                        <input type="date" name="Atd" value="@item.Atd" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="Atd" value="@item.Atd.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+                                @if (@item.Ata == null)
+                                {
+                                    <td>
+                                        <input type="date" name="Ata" value="@item.Atd" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="Ata" value="@item.Ata.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+                                @if (@item.F_ShippingModeGiven != true)
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
+                                    </td>
+                                }
+                                else
+                                {
                                     <td>
                                         <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
                                     </td>
-                                </tr>
+                                }
+                               
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -275,14 +233,18 @@
                 }
             </div>
         </div>
-        <div class="col-md-offset-1">
-            <button class="btn btn-info" type="submit">
-                <i class="ace-icon fa fa-check bigger-110"></i>
-                确认创建
-            </button>
-        </div>
-
     </form>
+    <style>
+        /*谷歌*/
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        /*火狐*/
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
     <script>
         $(function () {
             $('#formitTransport').submit(function () {
@@ -291,18 +253,33 @@
                 $("input[name='checkboxId']:checked").each(function () {
                     var test = $(this).next();
                     var i = 0;
-                    var id = $(this).closest("tr").find("td").eq(1).find("input:checkbox");
-                    var status = $(this).closest("tr").find("td").eq(12).find("select[name='Status']");
-                    var flighvessel = $(this).closest("tr").find("td").eq(13).find("input:text");
-                    var origin = $(this).closest("tr").find("td").eq(14).find("input:text");
-                    var dest = $(this).closest("tr").find("td").eq(15).find("input:text");
-                    var mbl = $(this).closest("tr").find("td").eq(16).find("input:text");
-                    var hbl = $(this).closest("tr").find("td").eq(17).find("input:text");
-                    var measurement = $(this).closest("tr").find("td").eq(19).find("input:text");
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var incoterms = $(this).closest("tr").find("td").eq(4).find("input:text");
+                    var cargotype = $(this).closest("tr").find("td").eq(5).find("input:text");
+                    var invamou = $(this).closest("tr").find("td").eq(6).find("input:data");
+                    var invcurr = $(this).closest("tr").find("td").eq(7).find("select[name='Invcurr']");
+                    var realreceivingdate = $(this).closest("tr").find("td").eq(8).find("input:data");
+                    var pcs = $(this).closest("tr").find("td").eq(9).find("input:data");
+                    var gw = $(this).closest("tr").find("td").eq(10).find("input:data");
+                    var status = $(this).closest("tr").find("td").eq(11).find("select[name='Status']");
+                    var flighvessel = $(this).closest("tr").find("td").eq(12).find("input:text");
+                    var origin = $(this).closest("tr").find("td").eq(13).find("input:text");
+                    var dest = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var mbl = $(this).closest("tr").find("td").eq(15).find("input:text");
+                    var hbl = $(this).closest("tr").find("td").eq(16).find("input:text");
+                    var measurement = $(this).closest("tr").find("td").eq(18).find("input:data");
+                    var measurementunit = $(this).closest("tr").find("td").eq(19).find("input:text");
                     var atd = $(this).closest("tr").find("td").eq(20).find("input:data");
                     var ata = $(this).closest("tr").find("td").eq(21).find("input:data");
                     var mSub = {
                         id: id.val(),
+                        incoterms: incoterms.val(),
+                        cargotype: cargotype.val(),
+                        invamou: invamou.val(),
+                        invcurr: invcurr.val(),
+                        realreceivingdate: realreceivingdate.val(),
+                        pcs: pcs.val(),
+                        gw: gw.val(),
                         status: status.val(),
                         flighvessel: flighvessel.val(),
                         origin: origin.val(),
@@ -310,6 +287,7 @@
                         mbl: mbl.val(),
                         hbl: hbl.val(),
                         measurement: measurement.val(),
+                        measurementunit: measurementunit.val(),
                         atd: atd.val(),
                         ata: ata.val(),
                     };

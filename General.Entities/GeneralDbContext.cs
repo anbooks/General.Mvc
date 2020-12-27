@@ -30,5 +30,7 @@ namespace General.Entities
         public DbSet<ExportTransportation> ExportTransportation { get; set; }
         public DbSet<test_JqGrid> test_JqGrid { get; set; }
         public DbSet<Order> Order { get; set; }
+        public DbSet<OrderMain> OrderMain { get; set; }
+        public DbSet<ProcurementPlanMain> ProcurementPlanMain { get; set; }
     }
 }

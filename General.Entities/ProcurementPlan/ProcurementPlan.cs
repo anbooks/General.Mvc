@@ -8,6 +8,7 @@ namespace General.Entities
     [Table("ProcurementPlan")]
     public partial class ProcurementPlan
     {
+        
         public int Id { get; set; }
 
         public string PlanItem { get; set; }
@@ -35,8 +36,15 @@ namespace General.Entities
         public string Application { get; set; }
         public string Remark1 { get; set; }
         public string Remark2 { get; set; }
-       
-      //  public Guid? Creator { get; set; }
-       // public DateTime? CreationTime { get; set; }
+        public bool IsDeleted { get; set; }
+        public int MainId { get; set; }
+        public Guid? Creator { get; set; }//
+        public DateTime? CreationTime { get; set; }
+        public Guid? Modifier { get; set; }
+        public DateTime? ModifiedTime { get; set; }
+        [ForeignKey("MainId")]
+        public virtual ProcurementPlanMain PlanMain { get; set; }
+        //  public Guid? Creator { get; set; }
+        // public DateTime? CreationTime { get; set; }
     }
 }

@@ -63,9 +63,11 @@
     <Compile Remove="Areas\Admin\Controllers\ITDeliveryStatusInputController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITGoodsHandoverController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITInventoryInputController.cs" />
+    <Compile Remove="Areas\Admin\Controllers\ITItemImportController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITModeShippingGivenController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITPortCustomerBrokerInputController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITReceiptInputController.cs" />
+    <Compile Remove="Areas\Admin\Controllers\ITScheduleImportController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITSecondCheckIsController.cs" />
   </ItemGroup>
 
@@ -344,7 +346,13 @@
     <Content Update="Areas\Admin\Views\ITConfirmedCustoms\ITConfirmedCustomsScheduleIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITOrderImport\EditITOrderImportMain.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITOrderImport\EditITOrderImport.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITOrderImport\ITOrderImportMainIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITPorkCustoms\EditITPorkCustoms.cshtml">
@@ -359,7 +367,13 @@
     <Content Update="Areas\Admin\Views\ITPorkCustoms\ITPorkCustomsScheduleIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITProcurementPlan\EditITProcurementPlanMain.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITProcurementPlan\EditITProcurementPlan.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITProcurementPlan\ITProcurementPlanMainIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITReceiptInput\EditITReceiptInput.cshtml">

@@ -26,6 +26,8 @@ namespace General.Entities
         public DateTime? LeadTime { get; set; }//
         public Guid? Creator { get; set; }//
         public DateTime? CreationTime { get; set; }//
+        public Guid? Modifier { get; set; }
+        public DateTime? ModifiedTime { get; set; }
         public DateTime? OrderConfirmDate { get; set; }//订单确认日期
         public string OrderSigner { get; set; }//订单签订人
         public string SignerCard { get; set; }//签订人胸卡号 string TotalPrice { get; set; }//总价
@@ -41,5 +43,10 @@ namespace General.Entities
         public string Currency { get; set; }//币种
         public string Manufacturer { get; set; }//制造商
         public string Origin { get; set; }//原产国
+        public int MainId { get; set; }
+        public bool IsDeleted { get; set; }
+        // public ProcurementPlanMain PlanMain { get; set; }
+        [ForeignKey("MainId")]
+        public virtual OrderMain Main { get; set; }
     }
 }

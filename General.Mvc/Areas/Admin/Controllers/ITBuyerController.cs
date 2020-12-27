@@ -39,6 +39,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IOrderService _sysOrderService;
         private IMaterialService _sysMaterialService;
         private IProjectService _sysProjectService;
+
         public ITBuyerController(IProjectService sysProjectService, IMaterialService sysMaterialService, ISysUserRoleService sysUserRoleService, IOrderService sysOrderService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._sysProjectService = sysProjectService;
@@ -86,25 +87,27 @@ namespace General.Mvc.Areas.Admin.Controllers
             int importid = ViewBag.Import;
             RolePermissionViewModel model = new RolePermissionViewModel();
             var pageList = _scheduleService.searchList(arg, page, size, importid);
+            var item = _importTrans_main_recordService.getById(importid);
             if (pageList.Count > 0)
             {
-                var item = _importTrans_main_recordService.getById(importid);
                 item.F_ShippingModeGiven = true;
+              
                 _importTrans_main_recordService.updateImportTransmain(item);
             }
+            ViewBag.orderno = item.PoNo;
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Schedule, SysCustomizedListSearchArg>("itBuyerSchedule", arg);
             return View(dataSource);//sysImport
         }
+        [HttpGet]
         [Route("Order", Name = "itOrderBuyerIndex")]
         [Function("订单数据导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
-
-        public IActionResult ITOrderBuyerIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITOrderBuyerIndex(string orderno, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            var pageList = _sysOrderService.searchOrder(arg, page, size);
+            var pageList = _sysOrderService.searchOrderD(arg, page, size, orderno);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
             return View(dataSource);//sysImport
@@ -179,6 +182,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     { worksheet.Cells[i + 2, 14].Value = list[i].BatchNo.ToString(); }
                     if (list[i].Waybill.ToString() != null)
                     { worksheet.Cells[i + 2, 15].Value = list[i].Waybill.ToString(); }
+                    
                 }
                 package.Save();
             }
@@ -211,13 +215,16 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 10].Value = "宽";
                 worksheet.Cells[1, 11].Value = "采购数量";
                 worksheet.Cells[1, 12].Value = "采购单位";
-                worksheet.Cells[1, 13].Value = "制造商";
-                worksheet.Cells[1, 14].Value = "炉批号";
-                worksheet.Cells[1, 15].Value = "运单号";
-                worksheet.Cells[1, 16].Value = "备注1";
-                worksheet.Cells[1, 17].Value = "备注2";
-                worksheet.Cells[1, 18].Value = "备注3";// xlSheet1.Range("A2:E2").Borders.LineStyle = 1
-                for (int a = 1; a <= 18; a++)
+                worksheet.Cells[1, 13].Value = "单价";
+                worksheet.Cells[1, 14].Value = "总价";
+                worksheet.Cells[1, 15].Value = "发运日期";
+                worksheet.Cells[1, 16].Value = "发货人";
+                worksheet.Cells[1, 17].Value = "制造商";
+                worksheet.Cells[1, 18].Value = "原产国";
+                worksheet.Cells[1, 19].Value = "炉批号";
+                worksheet.Cells[1, 20].Value = "运单号";
+               // xlSheet1.Range("A2:E2").Borders.LineStyle = 1
+                for (int a = 1; a <=20; a++)
                 {
                     worksheet.Cells[1, a].Style.Font.Bold = true;
                 }
@@ -252,12 +259,22 @@ namespace General.Mvc.Areas.Admin.Controllers
                     { worksheet.Cells[i + 2, 11].Value = list[i].PurchaseQuantity.ToString(); }
                     if (list[i].PurchaseUnit.ToString() != null)
                     { worksheet.Cells[i + 2, 12].Value = list[i].PurchaseUnit.ToString(); }
+                    if (list[i].UnitPrice.ToString() != null)
+                    { worksheet.Cells[i + 2, 13].Value = list[i].UnitPrice.ToString(); }
+                    if (list[i].TotalPrice.ToString() != null)
+                    { worksheet.Cells[i + 2, 14].Value = list[i].TotalPrice.ToString(); }
+                    if (list[i].ShipmentDate != null)
+                    { worksheet.Cells[i + 2, 15].Value = list[i].ShipmentDate.ToString(); }
+                    if (list[i].Consignor.ToString() != null)
+                    { worksheet.Cells[i + 2, 16].Value = list[i].Consignor.ToString(); }
                     if (list[i].Manufacturers.ToString() != null)
-                    { worksheet.Cells[i + 2, 13].Value = list[i].Manufacturers.ToString(); }
+                    { worksheet.Cells[i + 2, 17].Value = list[i].Manufacturers.ToString(); }
+                    if (list[i].OriginCountry.ToString() != null)
+                    { worksheet.Cells[i + 2, 18].Value = list[i].OriginCountry.ToString(); }
                     if (list[i].BatchNo.ToString() != null)
-                    { worksheet.Cells[i + 2, 14].Value = list[i].BatchNo.ToString(); }
+                    { worksheet.Cells[i + 2, 19].Value = list[i].BatchNo.ToString(); }
                     if (list[i].Waybill.ToString() != null)
-                    { worksheet.Cells[i + 2, 15].Value = list[i].Waybill.ToString(); }
+                    { worksheet.Cells[i + 2, 20].Value = list[i].Waybill.ToString(); }
                 }
                 package.Save();
             }
@@ -537,7 +554,6 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             string test = kevin;
             List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
             try
             {
                 foreach (Entities.ImportTrans_main_record u in jsonlist)
@@ -570,17 +586,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.Schedule u in jsonlist)
                 {
                     var model = _scheduleService.getById(u.Id);
-                    model.Buyer = u.Buyer;
-                    model.OrderNo = u.OrderNo;
-                    model.OrderLine = u.OrderLine;
-                    model.ReferenceNo = u.ReferenceNo;
-                    model.MaterialCode = u.MaterialCode;
-                    model.Description = u.Description;
-                    model.Type = u.Type;
-                    model.Specification = u.Specification;
-                    model.Thickness = u.Thickness;
-                    model.Length = u.Length;
-                    model.Width = u.Width;
+                   
                     model.PurchaseQuantity = u.PurchaseQuantity;
                     model.PurchaseUnit = u.PurchaseUnit;
                     model.UnitPrice = u.UnitPrice;
@@ -626,7 +632,17 @@ namespace General.Mvc.Areas.Admin.Controllers
                 {
                     var item = _sysOrderService.getById(u.Id);
                     Entities.Schedule model = new Entities.Schedule();
+                    model.Buyer = item.OrderSigner;
                     model.OrderNo = item.OrderNo;
+                    model.OrderLine = item.Item;
+                    model.ReferenceNo = item.PlanItem;
+                    model.MaterialCode = item.MaterialCode;
+                    model.Description = item.Name;
+                    model.Type = item.Project;
+                    model.Specification = item.Specification;
+                    model.Thickness = item.Size;
+                    model.Length = item.Length;
+                    model.Width = item.Width;
                     model.MainId = ViewBag.Import;
                     model.CreationTime = DateTime.Now;
                     model.Creator = WorkContext.CurrentUser.Id;
