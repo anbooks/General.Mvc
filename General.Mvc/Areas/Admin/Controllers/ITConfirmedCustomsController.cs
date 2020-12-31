@@ -23,11 +23,9 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-
     [Route("admin/itConfirmedCustoms")]
     public class ITConfirmedCustomsController : AdminPermissionController
     {
-
         private readonly IHostingEnvironment _hostingEnvironment;
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysCustomizedListService _sysCustomizedListService;
@@ -103,7 +101,6 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.Schedule u in jsonlist)
                 {
                     var model = _scheduleService.getById(u.Id);
-
                     model.PurchaseQuantity = u.PurchaseQuantity;
                     model.PurchaseUnit = u.PurchaseUnit;
                     model.UnitPrice = u.UnitPrice;
@@ -203,11 +200,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (list[i].Specification.ToString() != null)
                     { worksheet.Cells[i + 2, 7].Value = list[i].Specification.ToString(); }
                     if (list[i].Thickness.ToString() != null)
-                    { worksheet.Cells[i + 2, 8].Value = list[i].Thickness; }
+                    { worksheet.Cells[i + 2, 8].Value = Convert.ToDouble(list[i].Thickness); }
                     if (list[i].Length.ToString() != null)
-                    { worksheet.Cells[i + 2, 9].Value = list[i].Length.ToString(); }
+                    { worksheet.Cells[i + 2, 9].Value = Convert.ToDouble(list[i].Length.ToString()); }
                     if (list[i].Width.ToString() != null)
-                    { worksheet.Cells[i + 2, 10].Value = list[i].Width.ToString(); }
+                    { worksheet.Cells[i + 2, 10].Value = Convert.ToDouble(list[i].Width.ToString()); }
                     if (list[i].PurchaseQuantity.ToString() != null)
                     { worksheet.Cells[i + 2, 11].Value = list[i].PurchaseQuantity.ToString(); }
                     if (list[i].PurchaseUnit.ToString() != null)

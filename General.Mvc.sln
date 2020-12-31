@@ -11,15 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{944EEDC7-F1F5-42BB-969E-7E58EDFF2381}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Mvc", "General.Mvc\General.Mvc.csproj", "{43FABEE4-6E58-43AD-959C-1DD35A009488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "General.Mvc", "General.Mvc\General.Mvc.csproj", "{43FABEE4-6E58-43AD-959C-1DD35A009488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Services", "General.Services\General.Services.csproj", "{956F319A-64EE-42D8-BBE1-892442BB5296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "General.Services", "General.Services\General.Services.csproj", "{956F319A-64EE-42D8-BBE1-892442BB5296}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Entities", "General.Entities\General.Entities.csproj", "{9F9BB823-19F7-44BB-A3A9-90F8E5EE628C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "General.Entities", "General.Entities\General.Entities.csproj", "{9F9BB823-19F7-44BB-A3A9-90F8E5EE628C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Core", "General.Core\General.Core.csproj", "{32B5948C-C66C-41F2-93CE-EE3C58634F3D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "General.Core", "General.Core\General.Core.csproj", "{32B5948C-C66C-41F2-93CE-EE3C58634F3D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "General.Framework", "General.Framework\General.Framework.csproj", "{8F3CEA88-7D14-4D4F-976E-E0006AB4E460}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "General.Framework", "General.Framework\General.Framework.csproj", "{8F3CEA88-7D14-4D4F-976E-E0006AB4E460}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

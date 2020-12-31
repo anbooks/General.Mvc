@@ -25,8 +25,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itInspectionCreateIs")]
-        [Function("生成送检单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.GeneratedFormController", Sort = 1)]
-
+        [Function("", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.GeneratedFormController", Sort = 1)]
         public IActionResult ITInspectionCreateIsIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
@@ -38,7 +37,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itInspectionCreateIs", arg);
             return View(dataSource);//sysImport
         }
-
         [HttpPost]
         [Route("")]
         public ActionResult ITInspectionCreateIs(List<int> sysResource, string returnUrl = null)

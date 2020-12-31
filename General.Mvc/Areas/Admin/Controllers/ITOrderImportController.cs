@@ -153,6 +153,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 ViewBag.Id = id;
                 var model = _sysOrderMainService.getById(id.Value);
+                ViewBag.tran = model.Transport;
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);

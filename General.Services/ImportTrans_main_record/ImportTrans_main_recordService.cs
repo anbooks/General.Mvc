@@ -75,7 +75,7 @@ namespace General.Services.ImportTrans_main_record
                     query = query.Where(o => o.RealReceivingDate>arg.realreceivingdatestrat&&o.RealReceivingDate<arg.realreceivingdateend.Value.AddDays(1));
             }
             else {
-                 query = query.Where(o => o.Id == 0); 
+                 query = query.Where(o => o.CreationTime.ToString("yyMMdd") == DateTime.Now.ToString("yyMMdd")); 
             }
             query = query.OrderByDescending(o => o.Id);
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);

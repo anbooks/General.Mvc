@@ -418,6 +418,9 @@
     <Content Update="Areas\Admin\Views\ITShipmentCreate\EditITShipmentCreate.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\Shared\_AdminLayout2.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\UserRole\UserRoleIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>

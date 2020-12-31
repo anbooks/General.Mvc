@@ -56,7 +56,7 @@
                 <button class="btn btn-info btn-sm" type="submit">
                     <i class="ace-icon fa fa-check bigger-110"></i>
                     确认修改
-                </button>
+                </button>  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
             </div>
         </div>
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
@@ -95,145 +95,145 @@
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
-                                </td>
-                                <td>@item.Id</td>
-                                <td>@item.Shipper</td>
-                                <td>@item.PoNo</td>
-                                <td>@item.Incoterms</td>
-                                <td>@item.CargoType</td>
-                                <td>@item.RealReceivingDate</td>
-                                <td>@item.Pcs</td>
-                                <td>@item.Gw</td>
-                                <td>@item.ShippingMode</td>
-                                <td>@item.DeliveryRequiredDate</td>
-                                <td>
-                                    @item.InventoryNo
-                                </td>
-
-                                @if (@item.BlDate == null)
-                                {
+                                <tr>
                                     <td>
-                                        <input type="date" name="BlDate" value="@item.BlDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="BlDate" value="@item.BlDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
-                                }
-
-
-                                @if (@item.DeclarationDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="DeclarationDate" value="@item.DeclarationDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="DeclarationDate" value="@item.DeclarationDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
-
-
-                                @if (@item.ReleaseDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="ReleaseDate" value="@item.ReleaseDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="ReleaseDate" value="@item.ReleaseDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
-
-
-                                <td>
-                                    <input type="text" name="CustomsDeclarationNo" value="@item.CustomsDeclarationNo" style="width:80px" />
-                                </td>
-
-
-                                <td>
-                                    <input type="text" name="InspectionLotNo" value="@item.InspectionLotNo" style="width:80px" />
-                                </td>
-
-                                @if (@item.ChooseDelivery == null)
-                                {
-                                    <td>
-                                        @Html.DropDownList("DeliveryReceipt", ViewData["DeliveryReceipt"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
                                     </td>
-                                }
-                                else
-                                {
+                                    <td>@item.Id</td>
+                                    <td>@item.Shipper</td>
+                                    <td>@item.PoNo</td>
+                                    <td>@item.Incoterms</td>
+                                    <td>@item.CargoType</td>
+                                    <td>@item.RealReceivingDate</td>
+                                    <td>@item.Pcs</td>
+                                    <td>@item.Gw</td>
+                                    <td>@item.ShippingMode</td>
+                                    <td>@item.DeliveryRequiredDate</td>
                                     <td>
-                                        @Html.DropDownList("DeliveryReceipt", ViewData["DeliveryReceipt"] as SelectList, @item.DeliveryReceipt, new { @class = "form-control  input-small" })
+                                        @item.InventoryNo
                                     </td>
-                                }
 
-                                @if (@item.ChooseDelivery == null)
-                                {
-                                    <td>
-                                        @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, @item.ChooseDelivery, new { @class = "form-control  input-small" })
-                                    </td>
-                                }
-
-                                @if (@item.ActualDeliveryDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
-
-
-                                @if (@item.BrokenRecord == null)
-                                {
-                                    <td>
-                                        @Html.DropDownList("BrokenRecord", ViewData["BrokenRecord"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        @Html.DropDownList("BrokenRecord", ViewData["BrokenRecord"] as SelectList, @item.BrokenRecord, new { @class = "form-control  input-small" })
-                                    </td>
-                                }
-
-                                <td>
-                                    @if (@item.Note != null && @item.Note != "")
+                                    @if (@item.BlDate == null)
                                     {
-                                        <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>上传附件</a>
+                                        <td>
+                                            <input type="date" name="BlDate" value="@item.BlDate" />
+                                        </td>}
+                                    else
+                                    {
+                                        <td>
+                                            <input type="date" name="BlDate" value="@item.BlDate.Value.ToString("yyyy-MM-dd")" />
+                                        </td>}
+                                    }
+
+
+                                    @if (@item.DeclarationDate == null)
+                                    {
+                                        <td>
+                                            <input type="date" name="DeclarationDate" value="@item.DeclarationDate" />
+                                        </td>}
+                                    else
+                                    {
+                                        <td>
+                                            <input type="date" name="DeclarationDate" value="@item.DeclarationDate.Value.ToString("yyyy-MM-dd")" />
+                                        </td>}
+
+
+                                    @if (@item.ReleaseDate == null)
+                                    {
+                                        <td>
+                                            <input type="date" name="ReleaseDate" value="@item.ReleaseDate" />
+                                        </td>}
+                                    else
+                                    {
+                                        <td>
+                                            <input type="date" name="ReleaseDate" value="@item.ReleaseDate.Value.ToString("yyyy-MM-dd")" />
+                                        </td>}
+
+
+                                    <td>
+                                        <input type="text" name="CustomsDeclarationNo" value="@item.CustomsDeclarationNo" style="width:80px" />
+                                    </td>
+
+
+                                    <td>
+                                        <input type="text" name="InspectionLotNo" value="@item.InspectionLotNo" style="width:80px" />
+                                    </td>
+
+                                    @if (@item.ChooseDelivery == null)
+                                    {
+                                        <td>
+                                            @Html.DropDownList("DeliveryReceipt", ViewData["DeliveryReceipt"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                        </td>
                                     }
                                     else
                                     {
-                                        <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                        <td>
+                                            @Html.DropDownList("DeliveryReceipt", ViewData["DeliveryReceipt"] as SelectList, @item.DeliveryReceipt, new { @class = "form-control  input-small" })
+                                        </td>
                                     }
-                                </td>
-                                @if (@item.F_ShippingModeGiven != true)
-                                {
+
+                                    @if (@item.ChooseDelivery == null)
+                                    {
+                                        <td>
+                                            @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.DropDownList("ChooseDelivery", ViewData["ChooseDelivery"] as SelectList, @item.ChooseDelivery, new { @class = "form-control  input-small" })
+                                        </td>
+                                    }
+
+                                    @if (@item.ActualDeliveryDate == null)
+                                    {
+                                        <td>
+                                            <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate" />
+                                        </td>}
+                                    else
+                                    {
+                                        <td>
+                                            <input type="date" name="ActualDeliveryDate" value="@item.ActualDeliveryDate.Value.ToString("yyyy-MM-dd")" />
+                                        </td>}
+
+
+                                    @if (@item.BrokenRecord == null)
+                                    {
+                                        <td>
+                                            @Html.DropDownList("BrokenRecord", ViewData["BrokenRecord"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            @Html.DropDownList("BrokenRecord", ViewData["BrokenRecord"] as SelectList, @item.BrokenRecord, new { @class = "form-control  input-small" })
+                                        </td>
+                                    }
+
                                     <td>
-                                        <a href="@Url.RouteUrl("itPorkCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
+                                        @if (@item.Note != null && @item.Note != "")
+                                        {
+                                            <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>上传附件</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                        }
                                     </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <a href="@Url.RouteUrl("itPorkCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                    </td>
-                                }
-                                
-                            </tr>
+                                    @if (@item.F_ShippingModeGiven != true)
+                                    {
+                                        <td>
+                                            <a href="@Url.RouteUrl("itPorkCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+                                            <a href="@Url.RouteUrl("itPorkCustomsSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
+                                        </td>
+                                    }
+
+                                </tr>
                             }
                         </tbody>
                     </table>
@@ -241,8 +241,20 @@
                 }
             </div>
         </div>
-       
     </form>
+    <script>
+        function quanxuan() {
+            var obj = document.getElementById("btnSelectAll");
+            if (obj.value == "全选") {
+                $("input:checkbox").prop("checked", true);//全部设置为选中
+                obj.value = "取消全选"
+            }
+            else {
+                $("input:checkbox").prop("checked", false);//全部设置为未选中
+                obj.value = "全选"
+            }
+        }
+    </script>
     <script>
         $(function () {
             $('#formitPorkCustoms').submit(function () {

@@ -23,7 +23,7 @@ using Microsoft.AspNetCore.Hosting;
 using General.Services.Order;
 using General.Services.Material;
 using General.Services.Project;
-
+//using BLL;
 namespace General.Mvc.Areas.Admin.Controllers
 {
 
@@ -91,7 +91,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (pageList.Count > 0)
             {
                 item.F_ShippingModeGiven = true;
-              
+
                 _importTrans_main_recordService.updateImportTransmain(item);
             }
             ViewBag.orderno = item.PoNo;
@@ -169,9 +169,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (list[i].Thickness.ToString() != null)
                     { worksheet.Cells[i + 2, 8].Value = list[i].Thickness; }
                     if (list[i].Length.ToString() != null)
-                    { worksheet.Cells[i + 2, 9].Value = list[i].Length.ToString(); }
+                    { worksheet.Cells[i + 2, 9].Value = Convert.ToInt32(list[i].Length.ToString()); }
                     if (list[i].Width.ToString() != null)
-                    { worksheet.Cells[i + 2, 10].Value = list[i].Width.ToString(); }
+                    { worksheet.Cells[i + 2, 10].Value = Convert.ToInt32(list[i].Width.ToString()); }
                     if (list[i].PurchaseQuantity.ToString() != null)
                     { worksheet.Cells[i + 2, 11].Value = list[i].PurchaseQuantity.ToString(); }
                     if (list[i].PurchaseUnit.ToString() != null)
@@ -182,7 +182,97 @@ namespace General.Mvc.Areas.Admin.Controllers
                     { worksheet.Cells[i + 2, 14].Value = list[i].BatchNo.ToString(); }
                     if (list[i].Waybill.ToString() != null)
                     { worksheet.Cells[i + 2, 15].Value = list[i].Waybill.ToString(); }
-                    
+
+                }
+                package.Save();
+            }
+            return File("\\Files\\sjdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+        }
+        [Route("excelimportasja", Name = "excelimportasja")]
+        [Function("货物交接单生成", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        public IActionResult Export3()
+        {
+            ViewBag.Import = HttpContext.Session.GetInt32("import");
+            var list = _scheduleService.getAll(ViewBag.Import);
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = "货物交接单" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\sjdfile\\", sFileName));
+            file.Delete();
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                // 添加worksheet
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("货物交接单");
+                //添加头
+                worksheet.Cells[1, 1].Value = "采购员";
+                worksheet.Cells[1, 2].Value = "订单号";
+                worksheet.Cells[1, 3].Value = "索引号";
+                worksheet.Cells[1, 4].Value = "物料代码";
+                worksheet.Cells[1, 5].Value = "品名";
+                worksheet.Cells[1, 6].Value = "型号";
+                worksheet.Cells[1, 7].Value = "规范";
+                worksheet.Cells[1, 8].Value = "厚度";
+                worksheet.Cells[1, 9].Value = "长";
+                worksheet.Cells[1, 10].Value = "宽";
+                worksheet.Cells[1, 11].Value = "采购数量";
+                worksheet.Cells[1, 12].Value = "采购单位";
+                worksheet.Cells[1, 13].Value = "制造商";
+                worksheet.Cells[1, 14].Value = "炉批号";
+                worksheet.Cells[1, 15].Value = "运单号";
+                worksheet.Cells[1, 16].Value = "备注1";
+                worksheet.Cells[1, 17].Value = "备注2";
+                worksheet.Cells[1, 18].Value = "备注3";
+                //添加值
+                int i = 0;
+                for (int a = 0; a <= list.Count - 1; a++)
+                {
+                    if (list[a].BatchNo != null)
+                    {
+                        string s = list[a].BatchNo.ToString();
+                        string[] sArray = s.Split('@');
+                        foreach (string b in sArray)
+                        {
+                            if (list[a].Buyer.ToString() != null)
+                            {
+                                worksheet.Cells[i + 2, 1].Value = list[a].Buyer.ToString();
+                            }
+                            if (list[a].OrderNo.ToString() != null)
+                            {
+                                worksheet.Cells[i + 2, 2].Value = list[a].OrderNo.ToString();
+                            }
+                            if (list[a].ReferenceNo.ToString() != null)
+                            { worksheet.Cells[i + 2, 3].Value = list[a].ReferenceNo.ToString(); }
+                            if (list[a].MaterialCode.ToString() != null)
+                            { worksheet.Cells[i + 2, 4].Value = list[a].MaterialCode.ToString(); }
+                            if (list[a].Description.ToString() != null)
+                            { worksheet.Cells[i + 2, 5].Value = list[a].Description.ToString(); }
+                            if (list[a].Type.ToString() != null)
+                            { worksheet.Cells[i + 2, 6].Value = list[a].Type.ToString(); }
+                            if (list[a].Specification.ToString() != null)
+                            { worksheet.Cells[i + 2, 7].Value = list[a].Specification.ToString(); }
+                            if (list[a].Thickness.ToString() != null)
+                            { worksheet.Cells[i + 2, 8].Value = list[a].Thickness; }
+                            if (list[a].Length.ToString() != null)
+                            { worksheet.Cells[i + 2, 9].Value = Convert.ToInt32(list[i].Length.ToString()); }
+                            if (list[a].Width.ToString() != null)
+                            { worksheet.Cells[i + 2, 10].Value = Convert.ToInt32(list[i].Width.ToString()); }
+                            if (list[a].PurchaseQuantity.ToString() != null)
+                            { worksheet.Cells[i + 2, 11].Value = list[a].PurchaseQuantity.ToString(); }
+                            if (list[a].PurchaseUnit.ToString() != null)
+                            { worksheet.Cells[i + 2, 12].Value = list[a].PurchaseUnit.ToString(); }
+                            if (list[a].Manufacturers.ToString() != null)
+                            { worksheet.Cells[i + 2, 13].Value = list[a].Manufacturers.ToString(); }
+                            if (list[a].BatchNo.ToString() != null)
+                            { worksheet.Cells[i + 2, 14].Value = b; }
+                            if (list[a].Waybill.ToString() != null)
+                            { worksheet.Cells[i + 2, 15].Value = list[a].Waybill.ToString(); }
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itBuyerSchedule");
+                        return Redirect(ViewBag.ReturnUrl);
+                    }
                 }
                 package.Save();
             }
@@ -223,8 +313,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 18].Value = "原产国";
                 worksheet.Cells[1, 19].Value = "炉批号";
                 worksheet.Cells[1, 20].Value = "运单号";
-               // xlSheet1.Range("A2:E2").Borders.LineStyle = 1
-                for (int a = 1; a <=20; a++)
+                // xlSheet1.Range("A2:E2").Borders.LineStyle = 1
+                for (int a = 1; a <= 20; a++)
                 {
                     worksheet.Cells[1, a].Style.Font.Bold = true;
                 }
@@ -252,9 +342,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (list[i].Thickness.ToString() != null)
                     { worksheet.Cells[i + 2, 8].Value = list[i].Thickness; }
                     if (list[i].Length.ToString() != null)
-                    { worksheet.Cells[i + 2, 9].Value = list[i].Length.ToString(); }
+                    {
+                        worksheet.Cells[i + 2, 9].Value = Convert.ToInt32(list[i].Length.ToString());
+                    }
                     if (list[i].Width.ToString() != null)
-                    { worksheet.Cells[i + 2, 10].Value = list[i].Width.ToString(); }
+                    { worksheet.Cells[i + 2, 10].Value = Convert.ToInt32(list[i].Width.ToString()); }
                     if (list[i].PurchaseQuantity.ToString() != null)
                     { worksheet.Cells[i + 2, 11].Value = list[i].PurchaseQuantity.ToString(); }
                     if (list[i].PurchaseUnit.ToString() != null)
@@ -586,7 +678,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.Schedule u in jsonlist)
                 {
                     var model = _scheduleService.getById(u.Id);
-                   
+
                     model.PurchaseQuantity = u.PurchaseQuantity;
                     model.PurchaseUnit = u.PurchaseUnit;
                     model.UnitPrice = u.UnitPrice;
@@ -671,6 +763,25 @@ namespace General.Mvc.Areas.Admin.Controllers
             if (id != null)
             {
                 var model = _importTrans_main_recordService.getById(id.Value);
+
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+            return View();
+        }
+        [HttpGet]
+        [Route("editce", Name = "editBuyerce")]
+        [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        public IActionResult EditBuyerce(int? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
+            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
+            ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            ViewBag.Itemo = "1234";
+            if (id != null)
+            {
+                var model = _scheduleService.getById(id.Value);
 
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
