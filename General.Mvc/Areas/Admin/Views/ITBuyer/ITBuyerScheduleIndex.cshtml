@@ -52,6 +52,16 @@
                     <input type="submit" value="批量添加" />
                 </div>
             </form>
+            <!--
+            <form enctype="multipart/form-data" method="post" asp-route="importexcells">
+                <div align="left" style="float:left">
+                    <input type="file" name="excelfile" />
+                </div>
+                <div>
+                    <input type="submit" value="临时" />
+                </div>
+            </form>
+                -->
         </div>
     </div>
     <div class="space-2"></div>
@@ -128,42 +138,17 @@
                                 <td>
                                     <input type="hidden" name="hidden" value="@item.Id" />
                                 </td>
-                                <td>
-                                    @item.Buyer
-                                </td>
-
-                                <td>
-                                    @item.OrderNo
-                                </td>
-
-                                <td>
-                                    @item.OrderLine
-                                </td>
-
-                                <td>
-                                    @item.ReferenceNo
-                                </td>
-                                <td>
-                                    @item.MaterialCode
-                                </td>
-                                <td>
-                                    @item.Description
-                                </td>
-                                <td>
-                                    @item.Type
-                                </td>
-                                <td>
-                                    @item.Specification
-                                </td>
-                                <td>
-                                    @item.Thickness
-                                </td>
-                                <td>
-                                    @item.Length
-                                </td>
-                                <td>
-                                    @item.Width
-                                </td>
+                                <td>@item.Buyer</td>
+                                <td>@item.OrderNo</td>
+                                <td>@item.OrderLine</td>
+                                <td>@item.ReferenceNo</td>
+                                <td>@item.MaterialCode</td>
+                                <td>@item.Description</td>
+                                <td>@item.Type</td>
+                                <td>@item.Specification</td>
+                                <td>@item.Thickness</td>
+                                <td>@item.Length</td>
+                                <td>@item.Width</td>
                                 <td>
                                     <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
                                 </td>

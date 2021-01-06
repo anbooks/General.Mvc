@@ -23,6 +23,7 @@ using General.Services.SysCustomizedList;
 using General.Services.Material;
 using General.Services.Project;
 using General.Services.OrderMain;
+using General.Services.Supplier;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -38,8 +39,10 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IMaterialService _sysMaterialService;
         private IProjectService _sysProjectService;
         private ISysCustomizedListService _sysCustomizedListService;
-        public ITOrderImportController(IOrderMainService sysOrderMainService,IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        private ISupplierService _sysSupplierService;
+        public ITOrderImportController(ISupplierService sysSupplierService, IOrderMainService sysOrderMainService,IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
+            this._sysSupplierService = sysSupplierService;
             this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysRoleService = sysRoleService;
@@ -227,13 +230,15 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.OrderSigner = modelplan.OrderSigner;
                     modelmain.SignerCard = modelplan.SignerCard;
                     modelmain.SupplierCode = modelplan.SupplierCode;
-                    modelmain.SupplierName = modelplan.SupplierName;
+                   // modelmain.SupplierName = modelplan.SupplierName;
                     modelmain.TradeTerms = modelplan.TradeTerms;
                     modelmain.Transport = modelplan.Transport;
                     var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
                     modelmain.Project = modelproject.Describe;
                     var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
                     modelmain.MaterialCategory = modelMaterial.Describe;
+                    var modelSupplier = _sysSupplierService.getByAccount(modelplan.SupplierCode);
+                    modelmain.SupplierName = modelSupplier.Describe;
                     modelmain.CreationTime = DateTime.Now;
                     modelmain.Creator = WorkContext.CurrentUser.Id;
                     _sysOrderMainService.insertOrderMain(modelmain);

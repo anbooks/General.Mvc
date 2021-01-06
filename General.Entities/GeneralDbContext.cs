@@ -11,6 +11,9 @@ namespace General.Entities
         {
         }
         public DbSet<Project> Project { get; set; }
+        public DbSet<Inspection> Inspection { get; set; }
+        public DbSet<InspectionRecord> InspectionRecord { get; set; }
+
         public DbSet<Material> Material { get; set; }
         public DbSet<ProcurementPlan> ProcurementPlan { get; set; }
         public DbSet<MaterialAcceptance> MaterialAcceptance { get; set; }
@@ -32,5 +35,6 @@ namespace General.Entities
         public DbSet<Order> Order { get; set; }
         public DbSet<OrderMain> OrderMain { get; set; }
         public DbSet<ProcurementPlanMain> ProcurementPlanMain { get; set; }
+        public DbSet<Supplier> Supplier { get; set; }
     }
 }

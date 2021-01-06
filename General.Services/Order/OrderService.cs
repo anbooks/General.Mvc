@@ -70,7 +70,10 @@ namespace General.Services.Order
             return _sysOrderRepository.getById(id);
         }
 
-
+        public Entities.Order getAccount(string account)
+        {
+            return _sysOrderRepository.Table.FirstOrDefault(o => o.OrderNo == account);
+        }
         /// <summary>
         /// 新增，插入
         /// </summary>

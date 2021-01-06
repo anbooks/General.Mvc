@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Hosting;
 using General.Services.Order;
 using General.Services.Material;
 using General.Services.Project;
+using General.Services.Supplier;
+using General.Services.Inspection;
 //using BLL;
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -39,15 +41,18 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IOrderService _sysOrderService;
         private IMaterialService _sysMaterialService;
         private IProjectService _sysProjectService;
-
-        public ITBuyerController(IProjectService sysProjectService, IMaterialService sysMaterialService, ISysUserRoleService sysUserRoleService, IOrderService sysOrderService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        private ISupplierService _sysSupplierService;
+        private IInspectionService _sysInspectionService;
+        public ITBuyerController(IInspectionService sysInspectionService, ISupplierService sysSupplierService, IProjectService sysProjectService, IMaterialService sysMaterialService, ISysUserRoleService sysUserRoleService, IOrderService sysOrderService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
+            this._sysInspectionService = sysInspectionService;
             this._sysProjectService = sysProjectService;
             this._sysMaterialService = sysMaterialService;
             this._sysOrderService = sysOrderService;
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
+            this._sysSupplierService = sysSupplierService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
@@ -194,90 +199,137 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             ViewBag.Import = HttpContext.Session.GetInt32("import");
             var list = _scheduleService.getAll(ViewBag.Import);
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            string sFileName = "货物交接单" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\sjdfile\\", sFileName));
-            file.Delete();
-            using (ExcelPackage package = new ExcelPackage(file))
+            int i = 0;
+            for (int a = 0; a <= list.Count - 1; a++)
             {
-                // 添加worksheet
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("货物交接单");
-                //添加头
-                worksheet.Cells[1, 1].Value = "采购员";
-                worksheet.Cells[1, 2].Value = "订单号";
-                worksheet.Cells[1, 3].Value = "索引号";
-                worksheet.Cells[1, 4].Value = "物料代码";
-                worksheet.Cells[1, 5].Value = "品名";
-                worksheet.Cells[1, 6].Value = "型号";
-                worksheet.Cells[1, 7].Value = "规范";
-                worksheet.Cells[1, 8].Value = "厚度";
-                worksheet.Cells[1, 9].Value = "长";
-                worksheet.Cells[1, 10].Value = "宽";
-                worksheet.Cells[1, 11].Value = "采购数量";
-                worksheet.Cells[1, 12].Value = "采购单位";
-                worksheet.Cells[1, 13].Value = "制造商";
-                worksheet.Cells[1, 14].Value = "炉批号";
-                worksheet.Cells[1, 15].Value = "运单号";
-                worksheet.Cells[1, 16].Value = "备注1";
-                worksheet.Cells[1, 17].Value = "备注2";
-                worksheet.Cells[1, 18].Value = "备注3";
-                //添加值
-                int i = 0;
-                for (int a = 0; a <= list.Count - 1; a++)
+                if (list[a].BatchNo != null)
                 {
-                    if (list[a].BatchNo != null)
+                    string s = list[a].BatchNo.ToString();
+                    string[] sArray = s.Split('@');
+                    foreach (string b in sArray)
                     {
-                        string s = list[a].BatchNo.ToString();
-                        string[] sArray = s.Split('@');
-                        foreach (string b in sArray)
+                        if (list[a].OrderNo != null)
                         {
-                            if (list[a].Buyer.ToString() != null)
-                            {
-                                worksheet.Cells[i + 2, 1].Value = list[a].Buyer.ToString();
-                            }
-                            if (list[a].OrderNo.ToString() != null)
-                            {
-                                worksheet.Cells[i + 2, 2].Value = list[a].OrderNo.ToString();
-                            }
-                            if (list[a].ReferenceNo.ToString() != null)
-                            { worksheet.Cells[i + 2, 3].Value = list[a].ReferenceNo.ToString(); }
-                            if (list[a].MaterialCode.ToString() != null)
-                            { worksheet.Cells[i + 2, 4].Value = list[a].MaterialCode.ToString(); }
-                            if (list[a].Description.ToString() != null)
-                            { worksheet.Cells[i + 2, 5].Value = list[a].Description.ToString(); }
-                            if (list[a].Type.ToString() != null)
-                            { worksheet.Cells[i + 2, 6].Value = list[a].Type.ToString(); }
-                            if (list[a].Specification.ToString() != null)
-                            { worksheet.Cells[i + 2, 7].Value = list[a].Specification.ToString(); }
-                            if (list[a].Thickness.ToString() != null)
-                            { worksheet.Cells[i + 2, 8].Value = list[a].Thickness; }
-                            if (list[a].Length.ToString() != null)
-                            { worksheet.Cells[i + 2, 9].Value = Convert.ToInt32(list[i].Length.ToString()); }
-                            if (list[a].Width.ToString() != null)
-                            { worksheet.Cells[i + 2, 10].Value = Convert.ToInt32(list[i].Width.ToString()); }
-                            if (list[a].PurchaseQuantity.ToString() != null)
-                            { worksheet.Cells[i + 2, 11].Value = list[a].PurchaseQuantity.ToString(); }
-                            if (list[a].PurchaseUnit.ToString() != null)
-                            { worksheet.Cells[i + 2, 12].Value = list[a].PurchaseUnit.ToString(); }
-                            if (list[a].Manufacturers.ToString() != null)
-                            { worksheet.Cells[i + 2, 13].Value = list[a].Manufacturers.ToString(); }
-                            if (list[a].BatchNo.ToString() != null)
-                            { worksheet.Cells[i + 2, 14].Value = b; }
-                            if (list[a].Waybill.ToString() != null)
-                            { worksheet.Cells[i + 2, 15].Value = list[a].Waybill.ToString(); }
-                            i++;
+                            Inspection model = new Inspection();
+                            model.ContractNo = list[a].OrderNo;
+                            var supplier = _sysOrderService.getAccount(list[a].OrderNo);
+                            model.Supplier = supplier.SupplierName;
+                            model.Manufacturer = supplier.Manufacturer;
+                            model.CofC = list[a].Qualification;
+                            model.Description = list[a].Description;
+                            model.MaterialCode = list[a].MaterialCode;
+                            model.Type = supplier.PartNo;
+                            model.Size = supplier.Size;
+                            model.Specification = list[a].Specification;
+                            model.Batch = b;
+                            // model.ReceivedDate = b;
+                            model.Qty = Convert.ToInt32(list[a].PurchaseQuantity);
+                            model.ReceivedQty = 0;
+                            model.Creator = WorkContext.CurrentUser.Account;
+                            model.CreationTime = DateTime.Now;
+                            _sysInspectionService.insertInspection(model);
                         }
-                    }
-                    else
-                    {
-                        ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itBuyerSchedule");
-                        return Redirect(ViewBag.ReturnUrl);
+                        i++;
                     }
                 }
-                package.Save();
+                else
+                {
+                    ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itBuyerSchedule");
+                    return Redirect(ViewBag.ReturnUrl);
+                }
             }
-            return File("\\Files\\sjdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+            return Redirect(Url.IsLocalUrl(null) ? null : Url.RouteUrl("itBuyerSchedule"));
         }
+        //[Route("excelimportasja", Name = "excelimportasja")]
+        //[Function("货物交接单生成", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        //public IActionResult Export3()
+        //{
+        //    ViewBag.Import = HttpContext.Session.GetInt32("import");
+        //    var list = _scheduleService.getAll(ViewBag.Import);
+        //    string sWebRootFolder = _hostingEnvironment.WebRootPath;
+        //    string sFileName = "货物交接单" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
+        //    FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\sjdfile\\", sFileName));
+        //    file.Delete();
+        //    using (ExcelPackage package = new ExcelPackage(file))
+        //    {
+        //        // 添加worksheet
+        //        ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("货物交接单");
+        //        //添加头
+        //        worksheet.Cells[1, 1].Value = "采购员";
+        //        worksheet.Cells[1, 2].Value = "订单号";
+        //        worksheet.Cells[1, 3].Value = "索引号";
+        //        worksheet.Cells[1, 4].Value = "物料代码";
+        //        worksheet.Cells[1, 5].Value = "品名";
+        //        worksheet.Cells[1, 6].Value = "型号";
+        //        worksheet.Cells[1, 7].Value = "规范";
+        //        worksheet.Cells[1, 8].Value = "厚度";
+        //        worksheet.Cells[1, 9].Value = "长";
+        //        worksheet.Cells[1, 10].Value = "宽";
+        //        worksheet.Cells[1, 11].Value = "采购数量";
+        //        worksheet.Cells[1, 12].Value = "采购单位";
+        //        worksheet.Cells[1, 13].Value = "制造商";
+        //        worksheet.Cells[1, 14].Value = "炉批号";
+        //        worksheet.Cells[1, 15].Value = "运单号";
+        //        worksheet.Cells[1, 16].Value = "备注1";
+        //        worksheet.Cells[1, 17].Value = "备注2";
+        //        worksheet.Cells[1, 18].Value = "备注3";
+        //        //添加值
+        //        int i = 0;
+        //        for (int a = 0; a <= list.Count - 1; a++)
+        //        {
+        //            if (list[a].BatchNo != null)
+        //            {
+        //                string s = list[a].BatchNo.ToString();
+        //                string[] sArray = s.Split('@');
+        //                foreach (string b in sArray)
+        //                {
+        //                    if (list[a].Buyer.ToString() != null)
+        //                    {
+        //                        worksheet.Cells[i + 2, 1].Value = list[a].Buyer.ToString();
+        //                    }
+        //                    if (list[a].OrderNo.ToString() != null)
+        //                    {
+        //                        worksheet.Cells[i + 2, 2].Value = list[a].OrderNo.ToString();
+        //                    }
+        //                    if (list[a].ReferenceNo.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 3].Value = list[a].ReferenceNo.ToString(); }
+        //                    if (list[a].MaterialCode.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 4].Value = list[a].MaterialCode.ToString(); }
+        //                    if (list[a].Description.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 5].Value = list[a].Description.ToString(); }
+        //                    if (list[a].Type.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 6].Value = list[a].Type.ToString(); }
+        //                    if (list[a].Specification.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 7].Value = list[a].Specification.ToString(); }
+        //                    if (list[a].Thickness.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 8].Value = list[a].Thickness; }
+        //                    if (list[a].Length.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 9].Value = Convert.ToInt32(list[i].Length.ToString()); }
+        //                    if (list[a].Width.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 10].Value = Convert.ToInt32(list[i].Width.ToString()); }
+        //                    if (list[a].PurchaseQuantity.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 11].Value = list[a].PurchaseQuantity.ToString(); }
+        //                    if (list[a].PurchaseUnit.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 12].Value = list[a].PurchaseUnit.ToString(); }
+        //                    if (list[a].Manufacturers.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 13].Value = list[a].Manufacturers.ToString(); }
+        //                    if (list[a].BatchNo.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 14].Value = b; }
+        //                    if (list[a].Waybill.ToString() != null)
+        //                    { worksheet.Cells[i + 2, 15].Value = list[a].Waybill.ToString(); }
+        //                    i++;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itBuyerSchedule");
+        //                return Redirect(ViewBag.ReturnUrl);
+        //            }
+        //        }
+        //        package.Save();
+        //    }
+        //    return File("\\Files\\sjdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+        //}
         [Route("excelimportaej", Name = "excelimportaej")]
         [Function("二检单生成", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
         public IActionResult Export2()
@@ -584,61 +636,61 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return Redirect(ViewBag.ReturnUrl);
             }
         }
-        //[HttpPost]
-        //[Route("importexcells", Name = "importexcells")]
-        //public ActionResult Importa(Entities.Schedule modelschedule, IFormFile excelfile, string returnUrl = null)
-        //{
-        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyerSchedule");
-        //    string sWebRootFolder = _hostingEnvironment.WebRootPath;
-        //    var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-        //    string sFileName = excelfile.FileName;
-        //    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-        //    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-        //    {
-        //        excelfile.CopyTo(fs);
-        //        fs.Flush();
-        //    }
-        //    using (ExcelPackage package = new ExcelPackage(file))
-        //    {
-        //        StringBuilder sb = new StringBuilder();
-        //        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-        //        int rowCount = worksheet.Dimension.Rows;
-        //        int ColCount = worksheet.Dimension.Columns;
-        //        int buyer = 0;//采购员
-        //        int orderno = 0;//订单号
+        [HttpPost]
+        [Route("importexcells", Name = "importexcells")]
+        public ActionResult Importa(Entities.Schedule modelschedule, IFormFile excelfile, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyerSchedule");
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+            string sFileName = excelfile.FileName;
+            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+            {
+                excelfile.CopyTo(fs);
+                fs.Flush();
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                StringBuilder sb = new StringBuilder();
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                int rowCount = worksheet.Dimension.Rows;
+                int ColCount = worksheet.Dimension.Columns;
+                int buyer = 0;//采购员
+                int orderno = 0;//订单号
 
-        //        for (int columns = 1; columns <= ColCount; columns++)
-        //        {
-        //            //Entities.Order model = new Entities.Order();
-        //            if (worksheet.Cells[1, columns].Value.ToString() == "表1") { buyer = columns; }
-        //            if (worksheet.Cells[1, columns].Value.ToString() == "项目代码表") { orderno = columns; }
+                for (int columns = 1; columns <= ColCount; columns++)
+                {
+                    //Entities.Order model = new Entities.Order();
+                    if (worksheet.Cells[1, columns].Value.ToString() == "表1") { buyer = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "项目代码表") { orderno = columns; }
 
-        //        }
-        //        for (int row = 2; row <= rowCount; row++)
-        //        {
-        //            try
-        //            {
-        //                Entities.Project model = new Entities.Project();
+                }
+                for (int row = 2; row <= rowCount; row++)
+                {
+                    try
+                    {
+                        Entities.Supplier model = new Entities.Supplier();
 
-        //                if (worksheet.Cells[row, buyer].Value != null)
-        //                {
-        //                    model.ProjectCode = worksheet.Cells[row, buyer].Value.ToString();//采购员
-        //                }
-        //                if (worksheet.Cells[row, orderno].Value != null)
-        //                {
-        //                    model.Describe = worksheet.Cells[row, orderno].Value.ToString();//订单号
-        //                }
+                        if (worksheet.Cells[row, buyer].Value != null)
+                        {
+                            model.SupplierCode = worksheet.Cells[row, buyer].Value.ToString();//采购员
+                        }
+                        if (worksheet.Cells[row, orderno].Value != null)
+                        {
+                            model.Describe = worksheet.Cells[row, orderno].Value.ToString();//订单号
+                        }
 
-        //                _sysProjectService.insertProject(model);
-        //            }
-        //            catch (Exception e)
-        //            {
-        //                ViewData["IsShowAlert"] = "True";
-        //            }
-        //        }
-        //        return Redirect(ViewBag.ReturnUrl);
-        //    }
-        //}
+                        _sysSupplierService.insertSupplier(model);
+                    }
+                    catch (Exception e)
+                    {
+                        ViewData["IsShowAlert"] = "True";
+                    }
+                }
+                return Redirect(ViewBag.ReturnUrl);
+            }
+        }
         [HttpPost]
         [Route("itBuyerList", Name = "itBuyerLista")]
         [Function("要求到货时间填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]

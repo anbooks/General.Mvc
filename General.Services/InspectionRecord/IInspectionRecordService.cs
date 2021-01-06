@@ -4,20 +4,20 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace General.Services.Order
+namespace General.Services.InspectionRecord
 {
-    public interface IOrderService
+    public interface IInspectionRecordService
     {
-        IPagedList<Entities.Order> searchOrder(SysCustomizedListSearchArg arg, int page, int size, int id);
+        IPagedList<Entities.InspectionRecord> searchInspectionRecord(SysCustomizedListSearchArg arg, int page, int size);
 
-        IPagedList<Entities.Order> searchOrderD(SysCustomizedListSearchArg arg, int page, int size, string orderno);
+        Entities.InspectionRecord getByAccount(string account);
         /// <summary>
         /// 获取详情
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        Entities.Order getById(int id);
-        Entities.Order getAccount(string account);
+        Entities.InspectionRecord getById(int id);
+
         /// <summary>
         /// 验证账号是否已经存在
         /// </summary>
@@ -28,13 +28,13 @@ namespace General.Services.Order
         /// 新增，插入
         /// </summary>
         /// <param name="model"></param>
-        void insertOrder(Entities.Order model);
+        void insertInspectionRecord(Entities.InspectionRecord model);
 
         /// <summary>
         /// 更新修改
         /// </summary>
         /// <param name="model"></param>
-        void updateOrder(Entities.Order model);
+        void updateInspectionRecord(Entities.InspectionRecord model);
         
     }
 }
