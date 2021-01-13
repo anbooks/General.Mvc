@@ -73,7 +73,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View(dataSource);//sysImport
         }
         [Route("schedule", Name = "itBuyerSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        [Function("采购员明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
         [HttpGet]
         public IActionResult ITBuyerScheduleIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -106,7 +106,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("Order", Name = "itOrderBuyerIndex")]
-        [Function("订单数据导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        [Function("订单数据导入明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
         public IActionResult ITOrderBuyerIndex(string orderno, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
@@ -636,61 +636,61 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return Redirect(ViewBag.ReturnUrl);
             }
         }
-        [HttpPost]
-        [Route("importexcells", Name = "importexcells")]
-        public ActionResult Importa(Entities.Schedule modelschedule, IFormFile excelfile, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyerSchedule");
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = excelfile.FileName;
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                int buyer = 0;//采购员
-                int orderno = 0;//订单号
+        //[HttpPost]
+        //[Route("importexcells", Name = "importexcells")]
+        //public ActionResult Importa(Entities.Schedule modelschedule, IFormFile excelfile, string returnUrl = null)
+        //{
+        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyerSchedule");
+        //    string sWebRootFolder = _hostingEnvironment.WebRootPath;
+        //    var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+        //    string sFileName = excelfile.FileName;
+        //    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+        //    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+        //    {
+        //        excelfile.CopyTo(fs);
+        //        fs.Flush();
+        //    }
+        //    using (ExcelPackage package = new ExcelPackage(file))
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+        //        int rowCount = worksheet.Dimension.Rows;
+        //        int ColCount = worksheet.Dimension.Columns;
+        //        int buyer = 0;//采购员
+        //        int orderno = 0;//订单号
 
-                for (int columns = 1; columns <= ColCount; columns++)
-                {
-                    //Entities.Order model = new Entities.Order();
-                    if (worksheet.Cells[1, columns].Value.ToString() == "表1") { buyer = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "项目代码表") { orderno = columns; }
+        //        for (int columns = 1; columns <= ColCount; columns++)
+        //        {
+        //            //Entities.Order model = new Entities.Order();
+        //            if (worksheet.Cells[1, columns].Value.ToString() == "表1") { buyer = columns; }
+        //            if (worksheet.Cells[1, columns].Value.ToString() == "项目代码表") { orderno = columns; }
 
-                }
-                for (int row = 2; row <= rowCount; row++)
-                {
-                    try
-                    {
-                        Entities.Supplier model = new Entities.Supplier();
+        //        }
+        //        for (int row = 2; row <= rowCount; row++)
+        //        {
+        //            try
+        //            {
+        //                Entities.Supplier model = new Entities.Supplier();
 
-                        if (worksheet.Cells[row, buyer].Value != null)
-                        {
-                            model.SupplierCode = worksheet.Cells[row, buyer].Value.ToString();//采购员
-                        }
-                        if (worksheet.Cells[row, orderno].Value != null)
-                        {
-                            model.Describe = worksheet.Cells[row, orderno].Value.ToString();//订单号
-                        }
+        //                if (worksheet.Cells[row, buyer].Value != null)
+        //                {
+        //                    model.SupplierCode = worksheet.Cells[row, buyer].Value.ToString();//采购员
+        //                }
+        //                if (worksheet.Cells[row, orderno].Value != null)
+        //                {
+        //                    model.Describe = worksheet.Cells[row, orderno].Value.ToString();//订单号
+        //                }
 
-                        _sysSupplierService.insertSupplier(model);
-                    }
-                    catch (Exception e)
-                    {
-                        ViewData["IsShowAlert"] = "True";
-                    }
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
-        }
+        //                _sysSupplierService.insertSupplier(model);
+        //            }
+        //            catch (Exception e)
+        //            {
+        //                ViewData["IsShowAlert"] = "True";
+        //            }
+        //        }
+        //        return Redirect(ViewBag.ReturnUrl);
+        //    }
+        //}
         [HttpPost]
         [Route("itBuyerList", Name = "itBuyerLista")]
         [Function("要求到货时间填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
@@ -822,25 +822,25 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return View();
         }
-        [HttpGet]
-        [Route("editce", Name = "editBuyerce")]
-        [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
-        public IActionResult EditBuyerce(int? id, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
-            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
-            ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            ViewBag.Itemo = "1234";
-            if (id != null)
-            {
-                var model = _scheduleService.getById(id.Value);
+        //[HttpGet]
+        //[Route("editce", Name = "editBuyerce")]
+        //[Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
+        //public IActionResult EditBuyerce(int? id, string returnUrl = null)
+        //{
+        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
+        //    var customizedList = _sysCustomizedListService.getByAccount("货币类型");
+        //    ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+        //    ViewBag.Itemo = "1234";
+        //    if (id != null)
+        //    {
+        //        var model = _scheduleService.getById(id.Value);
 
-                if (model == null)
-                    return Redirect(ViewBag.ReturnUrl);
-                return View(model);
-            }
-            return View();
-        }
+        //        if (model == null)
+        //            return Redirect(ViewBag.ReturnUrl);
+        //        return View(model);
+        //    }
+        //    return View();
+        //}
         [HttpPost]
         [Route("edit")]
         public ActionResult EditBuyer(Entities.ImportTrans_main_record model, string returnUrl = null)

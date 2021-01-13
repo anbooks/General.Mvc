@@ -22,6 +22,7 @@ using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Win32;
 using System.Diagnostics;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -105,6 +106,19 @@ namespace General.Mvc.Areas.Admin.Controllers
             FileStream fs = new FileStream(file.ToString(), FileMode.Create);
             return File(fs, "application/octet-stream", sFileName);
         }
+        public IActionResult Download(string fileName, string NewName = "")
+        {
+            var addrUrl = fileName;
+            var stream = System.IO.File.OpenRead(addrUrl); //Path.GetExtension
+            string fileExt = Path.GetExtension(fileName);
+            //获取文件的ContentType
+            var provider = new FileExtensionContentTypeProvider();
+            var memi = provider.Mappings[fileExt];
+            // var downloadName = Path.GetFileName(addrUrl);
+            return File(stream, memi, NewName + "Data.xlsx");
+
+        }
+
         [HttpGet]
         [Route("edit", Name = "editITShipmentCreate")]
         [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]

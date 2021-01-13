@@ -23,7 +23,8 @@ namespace General.Services.ImportTrans_main_recordService
         /// </summary>
         /// <param name="model"></param>
         void insertImportTransmain(Entities.ImportTrans_main_record model);
-        List<Entities.ImportTrans_main_record> getAll(); 
+        List<Entities.ImportTrans_main_record> getAll();
+        List<Entities.ImportTrans_main_record> getCount(string co,string role);
         List<Entities.ImportTrans_main_record> getAllShipModel();
         /// <summary>
         /// 更新修改

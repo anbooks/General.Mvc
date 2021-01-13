@@ -80,6 +80,7 @@
                                 <th width="150px">实际收/提货日期</th>
                                 <th width="150px">件数(箱数)</th>
                                 <th width="150px">毛重</th>
+                                <th width="150px">箱单发票</th>
                                 <th width="150px">运输状态</th>
                                 <th width="150px">航班号/船名</th>
                                 <th width="150px">起运港</th>
@@ -98,135 +99,148 @@
 
                             @foreach (var item in Model.Data)
                             {
-                                <tr>
+                            <tr>
 
+                                <td>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                </td>
+                                <td>
+                                    @item.Id
+                                </td>
+                                <td>
+                                    @item.Shipper
+                                </td>
+                                <td>
+                                    @item.PoNo
+                                </td>
+                                <td>
+                                    <input type="text" name="Incoterms" value="@item.Incoterms" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="CargoType" value="@item.CargoType" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="number" name="Invamou" value="@item.Invamou" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                @if (@item.Invcurr == null)
+                                {
                                     <td>
-                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                        @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
                                     </td>
+                                }
+                                else
+                                {
                                     <td>
-                                        @item.Id
+                                        @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, @item.Invcurr, new { @class = "form-control  input-small" })
                                     </td>
-                                    <td>
-                                        @item.Shipper
-                                    </td>
-                                    <td>
-                                        @item.PoNo
-                                    </td>
-                                    <td>
-                                        <input type="text" name="Incoterms" value="@item.Incoterms" style="width:80px" />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="CargoType" value="@item.CargoType" style="width:80px" />
-                                    </td>
-                                    <td>
-                                        <input type="number" name="Invamou" value="@item.Invamou" step="0.00000000000001" style="width:80px" />
-                                    </td>
-                                    @if (@item.Invcurr == null)
-                                    {
-                                        <td>
-                                            @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, @item.Invcurr, new { @class = "form-control  input-small" })
-                                        </td>
-                                    }
+                                }
 
-                                    @if (@item.RealReceivingDate == null)
-                                    {
-                                        <td>
-                                            <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate" />
-                                        </td>}
-                                    else
-                                    {
-                                        <td>
-                                            <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
+                                @if (@item.RealReceivingDate == null)
+                                {
                                     <td>
-                                        <input type="number" name="Pcs" value="@item.Pcs" step="0.00000000000001" style="width:80px" />
-                                    </td>
+                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate" />
+                                    </td>}
+                                else
+                                {
                                     <td>
-                                        <input type="number" name="Gw" value="@item.Gw" step="0.00000000000001" style="width:80px" />
-                                    </td>
-                                    @if (@item.Status == null)
+                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+                                <td>
+                                    <input type="number" name="Pcs" value="@item.Pcs" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="number" name="Gw" value="@item.Gw" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                <td>
+                                    @if (@item.InventoryAttachment != null)
                                     {
-                                        <td>
-                                            @Html.DropDownList("Status", ViewData["Status"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
-                                        </td>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                        <a href="@Url.RouteUrl("TransportAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
                                     }
                                     else
                                     {
-                                        <td>
-                                            @Html.DropDownList("Status", ViewData["Status"] as SelectList, @item.Status, new { @class = "form-control  input-small" })
-                                        </td>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                       
                                     }
+                                </td>
+                                @if (@item.Status == null)
+                                {
                                     <td>
-                                        <input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px" />
+                                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
                                     </td>
+                                }
+                                else
+                                {
                                     <td>
-                                        <input type="text" name="Origin" value="@item.Origin" style="width:80px" />
+                                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, @item.Status, new { @class = "form-control  input-small" })
                                     </td>
-                                    <td>
-                                        <input type="text" name="Dest" value="@item.Dest" style="width:80px" />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="Mbl" value="@item.Mbl" style="width:80px" />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="Hbl" value="@item.Hbl" style="width:80px" />
-                                    </td>
-                                    <td>
-                                        @if (@item.HblAttachment != null && @item.HblAttachment != "" && @item.MblAttachment != null && @item.MblAttachment != "")
-                                        {
-                                            <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>上传附件</a>
-                                        }
-                                        else
-                                        {
-                                            <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                        }
-                                    </td>
-                                    <td>
-                                        <input type="number" name="Measurement" value="@item.Measurement" step="0.00000000000001" style="width:80px" />
-                                    </td>
-                                    <td>
-                                        <input type="text" name="MeasurementUnit" value="@item.MeasurementUnit" style="width:80px" />
-                                    </td>
-                                    @if (@item.Atd == null)
+                                }
+                                <td>
+                                    <input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Origin" value="@item.Origin" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Dest" value="@item.Dest" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Mbl" value="@item.Mbl" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="Hbl" value="@item.Hbl" style="width:80px" />
+                                </td>
+                                <td>
+                                    @if (@item.HblAttachment != null && @item.HblAttachment != "" && @item.MblAttachment != null && @item.MblAttachment != "")
                                     {
-                                        <td>
-                                            <input type="date" name="Atd" value="@item.Atd" />
-                                        </td>}
-                                    else
-                                    {
-                                        <td>
-                                            <input type="date" name="Atd" value="@item.Atd.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-                                    @if (@item.Ata == null)
-                                    {
-                                        <td>
-                                            <input type="date" name="Ata" value="@item.Atd" />
-                                        </td>}
-                                    else
-                                    {
-                                        <td>
-                                            <input type="date" name="Ata" value="@item.Ata.Value.ToString("yyyy-MM-dd")" />
-                                        </td>}
-                                    @if (@item.F_ShippingModeGiven != true)
-                                    {
-                                        <td>
-                                            <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
-                                        </td>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
                                     }
                                     else
                                     {
-                                        <td>
-                                            <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                        </td>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                        <a href="@Url.RouteUrl("TransportAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
                                     }
+                                </td>
+                                <td>
+                                    <input type="number" name="Measurement" value="@item.Measurement" step="0.00000000000001" style="width:80px" />
+                                </td>
+                                <td>
+                                    <input type="text" name="MeasurementUnit" value="@item.MeasurementUnit" style="width:80px" />
+                                </td>
+                                @if (@item.Atd == null)
+                                {
+                                    <td>
+                                        <input type="date" name="Atd" value="@item.Atd" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="Atd" value="@item.Atd.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+                                @if (@item.Ata == null)
+                                {
+                                    <td>
+                                        <input type="date" name="Ata" value="@item.Atd" />
+                                    </td>}
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="Ata" value="@item.Ata.Value.ToString("yyyy-MM-dd")" />
+                                    </td>}
+                                @if (@item.F_ShippingModeGiven != true)
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
+                                    </td>
+                                }
 
-                                </tr>
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -276,16 +290,16 @@
                     var realreceivingdate = $(this).closest("tr").find("td").eq(8).find("input:data");
                     var pcs = $(this).closest("tr").find("td").eq(9).find("input:data");
                     var gw = $(this).closest("tr").find("td").eq(10).find("input:data");
-                    var status = $(this).closest("tr").find("td").eq(11).find("select[name='Status']");
-                    var flighvessel = $(this).closest("tr").find("td").eq(12).find("input:text");
-                    var origin = $(this).closest("tr").find("td").eq(13).find("input:text");
-                    var dest = $(this).closest("tr").find("td").eq(14).find("input:text");
-                    var mbl = $(this).closest("tr").find("td").eq(15).find("input:text");
-                    var hbl = $(this).closest("tr").find("td").eq(16).find("input:text");
-                    var measurement = $(this).closest("tr").find("td").eq(18).find("input:data");
-                    var measurementunit = $(this).closest("tr").find("td").eq(19).find("input:text");
-                    var atd = $(this).closest("tr").find("td").eq(20).find("input:data");
-                    var ata = $(this).closest("tr").find("td").eq(21).find("input:data");
+                    var status = $(this).closest("tr").find("td").eq(12).find("select[name='Status']");
+                    var flighvessel = $(this).closest("tr").find("td").eq(13).find("input:text");
+                    var origin = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var dest = $(this).closest("tr").find("td").eq(15).find("input:text");
+                    var mbl = $(this).closest("tr").find("td").eq(16).find("input:text");
+                    var hbl = $(this).closest("tr").find("td").eq(17).find("input:text");
+                    var measurement = $(this).closest("tr").find("td").eq(19).find("input:data");
+                    var measurementunit = $(this).closest("tr").find("td").eq(20).find("input:text");
+                    var atd = $(this).closest("tr").find("td").eq(21).find("input:data");
+                    var ata = $(this).closest("tr").find("td").eq(22).find("input:data");
                     var mSub = {
                         id: id.val(),
                         incoterms: incoterms.val(),

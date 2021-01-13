@@ -57,7 +57,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
 
         [Route("schedule", Name = "itConfirmedCustomsSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
+        [Function("综保报关行明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
         [HttpGet]
         public IActionResult ITConfirmedCustomsScheduleIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -90,7 +90,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("itConfirmedCustomsScheduleList", Name = "itConfirmedCustomsScheduleList")]
-        [Function("明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
+        [Function("综保报关行明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
         public ActionResult ITConfirmedCustomsScheduleList(string kevin)
         {
             string test = kevin;
@@ -325,55 +325,56 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return File("\\Files\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
         }
-        [HttpPost]
-        [Route("importConfirmedCustoms", Name = "importConfirmedCustoms")]
-        public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itConfirmedCustoms");
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = $"{Guid.NewGuid()}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                for (int row = 2; row <= rowCount; row++)
-                {
+        //[HttpPost]
+        //[Route("importConfirmedCustoms", Name = "importConfirmedCustoms")]
+        //public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
+        //{
+        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itConfirmedCustoms");
+        //    string sWebRootFolder = _hostingEnvironment.WebRootPath;
+        //    var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+        //    string sFileName = $"{Guid.NewGuid()}.xlsx";
+        //    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+        //    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+        //    {
+        //        excelfile.CopyTo(fs);
+        //        fs.Flush();
+        //    }
+        //    using (ExcelPackage package = new ExcelPackage(file))
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+        //        int rowCount = worksheet.Dimension.Rows;
+        //        int ColCount = worksheet.Dimension.Columns;
+        //        for (int row = 2; row <= rowCount; row++)
+        //        {
 
-                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
-                    model.Shipper = worksheet.Cells[row, 2].Value.ToString();
-                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo != null)
-                    {
-                        model.Buyer = model.PoNo.Substring(1, 2);
-                    }
-                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
-                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
-                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
-                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
-                    model.CreationTime = DateTime.Now;
-                    model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    _importTrans_main_recordService.insertImportTransmain(model);
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
-        }
+        //            model.Itemno = worksheet.Cells[row, 1].Value.ToString();
+        //            model.Shipper = worksheet.Cells[row, 2].Value.ToString();
+        //            model.PoNo = worksheet.Cells[row, 3].Value.ToString();
+        //            if (model.PoNo != null)
+        //            {
+        //                model.Buyer = model.PoNo.Substring(1, 2);
+        //            }
+        //            model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
+        //            model.CargoType = worksheet.Cells[row, 5].Value.ToString();
+        //            model.Invamou = worksheet.Cells[row, 6].Value.ToString();
+        //            model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
+        //            model.CreationTime = DateTime.Now;
+        //            model.Creator = WorkContext.CurrentUser.Id;
+        //            try
+        //            {
+        //            }
+        //            catch (Exception e)
+        //            {
+        //            }
+        //            _importTrans_main_recordService.insertImportTransmain(model);
+        //        }
+        //        return Redirect(ViewBag.ReturnUrl);
+        //    }
+        //}
         [HttpPost]
         [Route("itConfirmedCustomsList", Name = "itConfirmedCustomsList")]
+        [Function("综保报关行数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
         public ActionResult ITConfirmedCustomsList(string kevin)
         {
             string test = kevin;
@@ -403,7 +404,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editITConfirmedCustoms")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
+        [Function("综保报关行编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsIndex")]
         public IActionResult EditITConfirmedCustoms(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itConfirmedCustoms");
@@ -455,7 +456,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit2", Name = "editConfirmedCustomsSchedule")]
-        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsScheduleIndex")]
+        [Function("综保报关行编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITConfirmedCustomsController.ITConfirmedCustomsScheduleIndex")]
         public IActionResult EditConfirmedCustomsSchedule(int? id, string returnUrl = null)
         {//页面跳转未完成
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itConfirmedCustoms");

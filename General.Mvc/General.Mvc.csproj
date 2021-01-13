@@ -101,11 +101,12 @@
     <Folder Include="wwwroot\Files\profile\" />
     <Folder Include="wwwroot\Files\importfile\" />
     <Folder Include="wwwroot\Files\sjdfile\" />
-    <Folder Include="wwwroot\Files\mbl\" />
     <Folder Include="wwwroot\Files\hbl\" />
     <Folder Include="wwwroot\Files\ejdfile\" />
     <Folder Include="wwwroot\Files\inventoryfile\" />
     <Folder Include="wwwroot\Files\notefile\" />
+    <Folder Include="wwwroot\Files\fp\" />
+    <Folder Include="wwwroot\Files\mbl\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -373,6 +374,9 @@
     <Content Update="Areas\Admin\Views\ITPorkCustoms\ITPorkCustomsScheduleIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\ITPorkCustoms\ITPorkCustomsAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\ITProcurementPlan\EditITProcurementPlanMain.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -413,6 +417,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITTransport\EditTransportSchedule.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITTransport\ITTransportAttachmentIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITTransport\ITTransportIndex.cshtml">

@@ -11,6 +11,7 @@ namespace General.Entities
         {
         }
         public DbSet<Project> Project { get; set; }
+        public DbSet<Attachment> Attachment { get; set; }
         public DbSet<Inspection> Inspection { get; set; }
         public DbSet<InspectionRecord> InspectionRecord { get; set; }
 

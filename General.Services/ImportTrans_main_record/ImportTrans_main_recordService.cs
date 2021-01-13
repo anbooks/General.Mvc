@@ -174,6 +174,25 @@ namespace General.Services.ImportTrans_main_record
             list = _importTrans_main_recordRepository.Table.Where(o=>o.IsDeleted!=true).ToList();
             return list;
         }
+        public List<Entities.ImportTrans_main_record> getCount(string co, string role)
+        {
+            List<Entities.ImportTrans_main_record> list = null;
+
+            if (list != null)
+                return list;
+            if (role=="采购员") {
+                list = _importTrans_main_recordRepository.Table.Where(o => o.Buyer == co && o.IsDeleted != true).ToList();
+            }
+            if (role == "运输代理")
+            {
+                list = _importTrans_main_recordRepository.Table.Where(o => o.Transportation == co && o.IsDeleted != true).ToList();
+            }
+            if (role == "口岸报关行")
+            {
+                list = _importTrans_main_recordRepository.Table.Where(o => o.Forwarder == co && o.IsDeleted != true).ToList();
+            }
+            return list;
+        }
         public List<Entities.ImportTrans_main_record> getAllShipModel()
         {
             List<Entities.ImportTrans_main_record> list = null;

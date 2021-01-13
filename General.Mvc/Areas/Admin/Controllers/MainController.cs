@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using General.Framework.Controllers.Admin;
 using General.Framework.Security.Admin;
+using General.Services.ImportTrans_main_recordService;
+using General.Services.SysUserRole;
 using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
@@ -43,16 +45,25 @@ namespace General.Mvc.Areas.Admin.Controllers
     [Route("admin/main")]
     public class MainController : PublicAdminController   //这样Controller一集成就得登录后才能用了
     {
+        private IImportTrans_main_recordService _importTrans_main_recordService;
+        private ISysUserRoleService _sysUserRoleService;
         private IAdminAuthService _adminAuthService;
 
-        public MainController(IAdminAuthService adminAuthService)
+        public MainController(IImportTrans_main_recordService importTrans_main_recordService, IAdminAuthService adminAuthService, ISysUserRoleService sysUserRoleService)
         {
             this._adminAuthService = adminAuthService;
+            this._sysUserRoleService = sysUserRoleService;
+            this._importTrans_main_recordService = importTrans_main_recordService;
         }
 
         [Route("", Name = "mainIndex")]
         public IActionResult Index()
         {
+            var userrole = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
+            var list = _importTrans_main_recordService.getCount(WorkContext.CurrentUser.Co, userrole.RoleName);
+            if (list!=null) {
+                ViewBag.Count = "当前有" + list.Count + "个任务";
+            }
             return View();
         }
         [Route("pas", Name = "passworda")]

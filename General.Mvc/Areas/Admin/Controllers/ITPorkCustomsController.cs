@@ -20,6 +20,8 @@ using System.IO;
 using OfficeOpenXml;
 using System.Text;
 using Microsoft.AspNetCore.Hosting;
+using General.Services.Attachment;
+using Microsoft.AspNetCore.StaticFiles;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -33,13 +35,15 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITPorkCustomsController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        private IAttachmentService _attachmentService;
+        public ITPorkCustomsController(IAttachmentService attachmentService, ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
+            this._attachmentService = attachmentService;
         }
         [Route("", Name = "itPorkCustoms")]
         [Function("口岸报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
@@ -61,8 +65,39 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itPorkCustoms", arg);
             return View(dataSource);//sysImport
         }
+        [Route("PorkAttachment", Name = "PorkAttachment")]
+        [Function("破损记录", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        [HttpGet]
+        public IActionResult ITPorkCustomsAttachmentIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            var pageList = _attachmentService.searchPorkAttachment(arg, page, size, id);
+            ViewBag.Arg = arg;//传参数ITTransportAttachmentIndex
+            var dataSource = pageList.toDataSourceResult<Entities.Attachment, SysCustomizedListSearchArg>("itPorkCustoms", arg);
+            return View(dataSource);//sysImport
+        }
+        [Route("downLoadPork", Name = "downLoadPork")]
+        [Function("下载破损记录", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        public IActionResult Download(int? id)
+        {
+            string load = "";
+
+            var model = _attachmentService.getById(id.Value);
+                load = "\\Files\\notefile\\";
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var fileProfile = sWebRootFolder + load + model.AttachmentLoad;
+            string sFileName = model.AttachmentLoad;
+            var addrUrl = sFileName;
+            var stream = System.IO.File.OpenRead(fileProfile); //Path.GetExtension
+            string fileExt = Path.GetExtension(sFileName);
+            //获取文件的ContentType
+            var provider = new FileExtensionContentTypeProvider();
+            var memi = provider.Mappings[fileExt];
+            // var downloadName = Path.GetFileName(addrUrl);
+            return File(stream, memi, model.Name);
+        }
         [Route("schedule", Name = "itPorkCustomsSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        [Function("口岸报关行明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
         [HttpGet]
         public IActionResult ITPorkCustomsScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -95,7 +130,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("itPorkCustomsScheduleList", Name = "itPorkCustomsScheduleList")]
-        [Function("明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        [Function("口岸报关行明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
         public ActionResult ITPorkCustomsScheduleList(string kevin)
         {
             string test = kevin;
@@ -137,82 +172,10 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Json(AjaxData);
         }
-        [Route("excelPorkCustoms", Name = "excelPorkCustoms")]
-        public FileResult Excel()
-        {
-            var list = _importTrans_main_recordService.getAll();
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("编号");
-            for (int i = 0; i < list.Count; i++)
-            {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
-            }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xls";
-            return File(ms, "application/vnd.ms-excel", sFileName);
-        }
-        [HttpPost]
-        [Route("importPorkCustoms", Name = "importPorkCustoms")]
-        public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = $"{Guid.NewGuid()}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                for (int row = 2; row <= rowCount; row++)
-                {
-                    //string s = "abcdeabcdeabcde";
-                    //string[] sArray = s.Split('c');
-                    //foreach (string i in sArray)
-                    //Console.WriteLine(i.ToString());
-                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
-                    model.Shipper = worksheet.Cells[row, 2].Value.ToString();
-                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo!=null)
-                    {
-                        model.Buyer = model.PoNo.Substring(1, 2);
-                    }             
-                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
-                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
-                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
-                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
-                    model.CreationTime = DateTime.Now;
-                    model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    _importTrans_main_recordService.insertImportTransmain(model);
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
-        }
+        
         [HttpPost]
         [Route("itPorkCustomsList", Name = "itPorkCustomsList")]
+        [Function("口岸报关行数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
         public ActionResult ITPorkCustomsList(string kevin)
         {
             string test = kevin;
@@ -237,7 +200,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editITPorkCustoms")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        [Function("口岸报关行编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
         public IActionResult EditITPorkCustoms(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
@@ -285,25 +248,37 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             else
             {
+                var modela = _importTrans_main_recordService.getById(model.Id);
                 string sWebRootFolder = _hostingEnvironment.WebRootPath;
-                var fileProfile = sWebRootFolder + "\\Files\\notefile\\";
-                string sFileName = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + notefile.FileName;
-                FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-                using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                if (notefile != null)
                 {
-                    notefile.CopyTo(fs);
-                    fs.Flush();
+                    var fileProfilef = sWebRootFolder + "\\Files\\notefile\\";
+                    string f = Guid.NewGuid().ToString("N");
+                    string sFileNamef = f+ notefile.FileName;
+                    FileInfo filef = new FileInfo(Path.Combine(fileProfilef, sFileNamef));
+                    using (FileStream fsf = new FileStream(filef.ToString(), FileMode.Create))
+                    {
+                        notefile.CopyTo(fsf);
+                        fsf.Flush();
+                    }
+                    Attachment attachmentf = new Attachment();
+                    attachmentf.AttachmentLoad = sFileNamef;
+                    attachmentf.Name = notefile.FileName;
+                    attachmentf.Type = "破损记录";
+                    attachmentf.ImportId = model.Id;
+                    attachmentf.Creator = WorkContext.CurrentUser.Account;
+                    attachmentf.CreationTime = DateTime.Now;
+                    modela.Note =sFileNamef;
+                    _attachmentService.insertAttachment(attachmentf);
                 }
-                model.Note = sFileName;
-                model.Modifier = WorkContext.CurrentUser.Id;
-                model.ModifiedTime = DateTime.Now;
-                _importTrans_main_recordService.updateImportTransmain(model);
+                
+                _importTrans_main_recordService.updateImportTransmain(modela);
             }
             return Redirect(ViewBag.ReturnUrl);
         }
         [HttpGet]
         [Route("edit2", Name = "editPorkCustomsSchedule")]
-        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsScheduleIndex")]
+        [Function("口岸报关行编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsScheduleIndex")]
         public IActionResult EditPorkCustomsSchedule(int? id, string returnUrl = null)
         {//页面跳转未完成
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");

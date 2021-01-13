@@ -67,23 +67,17 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             var model = _sysUserRoleService.getById(id);
             //var model = "";
-            var modelab = 0;
+           
+            //  _sysPermissionService.saveRolePermission(id, sysResource, WorkContext.CurrentUser.Id);
             if (model == null)
             {
-                Guid gv = new Guid("4baaba32-e96b-4a16-8cad-e7bf6d004449");
-                //gv = new Guid();
-                model = _sysUserRoleService.getById(gv);
-                modelab = 1;
-            }
-            //  _sysPermissionService.saveRolePermission(id, sysResource, WorkContext.CurrentUser.Id);
-            if (modelab == 1)
-            {
+                SysUserRole modela = new SysUserRole();
                 var item = _sysRoleService.getRole(sysResource);
-                model.Id = Guid.NewGuid();
-                model.UserId =id;
-                model.RoleId = sysResource;
-                model.RoleName = item.Name;
-                _sysUserRoleService.insertSysUserRole(model);
+
+                modela.UserId =id;
+                modela.RoleId = sysResource;
+                modela.RoleName = item.Name;
+                _sysUserRoleService.insertSysUserRole(modela);
             }
             else
             {

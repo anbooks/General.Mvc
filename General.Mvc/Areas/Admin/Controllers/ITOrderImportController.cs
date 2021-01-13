@@ -53,7 +53,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._hostingEnvironment = hostingEnvironment;
         }
         [Route("itOrderImportIndex", Name = "itOrderImportIndex")]
-        [Function("采购订单详细", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
+        [Function("采购订单详细", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
         public IActionResult ITOrderImportIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             string s;
@@ -89,7 +89,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 
         [HttpGet]
         [Route("edit2", Name = "editITOrderImport")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportIndex")]
+        [Function("编辑采购订单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
         public IActionResult EditITOrderImport(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITOrderImport");
@@ -144,7 +144,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editITOrderImportMain")]
-        [Function("编辑采购订单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        [Function("编辑采购订单主表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
         public IActionResult EditITOrderImportMain(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
@@ -163,17 +163,17 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return View();
         }
-        [Route("excelimport", Name = "excelimport")]
-        public FileStreamResult Excel(int?id)
-        {
-            var model = _sysOrderService.getById(id.Value);
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\profile\\";
-            string sFileName = model.Attachment;
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            FileStream fs = new FileStream(file.ToString(), FileMode.Create);
-            return File(fs,"application/octet-stream", sFileName);
-        }
+        //[Route("excelimport", Name = "excelimport")]
+        //public FileStreamResult Excel(int?id)
+        //{
+        //    var model = _sysOrderService.getById(id.Value);
+        //    string sWebRootFolder = _hostingEnvironment.WebRootPath;
+        //    var fileProfile = sWebRootFolder + "\\Files\\profile\\";
+        //    string sFileName = model.Attachment;
+        //    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+        //    FileStream fs = new FileStream(file.ToString(), FileMode.Create);
+        //    return File(fs,"application/octet-stream", sFileName);
+        //}
         [HttpPost]
         [Route("importexcelorder", Name = "importexcelorder")]
         [Function("采购订单修改、批量导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]

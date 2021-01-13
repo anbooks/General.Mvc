@@ -51,18 +51,15 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult InspectionIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
-            var customizedList = _sysCustomizedListService.getByAccount("是否");
-            ViewData["CheckAndPass"] = new SelectList(customizedList, "CustomizedValue", "Description");
-            //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
-            //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
             ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _sysInspectionService.searchInspection(arg, page, size);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.Inspection, SysCustomizedListSearchArg>("itConfirmedCustoms", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.Inspection, SysCustomizedListSearchArg>("inspection", arg);
             return View(dataSource);//sysImport
         }
         [HttpPost]
         [Route("InspectionList", Name = "InspectionList")]
+        [Function("批量送检审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionIndex")]
         public ActionResult InspectionList(string kevin)
         {
             string test = kevin;
@@ -117,14 +114,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _sysInspectionRecordService.searchInspectionRecord(arg, page, size);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("itConfirmedCustoms", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("inspectionRecord", arg);
             return View(dataSource);//sysImport
         }
         [HttpPost]
         [Route("InspectionRecordList", Name = "InspectionRecordList")]
+        [Function("器材验收卡片导出", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionRecordIndex")]
         public IActionResult InspectionRecordList(List<int> checkboxId)
         {
-            
+
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             string sFileName = "器材验收卡片" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
             FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\sjdfile\\", sFileName));
@@ -150,7 +148,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (int u in checkboxId)
                 {
                     var model = _sysInspectionRecordService.getById(u);
-                   
+
                     if (model.ContractNo != null)
                     {
                         worksheet.Cells[a + 2, 1].Value = model.ContractNo.ToString();
@@ -204,6 +202,6 @@ namespace General.Mvc.Areas.Admin.Controllers
                 package.Save();
             }
             return File("\\Files\\sjdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
-  }
+        }
     }
 }

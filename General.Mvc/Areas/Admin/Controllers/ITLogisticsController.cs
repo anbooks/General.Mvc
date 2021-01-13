@@ -58,7 +58,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View(dataSource);//sysImport
         }
         [Route("schedule", Name = "itLogisticsSchedule")]
-        [Function("明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
+        [Function("物流员明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
         [HttpGet]
         public IActionResult ITLogisticsScheduleIndex( int id ,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -91,7 +91,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("itLogisticsScheduleList", Name = "itLogisticsScheduleList")]
-        [Function("明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
+        [Function("物流员明细表数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
         public ActionResult ITConfirmedCustomsScheduleList(string kevin)
         {
             string test = kevin;
@@ -132,79 +132,80 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Json(AjaxData);
         }
-        [Route("excelLogistics", Name = "excelLogistics")]
-        public FileResult Excel()
-        {
-            var list = _importTrans_main_recordService.getAll();
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("编号");
-            for (int i = 0; i < list.Count; i++)
-            {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
-            }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xls";
-            return File(ms, "application/vnd.ms-excel", sFileName);
-        }
-        [HttpPost]
-        [Route("importLogistics", Name = "importLogistics")]
-        public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
-        {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itLogistics");
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = $"{Guid.NewGuid()}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-            {
-                excelfile.CopyTo(fs);
-                fs.Flush();
-            }
-            using (ExcelPackage package = new ExcelPackage(file))
-            {
-                StringBuilder sb = new StringBuilder();
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                int rowCount = worksheet.Dimension.Rows;
-                int ColCount = worksheet.Dimension.Columns;
-                for (int row = 2; row <= rowCount; row++)
-                {
+        //[Route("excelLogistics", Name = "excelLogistics")]
+        //public FileResult Excel()
+        //{
+        //    var list = _importTrans_main_recordService.getAll();
+        //    NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
+        //    //添加一个sheet
+        //    NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
+        //    //给sheet1添加第一行的头部标题
+        //    NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
+        //    row1.CreateCell(0).SetCellValue("ID");
+        //    row1.CreateCell(1).SetCellValue("编号");
+        //    for (int i = 0; i < list.Count; i++)
+        //    {
+        //        NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
+        //        rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
+        //        rowtemp.CreateCell(1).SetCellValue(list[i].Itemno);
+        //    }
+        //    // 写入到客户端 
+        //    System.IO.MemoryStream ms = new System.IO.MemoryStream();
+        //    book.Write(ms);
+        //    ms.Seek(0, SeekOrigin.Begin);
+        //    string sFileName = $"{DateTime.Now}.xls";
+        //    return File(ms, "application/vnd.ms-excel", sFileName);
+        //}
+        //[HttpPost]
+        //[Route("importLogistics", Name = "importLogistics")]
+        //public ActionResult Import(IFormFile excelfile, Entities.ImportTrans_main_record model, string returnUrl = null)
+        //{
+        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itLogistics");
+        //    string sWebRootFolder = _hostingEnvironment.WebRootPath;
+        //    var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+        //    string sFileName = $"{Guid.NewGuid()}.xlsx";
+        //    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+        //    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+        //    {
+        //        excelfile.CopyTo(fs);
+        //        fs.Flush();
+        //    }
+        //    using (ExcelPackage package = new ExcelPackage(file))
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+        //        int rowCount = worksheet.Dimension.Rows;
+        //        int ColCount = worksheet.Dimension.Columns;
+        //        for (int row = 2; row <= rowCount; row++)
+        //        {
 
-                    model.Itemno = worksheet.Cells[row, 1].Value.ToString();
-                    model.Shipper = worksheet.Cells[row, 2].Value.ToString();
-                    model.PoNo = worksheet.Cells[row, 3].Value.ToString();
-                    if (model.PoNo!=null)
-                    {
-                        model.Buyer = model.PoNo.Substring(1, 2);
-                    }             
-                    model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
-                    model.CargoType = worksheet.Cells[row, 5].Value.ToString();
-                    model.Invamou = worksheet.Cells[row, 6].Value.ToString();
-                    model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
-                    model.CreationTime = DateTime.Now;
-                    model.Creator = WorkContext.CurrentUser.Id;
-                    try
-                    {
-                    }
-                    catch (Exception e)
-                    {
-                    }
-                    _importTrans_main_recordService.insertImportTransmain(model);
-                }
-                return Redirect(ViewBag.ReturnUrl);
-            }
-        }
+        //            model.Itemno = worksheet.Cells[row, 1].Value.ToString();
+        //            model.Shipper = worksheet.Cells[row, 2].Value.ToString();
+        //            model.PoNo = worksheet.Cells[row, 3].Value.ToString();
+        //            if (model.PoNo!=null)
+        //            {
+        //                model.Buyer = model.PoNo.Substring(1, 2);
+        //            }             
+        //            model.Incoterms = worksheet.Cells[row, 4].Value.ToString();
+        //            model.CargoType = worksheet.Cells[row, 5].Value.ToString();
+        //            model.Invamou = worksheet.Cells[row, 6].Value.ToString();
+        //            model.Invcurr = worksheet.Cells[row, 7].Value.ToString();
+        //            model.CreationTime = DateTime.Now;
+        //            model.Creator = WorkContext.CurrentUser.Id;
+        //            try
+        //            {
+        //            }
+        //            catch (Exception e)
+        //            {
+        //            }
+        //            _importTrans_main_recordService.insertImportTransmain(model);
+        //        }
+        //        return Redirect(ViewBag.ReturnUrl);
+        //    }
+        //}
         [HttpPost]
         [Route("itLogisticsList", Name = "itLogisticsList")]
+        [Function("物流员数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
         public ActionResult ITLogisticsList(string kevin)
         {
             string test = kevin;
@@ -273,7 +274,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editITLogistics")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
+        [Function("物流员编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsIndex")]
         public IActionResult EditITLogistics(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itLogistics");
@@ -324,7 +325,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit2", Name = "editLogisticsSchedule")]
-        [Function("编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsScheduleIndex")]
+        [Function("物流员编辑明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITLogisticsController.ITLogisticsScheduleIndex")]
         public IActionResult EditLogisticsSchedule(int? id, string returnUrl = null)
         {//页面跳转未完成
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itLogistics");

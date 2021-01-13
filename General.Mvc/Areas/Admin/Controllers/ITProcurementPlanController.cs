@@ -80,35 +80,35 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.ProcurementPlanMain, SysCustomizedListSearchArg>("itProcurementPlanMainIndex", arg);
             return View(dataSource);//sysImport
         }
-        [Route("excelimportPlan", Name = "excelimportPlan")]
-        [Function("导出采购计划Excel", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
-        public FileResult Excel()
-        {
-            //获取list数据
+        //[Route("excelimportPlan", Name = "excelimportPlan")]
+        //[Function("导出采购计划Excel", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
+        //public FileResult Excel()
+        //{
+        //    //获取list数据
 
-            var list = _sysRoleService.getAllRoles();//bll.NurseUserListExcel("", "ID asc");
-            //创建Excel文件的对象
-            NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
-            //添加一个sheet
-            NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
-            //给sheet1添加第一行的头部标题
-            NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
-            row1.CreateCell(0).SetCellValue("ID");
-            row1.CreateCell(1).SetCellValue("用户姓名");
-            //将数据逐步写入sheet1各个行
-            for (int i = 0; i < list.Count; i++)
-            {
-                NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
-                rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
-                rowtemp.CreateCell(1).SetCellValue(list[i].Name);
-            }
-            // 写入到客户端 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            book.Write(ms);
-            ms.Seek(0, SeekOrigin.Begin);
-            string sFileName = $"{DateTime.Now}.xlsx";
-            return File(ms, "application/vnd.ms-excel", sFileName);
-        }
+        //    var list = _sysRoleService.getAllRoles();//bll.NurseUserListExcel("", "ID asc");
+        //    //创建Excel文件的对象
+        //    NPOI.HSSF.UserModel.HSSFWorkbook book = new NPOI.HSSF.UserModel.HSSFWorkbook();
+        //    //添加一个sheet
+        //    NPOI.SS.UserModel.ISheet sheet1 = book.CreateSheet("Sheet1");
+        //    //给sheet1添加第一行的头部标题
+        //    NPOI.SS.UserModel.IRow row1 = sheet1.CreateRow(0);
+        //    row1.CreateCell(0).SetCellValue("ID");
+        //    row1.CreateCell(1).SetCellValue("用户姓名");
+        //    //将数据逐步写入sheet1各个行
+        //    for (int i = 0; i < list.Count; i++)
+        //    {
+        //        NPOI.SS.UserModel.IRow rowtemp = sheet1.CreateRow(i + 1);
+        //        rowtemp.CreateCell(0).SetCellValue(list[i].Id.ToString());
+        //        rowtemp.CreateCell(1).SetCellValue(list[i].Name);
+        //    }
+        //    // 写入到客户端 
+        //    System.IO.MemoryStream ms = new System.IO.MemoryStream();
+        //    book.Write(ms);
+        //    ms.Seek(0, SeekOrigin.Begin);
+        //    string sFileName = $"{DateTime.Now}.xlsx";
+        //    return File(ms, "application/vnd.ms-excel", sFileName);
+        //}
         [HttpPost]
         [Route("importexcelPlan", Name = "importexcelPlan")]
         [Function("Excel导入采购计划", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
@@ -250,7 +250,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("editMain", Name = "editITProcurementPlanMain")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
+        [Function("编辑采购计划主表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
         public IActionResult EditITProcurementPlanMain(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanMainIndex");
@@ -440,7 +440,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpGet]
         [Route("edit", Name = "editITProcurementPlan")]
-        [Function("编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
+        [Function("编辑采购计划详细数据", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
         public IActionResult EditITProcurementPlan(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanIndex");
@@ -502,4 +502,4 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
     }
-    }
+}

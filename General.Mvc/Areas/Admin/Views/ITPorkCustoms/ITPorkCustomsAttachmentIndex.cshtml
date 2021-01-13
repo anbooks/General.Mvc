@@ -1,0 +1,173 @@
+﻿@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<Attachment, SysCustomizedListSearchArg>
+
+@{
+    ViewData["Title"] = "破损记录";
+}
+
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+
+            <a href="">进口运输</a>
+        </li>
+        <li class="active">破损记录</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="space-2"></div>
+    <form asp-route="TransportAttachment" method="post" id="formitTransport" class="form-horizontal" onsubmit="return false;">
+        <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
+            <div class="form-group">
+                @if (Model != null)
+                {
+
+                <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="margin-left:20px;">
+                    <thead>
+                        <tr>
+                            <th width="50px"></th>
+                            <th width="150px">编号</th>
+                            <th width="150px">类型</th>
+                            <th width="150px">文件名</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model.Data)
+                            {
+                        <tr>
+
+                            <td>
+                                <input type="checkbox" name="checkboxId" value="@item.Id" />
+                            </td>
+                            <td>
+                                @item.ImportId
+                            </td>
+                            <td>
+                                @item.Type
+                            </td>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                <a href="@Url.RouteUrl("downLoadPork", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>下载附件</a>
+                            </td>
+                        </tr>
+                            }
+                    </tbody>
+                </table>
+                <pager page-value="Model.Paging"></pager>
+
+                }
+            </div>
+        </div>
+    </form>
+    <style>
+        /*谷歌*/
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+        /*火狐*/
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+    </style>
+    <script>
+        function quanxuan() {
+            var obj = document.getElementById("btnSelectAll");
+            if (obj.value == "全选") {
+                $("input:checkbox").prop("checked", true);//全部设置为选中
+                obj.value = "取消全选"
+            }
+            else {
+                $("input:checkbox").prop("checked", false);//全部设置为未选中
+                obj.value = "全选"
+            }
+        }
+    </script>
+    <script>
+        $(function () {
+            $('#formitTransport').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {
+                    var test = $(this).next();
+                    var i = 0;
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var incoterms = $(this).closest("tr").find("td").eq(4).find("input:text");
+                    var cargotype = $(this).closest("tr").find("td").eq(5).find("input:text");
+                    var invamou = $(this).closest("tr").find("td").eq(6).find("input:data");
+                    var invcurr = $(this).closest("tr").find("td").eq(7).find("select[name='Invcurr']");
+                    var realreceivingdate = $(this).closest("tr").find("td").eq(8).find("input:data");
+                    var pcs = $(this).closest("tr").find("td").eq(9).find("input:data");
+                    var gw = $(this).closest("tr").find("td").eq(10).find("input:data");
+                    var status = $(this).closest("tr").find("td").eq(12).find("select[name='Status']");
+                    var flighvessel = $(this).closest("tr").find("td").eq(13).find("input:text");
+                    var origin = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var dest = $(this).closest("tr").find("td").eq(15).find("input:text");
+                    var mbl = $(this).closest("tr").find("td").eq(16).find("input:text");
+                    var hbl = $(this).closest("tr").find("td").eq(17).find("input:text");
+                    var measurement = $(this).closest("tr").find("td").eq(19).find("input:data");
+                    var measurementunit = $(this).closest("tr").find("td").eq(20).find("input:text");
+                    var atd = $(this).closest("tr").find("td").eq(21).find("input:data");
+                    var ata = $(this).closest("tr").find("td").eq(22).find("input:data");
+                    var mSub = {
+                        id: id.val(),
+                        incoterms: incoterms.val(),
+                        cargotype: cargotype.val(),
+                        invamou: invamou.val(),
+                        invcurr: invcurr.val(),
+                        realreceivingdate: realreceivingdate.val(),
+                        pcs: pcs.val(),
+                        gw: gw.val(),
+                        status: status.val(),
+                        flighvessel: flighvessel.val(),
+                        origin: origin.val(),
+                        dest: dest.val(),
+                        mbl: mbl.val(),
+                        hbl: hbl.val(),
+                        measurement: measurement.val(),
+                        measurementunit: measurementunit.val(),
+                        atd: atd.val(),
+                        ata: ata.val(),
+                    };
+                    subArray.push(mSub);
+                });
+                alert(JSON.stringify(subArray));
+                var _url = "/admin/itTransport/itTransportList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+            });
+        });
+    </script>
+</div>
+
+

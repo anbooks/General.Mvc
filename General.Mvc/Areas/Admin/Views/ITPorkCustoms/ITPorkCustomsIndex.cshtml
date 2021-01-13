@@ -210,16 +210,18 @@
                                         </td>
                                     }
 
-                                    <td>
-                                        @if (@item.Note != null && @item.Note != "")
-                                        {
-                                            <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>上传附件</a>
-                                        }
-                                        else
-                                        {
-                                            <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                        }
-                                    </td>
+                                        <td>
+                                            @if (@item.Note != null && @item.Note != "")
+                                            {
+                                                <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                                <a href="@Url.RouteUrl("PorkAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                               
+                                            }
+                                        </td>
                                     @if (@item.F_ShippingModeGiven != true)
                                     {
                                         <td>
