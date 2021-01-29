@@ -22,7 +22,7 @@ namespace General.Entities
         
         public string Project { get; set; }
         public bool IsDeleted { get; set; }
-        public Guid? Creator { get; set; }//
+        public string Creator { get; set; }//
         public DateTime? CreationTime { get; set; }//
         public Guid? Modifier { get; set; }
         public DateTime? ModifiedTime { get; set; }

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Function("数据导入", true, "menu-icon fa fa-pencil-square-o")]
+    [Function("数据导入", true, "menu-icon fa fa-pencil-square-o", Sort = 0)]
     public class DataImportController : AdminPermissionController
     {
         public IActionResult Index()

@@ -1,9 +1,9 @@
 ﻿@using General.Framework.Menu
 @using General.Framework.Datatable
 @using General.Entities
-@model DataSourceResult<Inspection, SysCustomizedListSearchArg>
+@model DataSourceResult<InspectionRecord, SysCustomizedListSearchArg>
 @{
-    ViewData["Title"] = "送检审批";
+    ViewData["Title"] = "库房主管审批";
 }
 <div class="breadcrumbs" id="breadcrumbs">
     <ul class="breadcrumb">
@@ -14,7 +14,7 @@
         <li>
             <a href="">进口运输</a>
         </li>
-        <li class="active">送检审批</li>
+        <li class="active">库房主管审批</li>
     </ul>
 </div>
 <div class="page-content">
@@ -28,7 +28,7 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form asp-route="inspection" method="get" class="form-inline">
+                    <form asp-route="inspectionzg" method="get" class="form-inline">
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="合同号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="质量编号" />
@@ -42,13 +42,14 @@
             </div>
         </div>
     </div>
-    <form asp-route="inspection" method="post" id="formitConfirmedCustoms" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="inspectionzg" method="post" id="formitConfirmedCustoms" class="form-horizontal" onsubmit="return false;">
         <div class="panel panel-default">
             <div class="form-inline">
                 <button class="btn btn-info btn-sm" type="submit">
                     <i class="ace-icon fa fa-check bigger-110"></i>
                     确认修改
-                </button>  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
+                </button>
+                <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
             </div>
         </div>
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
@@ -71,46 +72,38 @@
                                 <th width="80px">入厂日期</th>
                                 <th width="80px">材料规范</th>
                                 <th width="80px">采购数量</th>
-                                <th width="80px">可下达数量</th>
                                 <th width="80px">下达数量</th>
-                                
                             </tr>
                         </thead>
                         <tbody>
 
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
-                                </td>
-                                <td>@item.ContractNo</td>
-                                <td>@item.Supplier</td>
-                                <td>@item.Manufacturer</td>
-                                <td>@item.CofC</td>
-                                <td>@item.Description</td>
-                                <td>@item.MaterialCode</td>
-                                <td>@item.Type</td>
-                                <td>@item.Size</td>
-                                <td>@item.Batch</td>
-                                <td>@item.ReceivedDate</td>
-                                <td>@item.Specification</td>
-                                <td>@item.Qty</td>
-                                <td>@item.UnPlaceQty</td>
-                                <td>
-                                    <input type="number" name="PlaceQty" value="@item.UnPlaceQty" />
-                                </td>
-                                
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                    </td>
+                                    <td>@item.ContractNo</td>
+                                    <td>@item.Supplier</td>
+                                    <td>@item.Manufacturer</td>
+                                    <td>@item.CofC</td>
+                                    <td>@item.Description</td>
+                                    <td>@item.MaterialCode</td>
+                                    <td>@item.Type</td>
+                                    <td>@item.Size</td>
+                                    <td>@item.Batch</td>
+                                    <td>@item.ReceivedDate</td>
+                                    <td>@item.Specification</td>
+                                    <td>@item.Qty</td>
+                                    <td>@item.PlaceQty</td>
+                                </tr>
                             }
                         </tbody>
                     </table>
                     <pager page-value="Model.Paging"></pager>
-
                 }
             </div>
         </div>
-
     </form>
     <script>
         function quanxuan() {
@@ -132,15 +125,15 @@
                 var subArray = [];
                 $("input[name='checkboxId']:checked").each(function () {
                     var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
-                    var placeQty = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var receivedQty = $(this).closest("tr").find("td").eq(13).find("input:text");
                     var mSub = {
                         id: id.val(),
-                        placeQty: placeQty.val(),
+                        receivedQty: receivedQty.val(),
                     };
                     subArray.push(mSub);
                 });
                 alert(JSON.stringify(subArray));
-                var _url = "/admin/inspection/InspectionList"
+                var _url = "/admin/inspection/InspectionzgList"
                 form.ajaxSubmit({
                     type: 'post', // 提交方式 get/post
                     url: _url, // 需要提交的 url

@@ -46,7 +46,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._attachmentService = attachmentService;
         }
         [Route("", Name = "itPorkCustoms")]
-        [Function("口岸报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("口岸报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 4)]
         [HttpGet]
         public IActionResult ITPorkCustomsIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -60,7 +60,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
             //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
             
-            var pageList = _importTrans_main_recordService.searchListPortCustomerBroker(arg, page, size, WorkContext.CurrentUser.Co);
+            var pageList = _importTrans_main_recordService.searchListPortCustomerBroker(arg, page, size, WorkContext.CurrentUser.Port);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itPorkCustoms", arg);
             return View(dataSource);//sysImport

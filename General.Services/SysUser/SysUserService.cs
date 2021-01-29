@@ -363,7 +363,31 @@ namespace General.Services.SysUser
         {
             return _sysUserRepository.Table.FirstOrDefault(o => o.Account == account && !o.IsDeleted);
         }
+        public Entities.SysUser getByBuyer(string account)
+        {
+            return _sysUserRepository.Table.FirstOrDefault(o => o.Co == account && !o.IsDeleted);
+        }
+        public List<Entities.SysUser> getBuyer()
+        {
+            List<Entities.SysUser> list = null;
+            list = _sysUserRepository.Table.Where(o => o.Co != null && !o.IsDeleted && o.Co != "").ToList();
 
+            return list;
+        }
+        public List<Entities.SysUser> getPorkCustoms()
+        {
+            List<Entities.SysUser> list = null;
+            list = _sysUserRepository.Table.Where(o => o.Port != null && !o.IsDeleted && o.Port != "").ToList();
+
+            return list;
+        }
+        public List<Entities.SysUser> getTran()
+        {
+            List<Entities.SysUser> list = null;
+            list = _sysUserRepository.Table.Where(o => o.Transport!= null && !o.IsDeleted && o.Transport != "").ToList();
+
+            return list;
+        }
         /// <summary>
         /// 通过当前登录用户的token 获取用户信息，并缓存
         /// </summary>

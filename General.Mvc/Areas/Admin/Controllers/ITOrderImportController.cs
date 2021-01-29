@@ -35,17 +35,19 @@ namespace General.Mvc.Areas.Admin.Controllers
         private readonly IHostingEnvironment _hostingEnvironment;
         private ISysRoleService _sysRoleService;
         private IOrderService _sysOrderService;
+        private ISysUserService _sysUserService;
         private IOrderMainService _sysOrderMainService;
         private IMaterialService _sysMaterialService;
         private IProjectService _sysProjectService;
         private ISysCustomizedListService _sysCustomizedListService;
         private ISupplierService _sysSupplierService;
-        public ITOrderImportController(ISupplierService sysSupplierService, IOrderMainService sysOrderMainService,IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        public ITOrderImportController(ISysUserService sysUserService,ISupplierService sysSupplierService, IOrderMainService sysOrderMainService,IProjectService sysProjectService,IMaterialService sysMaterialService,ISysCustomizedListService sysCustomizedListService, IOrderService sysOrderService,IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
             this._sysSupplierService = sysSupplierService;
             this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysRoleService = sysRoleService;
+            this._sysUserService = sysUserService;
             this._sysProjectService = sysProjectService;
             this._sysMaterialService = sysMaterialService;
             this._sysOrderService = sysOrderService;
@@ -72,6 +74,17 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
             return View(dataSource);//sysImport
+        }
+        [Route("itOrderImportDelete", Name = "itOrderImportDelete")]
+        [Function("采购订单删除", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        public IActionResult ItOrderImportDelete(int id)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itOrderImportMainIndex");
+            var model = _sysOrderMainService.getById(id);
+            model.IsDeleted = true;
+            _sysOrderMainService.updateOrderMain(model);
+            return Redirect(ViewBag.ReturnUrl);
+            
         }
         [Route("", Name = "itOrderImportMainIndex")]
         [Function("采购订单", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.DataImportController", Sort = 1)]
@@ -148,8 +161,8 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult EditITOrderImportMain(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
-            var customizedList = _sysCustomizedListService.getByAccount("运输代理");
-            ViewData["Transport"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            var customizedList2 = _sysUserService.getTran();
+            ViewData["Transport"] = new SelectList(customizedList2, "Transport", "Transport");
             ViewBag.Person = WorkContext.CurrentUser.Name;
             ViewBag.Card = WorkContext.CurrentUser.Account;
             if (id != null)
@@ -235,6 +248,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.Transport = modelplan.Transport;
                     var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
                     modelmain.Project = modelproject.Describe;
+                    var modelBuyer = _sysUserService.getByBuyer(modelplan.OrderNo.Substring(1, 2));
+                    modelmain.Buyer = modelBuyer.Account;
                     var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
                     modelmain.MaterialCategory = modelMaterial.Describe;
                     var modelSupplier = _sysSupplierService.getByAccount(modelplan.SupplierCode);

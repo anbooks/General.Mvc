@@ -105,7 +105,7 @@ namespace General.Services.Category
             _memoryCache.TryGetValue<List<Entities.Category>>(MODEL_KEY, out list);
             if (list != null)
                 return list;
-            list = _categoryRepository.Table.ToList();
+            list = _categoryRepository.Table.OrderBy(o=>o.Sort).ToList();
             _memoryCache.Set(MODEL_KEY, list, DateTimeOffset.Now.AddDays(1));
             return list;
 

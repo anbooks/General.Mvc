@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Function("付款流程", true, "menu-icon fa fa-pencil-square-o")]
+    [Function("付款流程", true, "menu-icon fa fa-pencil-square-o", Sort = 3)]
     public class CashingController : AdminPermissionController
     {
         public IActionResult Index()

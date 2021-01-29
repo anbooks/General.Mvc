@@ -38,7 +38,9 @@
                                 <button type="submit" class="btn btn-sm btn-pink">
                                     <i class="glyphicon glyphicon-plus"></i>
                                     导入订单信息
-                                </button>  <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a> <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a> <a asp-route="excelimportasja" class="btn btn-sm btn-pink">生成货物单</a>
+                                </button>  <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a> 
+                                <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a> 
+                                <a asp-route="excelimportasja" class="btn btn-sm btn-pink">生成器材验收明细</a>
                             </form>
                         </div>
                     </div>
@@ -52,16 +54,6 @@
                     <input type="submit" value="批量添加" />
                 </div>
             </form>
-            <!--
-            <form enctype="multipart/form-data" method="post" asp-route="importexcells">
-                <div align="left" style="float:left">
-                    <input type="file" name="excelfile" />
-                </div>
-                <div>
-                    <input type="submit" value="临时" />
-                </div>
-            </form>
-                -->
         </div>
     </div>
     <div class="space-2"></div>
@@ -107,124 +99,115 @@
                             <th width="120px">索引号</th>
                             <th width="100px">物料代码</th>
                             <th width="100px">品名</th>
-                            <th width="100px">型号</th>
+                            <th width="100px">牌号</th>
                             <th width="100px">规范</th>
-                            <th width="100px">厚度</th>
-                            <th width="100px">长</th>
-                            <th width="100px">宽</th>
+                            <th width="100px">规格1</th>
+                            <th width="100px">规格2</th>
+                            <th width="100px">规格3</th>
+                            <th width="100px">炉批号</th>
                             <th width="100px">采购数量</th>
                             <th width="100px">采购单位</th>
                             <th width="100px">单价</th>
                             <th width="100px">总价</th>
-                            <th width="150px">发运日期</th>
-                            <th width="100px">发货人</th>
+                            <th width="150px">实际提/送货日期</th>
+                            <th width="100px">供应商</th>
                             <th width="100px">制造商</th>
                             <th width="100px">原产国</th>
-                            <th width="100px">炉批号运单号</th>
                             <th width="100px">运单号</th>
                             <th width="100px">账册号</th>
                             <th width="100px">账册项号</th>
-                            <th width="100px">备案单位</th>
-                            <th width="100px">按备案单位折算单价</th>
-                            <th width="100px">法定单位</th>
-                            <th width="100px">按法定单位折算单价</th>
-                            <th width="100px">合格证号</th>
+                            <th width="100px">申报单位</th>
+                            <th width="100px">法定单位1</th>
+                            <th width="100px">法定单位2</th>
+                           
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model.Data)
                         {
-                            <tr>
-                                <td>
-                                    <input type="hidden" name="hidden" value="@item.Id" />
-                                </td>
-                                <td>@item.Buyer</td>
-                                <td>@item.OrderNo</td>
-                                <td>@item.OrderLine</td>
-                                <td>@item.ReferenceNo</td>
-                                <td>@item.MaterialCode</td>
-                                <td>@item.Description</td>
-                                <td>@item.Type</td>
-                                <td>@item.Specification</td>
-                                <td>@item.Thickness</td>
-                                <td>@item.Length</td>
-                                <td>@item.Width</td>
-                                <td>
-                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
-                                </td>
+                        <tr>
+                            <td>
+                                <input type="hidden" name="hidden" value="@item.Id" />
+                            </td>
+                            <td>@item.Buyer</td>
+                            <td>@item.OrderNo</td>
+                            <td>@item.OrderLine</td>
+                            <td>@item.ReferenceNo</td>
+                            <td>@item.MaterialCode</td>
+                            <td>@item.Description</td>
+                            <td>@item.Type</td>
+                            <td>@item.Specification</td>
+                            <td>@item.Thickness</td>
+                            <td>@item.Length</td>
+                            <td>@item.Width</td>
+                            <td>
+                                <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
+                            </td>
 
-                                @if (@item.ShipmentDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
+                            @if (@item.ShipmentDate == null)
+                            {
+                                <td>
+                                    <input type="date" name="ShipmentDate" value="@item.ShipmentDate" />
+                                </td>}
+                            else
+                            {
+                                <td>
+                                    <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
+                                </td>}
 
-                                <td>
-                                    <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Books" value="@item.Books" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="Books" value="@item.Books" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
-
-                                <td>
-                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Qualification" value="@item.Qualification" style="width:80px" />
-                                </td>
-                                <td>
-                                    <a href="@Url.RouteUrl("editBuyerce", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                </td>
-                            </tr>
+                            <td>
+                                <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
+                            </td>
+                            <td>
+                                <a href="@Url.RouteUrl("editBuyerce", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -255,26 +238,24 @@
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(0).find("input[name='hidden']");
-                    var purchasequantity = $(this).closest("tr").find("td").eq(12).find("input:text");
-                    var purchaseunit = $(this).closest("tr").find("td").eq(13).find("input:text");
-                    var unitprice = $(this).closest("tr").find("td").eq(14).find("input:text");
-                    var totalprice = $(this).closest("tr").find("td").eq(15).find("input:text");
-                    var shipmentdate = $(this).closest("tr").find("td").eq(16).find("input:data");
-                    var consignor = $(this).closest("tr").find("td").eq(17).find("input:text");
-                    var manufacturers = $(this).closest("tr").find("td").eq(18).find("input:text");
-                    var origincountry = $(this).closest("tr").find("td").eq(19).find("input:text");
-                    var batchno = $(this).closest("tr").find("td").eq(20).find("input:text");
+                    var batchno = $(this).closest("tr").find("td").eq(12).find("input:text");
+                    var purchasequantity = $(this).closest("tr").find("td").eq(13).find("input:text");
+                    var purchaseunit = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var unitprice = $(this).closest("tr").find("td").eq(15).find("input:text");
+                    var totalprice = $(this).closest("tr").find("td").eq(16).find("input:text");
+                    var shipmentdate = $(this).closest("tr").find("td").eq(17).find("input:data");
+                    var consignor = $(this).closest("tr").find("td").eq(18).find("input:text");
+                    var manufacturers = $(this).closest("tr").find("td").eq(19).find("input:text");
+                    var origincountry = $(this).closest("tr").find("td").eq(20).find("input:text");
                     var waybill = $(this).closest("tr").find("td").eq(21).find("input:text");
                     var books = $(this).closest("tr").find("td").eq(22).find("input:text");
                     var booksitem = $(this).closest("tr").find("td").eq(23).find("input:text");
                     var recordunit = $(this).closest("tr").find("td").eq(24).find("input:text");
                     var recordunitreducedprice = $(this).closest("tr").find("td").eq(25).find("input:text");
                     var legalunits = $(this).closest("tr").find("td").eq(26).find("input:text");
-                    var legalunitereducedprice = $(this).closest("tr").find("td").eq(27).find("input:text");
-                    var qualification = $(this).closest("tr").find("td").eq(28).find("input:text");
+                   
                     var mSub = {
                         id: id.val(),
-
                         purchasequantity: purchasequantity.val(),
                         purchaseunit: purchaseunit.val(),
                         unitprice: unitprice.val(),
@@ -290,8 +271,6 @@
                         recordunit: recordunit.val(),
                         recordunitreducedprice: recordunitreducedprice.val(),
                         legalunits: legalunits.val(),
-                        legalunitereducedprice: legalunitereducedprice.val(),
-                        qualification: qualification.val(),
                     };
                     subArray.push(mSub);
                 });

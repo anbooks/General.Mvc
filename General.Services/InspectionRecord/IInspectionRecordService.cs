@@ -9,7 +9,11 @@ namespace General.Services.InspectionRecord
     public interface IInspectionRecordService
     {
         IPagedList<Entities.InspectionRecord> searchInspectionRecord(SysCustomizedListSearchArg arg, int page, int size);
-
+        IPagedList<Entities.InspectionRecord> searchInspectionjy(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.InspectionRecord> searchInspectionEnd(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.InspectionRecord> searchInspectionbg(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.InspectionRecord> searchInspectionzg(SysCustomizedListSearchArg arg, int page, int size);
+       
         Entities.InspectionRecord getByAccount(string account);
         /// <summary>
         /// 获取详情

@@ -89,7 +89,7 @@ namespace General.Services.ImportTrans_main_record
      
         public IPagedList<Entities.Schedule> searchList(SysCustomizedListSearchArg arg, int page, int size,int id)
         {
-            var query = _scheduleRepository.Table.Where(o => o.MainId==id);
+            var query = _scheduleRepository.Table.Where(o => o.MainId== id && !o.IsDeleted);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.materiel))

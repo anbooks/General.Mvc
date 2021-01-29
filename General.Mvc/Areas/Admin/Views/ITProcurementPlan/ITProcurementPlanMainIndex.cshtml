@@ -25,7 +25,7 @@
     </div>
     <div>
         <div class="col-lg-12">
-            <a asp-route="editITProcurementPlanMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>批量添加</a>
+            <a asp-route="editITProcurementPlanMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入采购计划</a>
         </div>
         <div class="space-2"></div>
         <div class="row">
@@ -36,6 +36,7 @@
                             <label>关键字</label>
                             <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="采购计划编号" />
                             <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="采购计划编制人" />
+                            <input type="text" class="form-control" name="invcurr" style="width:180px;" value="@Model.Paging.RouteArg.invcurr" placeholder="采购计划接收人" />
                             <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="项目" />
                             <button type="submit" class="btn btn-purple btn-sm">
                                 查询
@@ -73,8 +74,8 @@
                                 <td>@item.Project</td>
                                 <td>
                                     <a href="@Url.RouteUrl("itProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>计划数据</a>
-                                    <a href="@Url.RouteUrl("editITProcurementPlanMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改数据</a>
-                                   
+                                    <a href="@Url.RouteUrl("editITProcurementPlanMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改主数据</a>
+                                    <a href="@Url.RouteUrl("ITProcurementPlanMainDelete", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>删除</a>
                                 </td>
                             </tr>
                             }

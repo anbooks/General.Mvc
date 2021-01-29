@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Function("外发加工", true, "menu-icon fa fa-pencil-square-o")]
+    [Function("外发加工", true, "menu-icon fa fa-pencil-square-o", Sort = 4)]
     public class OutwardProcessingController : AdminPermissionController
     {
         public IActionResult Index()

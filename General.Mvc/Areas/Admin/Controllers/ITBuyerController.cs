@@ -57,7 +57,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itBuyer")]
-        [Function("采购员页面(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("采购员页面(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 2)]
         [HttpGet]
         public IActionResult ITBuyerIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -223,8 +223,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                             model.Specification = list[a].Specification;
                             model.Batch = b;
                             // model.ReceivedDate = b;
-                            model.Qty = Convert.ToInt32(list[a].PurchaseQuantity);
-                            model.ReceivedQty = 0;
+                            if (list[a].PurchaseQuantity!=""&& list[a].PurchaseQuantity !=null) {model.Qty = Convert.ToInt32(list[a].PurchaseQuantity);}
+
+                            model.PlaceQty = 0;
+                            model.UnPlaceQty = model.Qty;
                             model.Creator = WorkContext.CurrentUser.Account;
                             model.CreationTime = DateTime.Now;
                             _sysInspectionService.insertInspection(model);
@@ -703,6 +705,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.ImportTrans_main_record u in jsonlist)
                 {
                     var model = _importTrans_main_recordService.getById(u.Id);
+                    model.Incoterms= u.Incoterms;
                     model.RequestedArrivalTime = u.RequestedArrivalTime;
                     _importTrans_main_recordService.updateImportTransmain(model);
                     //u就是jsonlist里面的一个实体类

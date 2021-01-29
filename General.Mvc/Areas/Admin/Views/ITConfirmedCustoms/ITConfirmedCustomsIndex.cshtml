@@ -108,20 +108,9 @@
                                 <td>@item.Gw</td>
                                 <td> @item.ShippingMode</td>
                                 <td>@item.DeliveryRequiredDate</td>
-
-                                @if (ViewBag.QX == "01")
-                                {
                                     <td>
                                         <input type="text" name="InventoryNo" value="@item.InventoryNo" style="width:80px" />
                                     </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <input type="text" name="InventoryNo" value="@item.InventoryNo" disabled style="width:80px" />
-                                    </td>
-                                }
-
                                 @if (@item.CheckAndPass == null)
                                 {
                                     <td>

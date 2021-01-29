@@ -69,8 +69,13 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.Inspection u in jsonlist)
                 {
                     var model = _sysInspectionService.getById(u.Id);
-                    model.ReceivedQty = u.ReceivedQty;
-                    model.UnReceivedQty = model.Qty - u.ReceivedQty;
+                    model.PlaceQty = u.PlaceQty+model.PlaceQty;
+                    model.UnPlaceQty = model.Qty - model.PlaceQty;
+                    if (model.UnPlaceQty<0) {
+                        AjaxData.Status = false;
+                        AjaxData.Message = "OK";
+                        return Json(AjaxData);
+                    }
                     model.Modifier = WorkContext.CurrentUser.Account;
                     model.ModifiedTime = DateTime.Now;
                     InspectionRecord record = new InspectionRecord();
@@ -86,14 +91,216 @@ namespace General.Mvc.Areas.Admin.Controllers
                     record.Batch = model.Batch;
                     record.ReceivedDate = model.ReceivedDate;
                     record.Specification = model.Specification;
-                    record.ReceivedQty = model.ReceivedQty;
-                    record.UnReceivedQty = model.UnReceivedQty;
+                    record.PlaceQty = u.PlaceQty;
+                    record.UnPlaceQty = model.UnPlaceQty;
                     record.Qty = model.Qty;
                     record.Creator = WorkContext.CurrentUser.Account;
                     record.CreationTime = DateTime.Now;
                     record.InspectionId = model.Id;
+                    record.Status = "计划员审批";
                     _sysInspectionService.updateInspection(model);
                     _sysInspectionRecordService.insertInspectionRecord(record);
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
+        }
+        [Route("inspectionjhy", Name = "inspectionjhy")]
+        [Function("计划员审批", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionProcessController", Sort = 1)]
+        [HttpGet]
+        public IActionResult InspectionjhyIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            var pageList = _sysInspectionRecordService.searchInspectionRecord(arg, page, size);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("inspection", arg);
+            return View(dataSource);//sysImport
+        }
+        [HttpPost]
+        [Route("InspectionjhyList", Name = "InspectionjhyList")]
+        [Function("批量接收审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
+        public ActionResult InspectionjhyList(string kevin)
+        {
+            string test = kevin;
+            
+            List<Entities.InspectionRecord> jsonlist = JsonHelper.DeserializeJsonToList<Entities.InspectionRecord>(test);
+            try
+            {
+                foreach (Entities.InspectionRecord u in jsonlist)
+                {
+                    var model = _sysInspectionRecordService.getById(u.Id);
+                    model.Status = "检验员审批中";
+                    model.Modifier = WorkContext.CurrentUser.Account;
+                    model.ModifiedTime = DateTime.Now;
+                    var record = _sysInspectionService.getById(model.InspectionId.Value);
+                    record.AcceptQty = model.PlaceQty+ record.AcceptQty;
+                    _sysInspectionRecordService.updateInspectionRecord(model);
+                    _sysInspectionService.updateInspection(record);
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
+        }
+        [Route("inspectionjyy", Name = "inspectionjyy")]
+        [Function("检验员审批", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionProcessController", Sort = 1)]
+        [HttpGet]
+        public IActionResult InspectionjyyIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            var pageList = _sysInspectionRecordService.searchInspectionjy(arg, page, size);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("inspection", arg);
+            return View(dataSource);//sysImport
+        }
+        [HttpPost]
+        [Route("InspectionjyyList", Name = "InspectionjyyList")]
+        [Function("检验员批量审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjyyIndex")]
+        public ActionResult InspectionjyyList(string kevin)
+        {
+            string test = kevin;
+
+            List<Entities.InspectionRecord> jsonlist = JsonHelper.DeserializeJsonToList<Entities.InspectionRecord>(test);
+            try
+            {
+                foreach (Entities.InspectionRecord u in jsonlist)
+                {
+                    var model = _sysInspectionRecordService.getById(u.Id);
+                    model.Status = "保管员审批中";
+                    model.Modifier = WorkContext.CurrentUser.Account;
+                    model.ModifiedTime = DateTime.Now;
+                    _sysInspectionRecordService.updateInspectionRecord(model);
+                    
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
+        }
+        [Route("inspectionbg", Name = "inspectionbg")]
+        [Function("保管员审批", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionProcessController", Sort = 1)]
+        [HttpGet]
+        public IActionResult InspectionbgyIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            var pageList = _sysInspectionRecordService.searchInspectionbg(arg, page, size);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("inspection", arg);
+            return View(dataSource);//sysImport
+        }
+        [HttpPost]
+        [Route("InspectionbgList", Name = "InspectionbgList")]
+        [Function("保管员批量审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionbgIndex")]
+        public ActionResult InspectionbgList(string kevin)
+        {
+            string test = kevin;
+
+            List<Entities.InspectionRecord> jsonlist = JsonHelper.DeserializeJsonToList<Entities.InspectionRecord>(test);
+            try
+            {
+                foreach (Entities.InspectionRecord u in jsonlist)
+                {
+                    var model = _sysInspectionRecordService.getById(u.Id);
+                    model.Status = "库房主管审批中";
+                    model.Modifier = WorkContext.CurrentUser.Account;
+                    model.ModifiedTime = DateTime.Now;
+                    _sysInspectionRecordService.updateInspectionRecord(model);
+                  
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
+        }
+        [Route("inspectionzg", Name = "inspectionzg")]
+        [Function("库房主管审批", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionProcessController", Sort = 1)]
+        [HttpGet]
+        public IActionResult InspectionzgIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            var pageList = _sysInspectionRecordService.searchInspectionzg(arg, page, size);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("inspection", arg);
+            return View(dataSource);//sysImport
+        }
+        [HttpPost]
+        [Route("InspectionzgList", Name = "InspectionzgList")]
+        [Function("库房主管批量审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjyyIndex")]
+        public ActionResult InspectionzgList(string kevin)
+        {
+            string test = kevin;
+
+            List<Entities.InspectionRecord> jsonlist = JsonHelper.DeserializeJsonToList<Entities.InspectionRecord>(test);
+            try
+            {
+                foreach (Entities.InspectionRecord u in jsonlist)
+                {
+                    var model = _sysInspectionRecordService.getById(u.Id);
+                    model.Status = "审批完成";
+                    model.Modifier = WorkContext.CurrentUser.Account;
+                    model.ModifiedTime = DateTime.Now;
+                  
+                    _sysInspectionRecordService.updateInspectionRecord(model);
+                   
+                }
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            }
+            catch
+            {
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
+            }
+            return Json(AjaxData);
+        }
+        [HttpPost]
+        [Route("InspectionjhythList", Name = "InspectionjhythList")]
+        [Function("批量退回审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
+        public ActionResult InspectionjhythList(string kevin)
+        {
+            string test = kevin;
+
+            List<Entities.InspectionRecord> jsonlist = JsonHelper.DeserializeJsonToList<Entities.InspectionRecord>(test);
+            try
+            {
+                foreach (Entities.InspectionRecord u in jsonlist)
+                {
+                    var model = _sysInspectionRecordService.getById(u.Id);
+                    model.Status = "退回";
+                   
+                    model.Modifier = WorkContext.CurrentUser.Account;
+                    model.ModifiedTime = DateTime.Now;
+                    var record = _sysInspectionService.getById(Convert.ToInt32(model.InspectionId));
+                    record.PlaceQty = record.PlaceQty - model.PlaceQty;
+                    record.UnPlaceQty= record.UnPlaceQty + model.PlaceQty;
+                    record.Status = "退回";
+                    _sysInspectionRecordService.updateInspectionRecord(model);
+                    _sysInspectionService.updateInspection(record);
                 }
                 AjaxData.Status = true;
                 AjaxData.Message = "OK";
@@ -112,7 +319,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             ViewBag.QX = WorkContext.CurrentUser.Co;
-            var pageList = _sysInspectionRecordService.searchInspectionRecord(arg, page, size);
+            var pageList = _sysInspectionRecordService.searchInspectionEnd(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.InspectionRecord, SysCustomizedListSearchArg>("inspectionRecord", arg);
             return View(dataSource);//sysImport
@@ -193,9 +400,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                     {
                         worksheet.Cells[a + 2, 11].Value = model.Specification.ToString();
                     }
-                    if (model.ReceivedQty != null)
+                    if (model.AcceptQty != null)
                     {
-                        worksheet.Cells[a + 2, 12].Value = model.ReceivedQty;
+                        worksheet.Cells[a + 2, 12].Value = model.AcceptQty;
                     }
                     a++;
                 }

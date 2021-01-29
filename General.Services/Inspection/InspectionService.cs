@@ -29,11 +29,15 @@ namespace General.Services.Inspection
         /// <returns></returns>
         public IPagedList<Entities.Inspection> searchInspection(SysCustomizedListSearchArg arg, int page, int size)
         {
-            var query = _sysInspectionRepository.Table.Where(o=>o.ReceivedQty==0|| o.ReceivedQty == null);
+            var query = _sysInspectionRepository.Table.Where(o=>o.UnPlaceQty!=0);
             if (arg != null)
             {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.ContractNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Batch.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.ContractNo.Contains(arg.pono));
+                    query = query.Where(o => o.MaterialCode.Contains(arg.pono));
             }
            // query = query.OrderBy(o => o.Cre);
             return new PagedList<Entities.Inspection>(query, page, size);

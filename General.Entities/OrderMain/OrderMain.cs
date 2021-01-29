@@ -25,6 +25,7 @@ namespace General.Entities
         public string TradeTerms { get; set; }//贸易条款
         public string Transport { get; set; }//运输代理
         public string Project { get; set; }//项目
+        public string Buyer { get; set; }//项目
         public string MaterialCategory { get; set; }//物料类别
         public bool IsDeleted { get; set; }
         public Guid? Creator { get; set; }//

@@ -33,24 +33,28 @@ namespace General.Mvc.Areas.Admin.Controllers
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITLogisticsController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        private ISysUserService _sysUserService;
+        public ITLogisticsController(ISysUserService sysUserService,ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
+            this._sysUserService = sysUserService;
             this._scheduleService = scheduleService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itLogistics")]
-        [Function("物流员（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("物流员（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 3)]
         [HttpGet]
         public IActionResult ITLogisticsIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("运输方式");
             ViewData["ShippingMode"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            //var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
-             //ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
+            var customizedList3 = _sysCustomizedListService.getByAccount("送货要求");
+            ViewData["DeliveryRequiredDate"] = new SelectList(customizedList3, "CustomizedValue", "CustomizedValue");
+            var customizedList2 = _sysUserService.getPorkCustoms();
+            ViewData["PorkCustoms"] = new SelectList(customizedList2, "Port", "Port");
             ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _importTrans_main_recordService.searchListLogistics(arg, page, size);
             ViewBag.Arg = arg;//传参数
@@ -214,10 +218,10 @@ namespace General.Mvc.Areas.Admin.Controllers
             foreach (Entities.ImportTrans_main_record u in jsonlist)
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
+
+                    if (u.DeliveryRequiredDate != "") { model.DeliveryRequiredDate = u.DeliveryRequiredDate; }
+                    if (u.ShippingMode != "") { model.ShippingMode = u.ShippingMode; }
                 
-              
-                if (u.ShippingMode != "") { model.ShippingMode = u.ShippingMode; }
-                model.DeliveryRequiredDate = u.DeliveryRequiredDate;
                 if (WorkContext.CurrentUser.Co == "北京捷诚" || WorkContext.CurrentUser.Co == "辽宁北方")
                 {
                     if (model.Dest == "PEK")

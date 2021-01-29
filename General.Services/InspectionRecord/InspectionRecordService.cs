@@ -29,13 +29,77 @@ namespace General.Services.InspectionRecord
         /// <returns></returns>
         public IPagedList<Entities.InspectionRecord> searchInspectionRecord(SysCustomizedListSearchArg arg, int page, int size)
         {
-            var query = _sysInspectionRecordRepository.Table;
+            var query = _sysInspectionRecordRepository.Table.Where(o => o.Status == "计划员审批");
             if (arg != null)
             {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.ContractNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Batch.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.ContractNo.Contains(arg.pono));
+                    query = query.Where(o => o.MaterialCode.Contains(arg.pono));
             }
            // query = query.OrderBy(o => o.Cre);
+            return new PagedList<Entities.InspectionRecord>(query, page, size);
+        }
+        public IPagedList<Entities.InspectionRecord> searchInspectionEnd(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _sysInspectionRecordRepository.Table.Where(o => o.Status == "审批完成");
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.ContractNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Batch.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.MaterialCode.Contains(arg.pono));
+            }
+            // query = query.OrderBy(o => o.Cre);
+            return new PagedList<Entities.InspectionRecord>(query, page, size);
+        }
+        public IPagedList<Entities.InspectionRecord> searchInspectionjy(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _sysInspectionRecordRepository.Table.Where(o => o.Status == "检验员审批中");
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.ContractNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Batch.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.MaterialCode.Contains(arg.pono));
+            }
+            // query = query.OrderBy(o => o.Cre);
+            return new PagedList<Entities.InspectionRecord>(query, page, size);
+        }
+        public IPagedList<Entities.InspectionRecord> searchInspectionbg(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _sysInspectionRecordRepository.Table.Where(o => o.Status == "保管员审批中");
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.ContractNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Batch.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.MaterialCode.Contains(arg.pono));
+            }
+            // query = query.OrderBy(o => o.Cre);
+            return new PagedList<Entities.InspectionRecord>(query, page, size);
+        }
+        public IPagedList<Entities.InspectionRecord> searchInspectionzg(SysCustomizedListSearchArg arg, int page, int size)
+        {
+            var query = _sysInspectionRecordRepository.Table.Where(o => o.Status == "库房主管审批中");
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.ContractNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Batch.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.MaterialCode.Contains(arg.pono));
+            }
+            // query = query.OrderBy(o => o.Cre);
             return new PagedList<Entities.InspectionRecord>(query, page, size);
         }
         public Entities.InspectionRecord getByAccount(string account)

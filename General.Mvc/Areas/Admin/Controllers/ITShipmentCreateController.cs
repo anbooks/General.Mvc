@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Win32;
 using System.Diagnostics;
 using Microsoft.AspNetCore.StaticFiles;
+using General.Services.OrderMain;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -33,17 +34,19 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IImportTrans_main_recordService _importTrans_main_recordService;
         private ISysCustomizedListService _sysCustomizedListService;
         private IScheduleService _scheduleService;
+        private IOrderMainService _orderMainService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITShipmentCreateController(ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        public ITShipmentCreateController(IOrderMainService orderMainService,ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
+            this._orderMainService = orderMainService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itShipmentCreate")]
-        [Function("创建发运条目(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 1)]
+        [Function("创建发运条目(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
         [HttpGet]
         public IActionResult ITShipmentCreateIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         { 
@@ -171,6 +174,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Modifier = null;
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
+                var inc = _orderMainService.getByAccount(model.PoNo);
+                model.Incoterms = inc.TradeTerms;
                 if (model.PoNo==null||model.Shipper==null||model.Transportation==null) {
                    
                     return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITShipmentCreate"));

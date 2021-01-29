@@ -30,9 +30,9 @@
                 <div class="panel-body">
                     <form asp-route="inspectionRecord" method="get" class="form-inline">
                         <label>关键字</label>
-                        <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
-                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
+                        <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="合同号" />
+                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="质量编号" />
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="物料代码" />
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -71,8 +71,8 @@
                                 <th width="80px">入厂日期</th>
                                 <th width="80px">材料规范</th>
                                 <th width="80px">采购数量</th>
+                                <th width="80px">下达数量</th>
                                 <th width="80px">接收数量</th>
-                                <th width="80px">未接收数量</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,8 +95,8 @@
                                 <td>@item.ReceivedDate</td>
                                 <td>@item.Specification</td>
                                 <td>@item.Qty</td>
-                                <td>@item.ReceivedQty</td>
-                                <td>@item.UnReceivedQty</td>
+                                <td>@item.PlaceQty</td>
+                                <td>@item.AcceptQty</td>
                                
                             </tr>
                             }

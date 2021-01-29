@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using General.Core;
 using General.Services.ImportTrans_main_recordService;
 using General.Services.SysUser;
+using General.Services.ImportTrans_main_record_copyService;
 
 namespace General.Services.ImportTrans_main_record
 {
@@ -23,10 +24,12 @@ namespace General.Services.ImportTrans_main_record
         private IRepository<Entities.ImportTrans_main_record> _importTrans_main_recordRepository;
 
         private ISysUserService _sysUserService;
-        public ImportTrans_main_recordService(ISysUserService sysUserService,IRepository<Entities.ImportTrans_main_record> importTrans_main_recordRepository,
+        private IImportTrans_main_record_copyService _iImportTrans_main_record_copyService;
+        public ImportTrans_main_recordService(IImportTrans_main_record_copyService iImportTrans_main_record_copyService,ISysUserService sysUserService,IRepository<Entities.ImportTrans_main_record> importTrans_main_recordRepository,
             IMemoryCache memoryCache)
         {
             this._sysUserService = sysUserService;
+            this._iImportTrans_main_record_copyService = iImportTrans_main_record_copyService;
             this._memoryCache = memoryCache;
             this._importTrans_main_recordRepository = importTrans_main_recordRepository;
         }
@@ -50,14 +53,63 @@ namespace General.Services.ImportTrans_main_record
             if (item == null)
                 return;
             _importTrans_main_recordRepository.update(model);
+            Entities.ImportTrans_main_record_copy record = new Entities.ImportTrans_main_record_copy();
+            record.ActualDeliveryDate=model.ActualDeliveryDate;
+            record.Ata = model.Ata;
+            record.Atd = model.Atd;
+            record.BlDate = model.BlDate;
+            record.BrokenRecord = model.BrokenRecord;
+            record.Buyer = model.Buyer;
+            record.CargoType = model.CargoType;
+            record.CheckAndPass = model.CheckAndPass;
+            record.ChooseDelivery = model.ChooseDelivery;
+            record.CreationTime = DateTime.Now;
+            record.Creator = model.Creator;
+            record.CustomsDeclarationNo = model.CustomsDeclarationNo;
+            record.Declaration = model.Declaration;
+            record.DeclarationDate = model.DeclarationDate;
+            record.DeliveryReceipt = model.DeliveryReceipt;
+            record.DeliveryRequiredDate = model.DeliveryRequiredDate;
+            record.Dest = model.Dest;
+            record.FlighVessel = model.FlighVessel;
+            record.Forwarder = model.Forwarder;
+            record.F_ShippingModeGiven = model.F_ShippingModeGiven;
+            record.Gw = model.Gw;
+            record.Hbl = model.Hbl;
+            record.HblAttachment = model.HblAttachment;
+            record.Incoterms = model.Incoterms;
+            record.InspectionLotNo = model.InspectionLotNo;
+            record.Invamou = model.Invamou;
+            record.Invcurr = model.Invcurr;
+            record.InventoryAttachment = model.InventoryAttachment;
+            record.InventoryNo = model.InventoryNo;
+            record.IsDeleted = model.IsDeleted;
+            record.IsNeedSecondCheck = model.IsNeedSecondCheck;
+            record.Itemno = model.Id;
+            record.Mbl = model.Mbl;
+            record.MblAttachment = model.MblAttachment;
+            record.Measurement = model.Measurement;
+            record.MeasurementUnit = model.MeasurementUnit;
+            record.ModifiedTime = model.ModifiedTime;
+            record.Modifier = model.Modifier;
+            record.Note = model.Note;
+            record.OrderNo = model.OrderNo;
+            record.Origin = model.Origin;
+            record.Pcs = model.Pcs;
+            record.PoNo = model.PoNo;
+            record.RealReceivingDate = model.RealReceivingDate;
+            record.ReceiptForm = model.ReceiptForm;
+            record.ReleaseDate = model.ReleaseDate;
+            record.RequestedArrivalTime = model.RequestedArrivalTime;
+            record.SecondCheck = model.SecondCheck;
+            record.Shipper = model.Shipper;
+            record.ShippingMode = model.ShippingMode;
+            record.Status = model.Status;
+            record.Transportation = model.Transportation;
+            _iImportTrans_main_record_copyService.insertImportTransmain(record);
             _memoryCache.Remove(MODEL_KEY); 
         }
-
         
-        //CheckAndPass
-        
-       
-       
         public IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted!=true);
@@ -159,7 +211,7 @@ namespace General.Services.ImportTrans_main_record
                 if (item == null)
                     return;
 
-                item.F_ShipmentCreate = true;
+                //item.F_ShipmentCreate = true;
                 _importTrans_main_recordRepository.update(item);
                 _memoryCache.Remove(MODEL_KEY);
             }
@@ -199,7 +251,7 @@ namespace General.Services.ImportTrans_main_record
 
             if (list != null)
                 return list;
-            list = _importTrans_main_recordRepository.Table.Where(o => o.F_ArrivalTimeRequested == true && o.F_ShippingModeGiven != true).ToList();
+            list = _importTrans_main_recordRepository.Table.ToList();
             return list;
         }
         public void removeCache()

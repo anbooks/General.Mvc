@@ -57,7 +57,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             var customizedList2 = _sysCustomizedListService.getByAccount("运输状态");
             ViewData["Status"] = new SelectList(customizedList2, "CustomizedValue", "CustomizedValue");
 
-            var pageList = _importTrans_main_recordService.searchListTransport(arg, page, size, WorkContext.CurrentUser.Co);
+            var pageList = _importTrans_main_recordService.searchListTransport(arg, page, size, WorkContext.CurrentUser.Transport);
             ViewBag.Arg = arg;//传参数ITTransportAttachmentIndex
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itTransport", arg);
             return View(dataSource);//sysImport

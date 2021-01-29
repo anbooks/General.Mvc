@@ -32,8 +32,14 @@ namespace General.Services.OrderMain
             var query = _sysOrderMainRepository.Table.Where(o=>o.IsDeleted!=true);
             if (arg != null)
             {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.OrderNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.SupplierCode.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.OrderNo.Contains(arg.pono));
+                    query = query.Where(o => o.Buyer.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Project.Contains(arg.invcurr));
             }
             query = query.OrderBy(o => o.OrderNo);
             return new PagedList<Entities.OrderMain>(query, page, size);

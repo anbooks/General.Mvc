@@ -73,63 +73,57 @@
                                 <th width="80px">件数(箱数)</th>
                                 <th width="80px">毛重</th>
                                 <th width="50px">采购员</th>
-                                <th width="100px">要求到货时间</th>
+                                <th width="100px">要求入厂日期</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                                <tr>
+                            <tr>
 
+                                <td>
+                                    <input type="checkbox" name="checkboxId" style="left:100px" value="@item.Id" />
+                                </td>
+                                <td>@item.Id</td>
+                                <td>@item.Shipper</td>
+                                <td>@item.PoNo</td>
+                                <td>
+                                    <input type="text" name="Incoterms" value="@item.Incoterms" />
+                                </td>
+                                <td>@item.CargoType</td>
+                                <td>@item.Invamou</td>
+                                <td>@item.Invcurr</td>
+                                <td>@item.RealReceivingDate</td>
+                                <td>@item.Pcs</td>
+                                <td>@item.Gw</td>
+                                <td>@item.Buyer</td>
+                                @if (@item.RequestedArrivalTime == null)
+                                {
                                     <td>
-                                        <input type="checkbox" name="checkboxId" style="left:100px" value="@item.Id" />
+                                        <input type="date" name="RequestedArrivalTime" value="@item.RequestedArrivalTime" />
                                     </td>
-                                    <td>@item.Id</td>
-                                    <td>@item.Shipper</td>
-                                    <td>@item.PoNo</td>
-                                    <td>@item.Incoterms</td>
-                                    <td>@item.CargoType</td>
-                                    <td>@item.Invamou</td>
-                                    <td>@item.Invcurr</td>
-                                    <td>@item.RealReceivingDate</td>
-                                    <td>@item.Pcs</td>
-                                    <td>@item.Gw</td>
-                                    <td>@item.Buyer</td>
-                                    @if (ViewBag.QX == @item.Buyer)
-                                    {
-                                        @if (@item.RequestedArrivalTime == null)
-                                        {
-                                            <td>
-                                                <input type="date" name="RequestedArrivalTime" value="@item.RequestedArrivalTime" />
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td>
-                                                <input type="date" name="RequestedArrivalTime" value="@item.RequestedArrivalTime.Value.ToString("yyyy-MM-dd")" />
-                                            </td>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <input type="date" name="RequestedArrivalTime" value="@item.RequestedArrivalTime" disabled />
-                                        </td>
-                                    }
-                                    @if (@item.F_ShippingModeGiven != true)
-                                    {
-                                        <td>
-                                            <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td>
-                                            <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                        </td>
-                                    }
-                                </tr>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="date" name="RequestedArrivalTime" value="@item.RequestedArrivalTime.Value.ToString("yyyy-MM-dd")" />
+                                    </td>
+                                }
+
+                                @if (@item.F_ShippingModeGiven != true)
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-pink"><i class="fa fa-bolt"></i>查看明细表</a>
+                                    </td>
+                                }
+                            </tr>
                             }
                         </tbody>
                     </table>
@@ -160,13 +154,15 @@
                 $("input[name='checkboxId']:checked").each(function () {
                     var test = $(this).next();
                     var i = 0;
-                    var id = $(this).closest("tr").find("td").eq(1).find("input:checkbox");
-                    var requestedArrivalTime = $(this).closest("tr").find("td").eq(13).find("input:data");
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var incoterms = $(this).closest("tr").find("td").eq(4).find("input:text");
+                    var requestedArrivalTime = $(this).closest("tr").find("td").eq(12).find("input:data");
 
                     //  var invcurr = $(this).closest("tr").find("td").eq(3).find("select[name='invcurr']");
                     //var test1 = $(this).next();
                     var mSub = {
                         id: id.val(),
+                        incoterms: incoterms.val(),
                         requestedArrivalTime: requestedArrivalTime.val(),
                     };
                     subArray.push(mSub);

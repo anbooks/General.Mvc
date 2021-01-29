@@ -42,6 +42,8 @@ namespace General.Services.ProcurementPlanMain
                     query = query.Where(o => o.Project.Contains(arg.pono));
                 if (!String.IsNullOrEmpty(arg.shipper))
                     query = query.Where(o => o.Prepare.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Creator.Contains(arg.invcurr));
             }
             query = query.OrderBy(o => o.Id);
             return new PagedList<Entities.ProcurementPlanMain>(query, page, size);

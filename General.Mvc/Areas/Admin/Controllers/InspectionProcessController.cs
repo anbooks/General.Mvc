@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Function("送检流程", true, "menu-icon fa fa-pencil-square-o")]
+    [Function("送检流程", true, "menu-icon fa fa-pencil-square-o", Sort = 2)]
     public class InspectionProcessController : AdminPermissionController
     {
         public IActionResult Index()

@@ -32,8 +32,14 @@ namespace General.Services.Order
             var query = _sysOrderRepository.Table.Include(p=>p.Main).Where(o=>o.IsDeleted!=true && o.MainId == id);
             if (arg != null)
             {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.OrderNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.SupplierCode.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.Name.Contains(arg.pono));
+                    query = query.Where(o => o.Main.Buyer.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Project.Contains(arg.invcurr));
             }
             query = query.OrderBy(o => o.Name);
             return new PagedList<Entities.Order>(query, page, size);
@@ -43,8 +49,14 @@ namespace General.Services.Order
             var query = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.IsDeleted != true && o.Main.OrderNo == orderno);
             if (arg != null)
             {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.OrderNo.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.SupplierCode.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.Name.Contains(arg.pono));
+                    query = query.Where(o => o.Main.Buyer.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Project.Contains(arg.invcurr));
             }
             query = query.OrderBy(o => o.Name);
             return new PagedList<Entities.Order>(query, page, size);

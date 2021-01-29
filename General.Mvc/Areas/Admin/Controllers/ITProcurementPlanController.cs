@@ -35,11 +35,13 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IProcurementPlanService _sysProcurementPlanService;
         private IProcurementPlanMainService _sysProcurementPlanMainService;
         private ISysCustomizedListService _sysCustomizedListService;
-        public ITProcurementPlanController(ISysCustomizedListService sysCustomizedListService, IProcurementPlanMainService sysProcurementPlanMainService, IProcurementPlanService sysProcurementPlanService, IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        private ISysUserService _sysUserService;
+        public ITProcurementPlanController(ISysUserService sysUserService,ISysCustomizedListService sysCustomizedListService, IProcurementPlanMainService sysProcurementPlanMainService, IProcurementPlanService sysProcurementPlanService, IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
             this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysRoleService = sysRoleService;
+            this._sysUserService = sysUserService;
             this._sysProcurementPlanService = sysProcurementPlanService;
             this._sysProcurementPlanMainService = sysProcurementPlanMainService;
             this._hostingEnvironment = hostingEnvironment;
@@ -65,6 +67,17 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ProcurementPlan, SysCustomizedListSearchArg>("itProcurementPlanIndex", arg);
             return View(dataSource);//sysImport
+        }
+        [Route("ITProcurementPlanMainDelete", Name = "ITProcurementPlanMainDelete")]
+        [Function("采购计划删除", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        public IActionResult ITProcurementPlanMainDelete(int id)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itProcurementPlanMainIndex");
+            var model = _sysProcurementPlanMainService.getById(id);
+            model.IsDeleted = true;
+            _sysProcurementPlanMainService.updateProcurementPlanMain(model);
+            return Redirect(ViewBag.ReturnUrl);
+
         }
         [Route("", Name = "itProcurementPlanMainIndex")]
         [Function("采购计划", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.DataImportController", Sort = 1)]
@@ -254,7 +267,8 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult EditITProcurementPlanMain(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanMainIndex");
-
+            var customizedList = _sysUserService.getBuyer();
+            ViewData["Creator"] = new SelectList(customizedList, "Name", "Name");
             if (id != null)
             {
                 ViewBag.fw = 1;
@@ -323,7 +337,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.Prepare = modelplan.Prepare;
                     modelmain.Project = modelplan.Project;
                     modelmain.CreationTime = DateTime.Now;
-                    modelmain.Creator = WorkContext.CurrentUser.Id;
+                    modelmain.Creator = modelplan.Creator;
                     _sysProcurementPlanMainService.insertProcurementPlanMain(modelmain);
                     for (int row = 2; row <= rowCount; row++)
                     {

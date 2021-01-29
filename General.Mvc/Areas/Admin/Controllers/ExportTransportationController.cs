@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
-    [Function("出口运输", true, "menu-icon fa fa-pencil-square-o")]
+    [Function("出口运输", true, "menu-icon fa fa-pencil-square-o", Sort = 5)]
     public class ExportTransportationController : AdminPermissionController
     {
         public IActionResult Index()

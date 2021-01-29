@@ -23,6 +23,10 @@ namespace General.Services.SysUser
         /// <param name="account"></param>
         /// <returns></returns>
         Entities.SysUser getByAccount(string account);
+        Entities.SysUser getByBuyer(string account);
+        List<Entities.SysUser> getBuyer();
+        List<Entities.SysUser> getPorkCustoms();
+        List<Entities.SysUser> getTran();
 
         /// <summary>
         /// 通过当前登录用户的token 获取用户信息，并缓存
