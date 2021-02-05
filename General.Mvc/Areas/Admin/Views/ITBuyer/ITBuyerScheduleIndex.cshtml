@@ -38,9 +38,8 @@
                                 <button type="submit" class="btn btn-sm btn-pink">
                                     <i class="glyphicon glyphicon-plus"></i>
                                     导入订单信息
-                                </button>  <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a> 
-                                <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a> 
-                                <a asp-route="excelimportasja" class="btn btn-sm btn-pink">生成器材验收明细</a>
+                                </button>  <a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a>
+                                <a asp-route="excelimportBuyer" class="btn btn-sm btn-pink">明细表导出</a>
                             </form>
                         </div>
                     </div>
@@ -51,7 +50,7 @@
                     <input type="file" name="excelfile" />
                 </div>
                 <div>
-                    <input type="submit" value="批量添加" />
+                    <input type="submit" value="明细表导入" />
                 </div>
             </form>
         </div>
@@ -78,10 +77,9 @@
     <form asp-route="itBuyerSchedule" method="post" id="formitBuyer" class="form-horizontal" onsubmit="return false;">
         <div class="panel panel-default">
             <div class="form-inline">
-                <button class="btn btn-info btn-sm" type="submit">
-                    <i class="ace-icon fa fa-check bigger-110"></i>
-                    确认修改
-                </button>  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
+                <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="jieshou()" value="保存" />
+
+                <input class="btn btn-info btn-sm" type="submit" name="sumbit" onclick="tuihui()" value="删除" />  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
             </div>
         </div>
         @Html.AntiForgeryToken()
@@ -93,11 +91,13 @@
                     <thead>
                         <tr>
                             <th width="40px"></th>
-                            <th width="80px">采购员</th>
+                            <th width="100px">供应商</th>
                             <th width="100px">订单号</th>
+                            <th width="100px">打码号</th>
                             <th width="50px">订单行号</th>
                             <th width="120px">索引号</th>
                             <th width="100px">物料代码</th>
+                            <th width="100px">物料属性</th>
                             <th width="100px">品名</th>
                             <th width="100px">牌号</th>
                             <th width="100px">规范</th>
@@ -105,12 +105,16 @@
                             <th width="100px">规格2</th>
                             <th width="100px">规格3</th>
                             <th width="100px">炉批号</th>
+                            <th width="100px">包装规格</th>
                             <th width="100px">采购数量</th>
                             <th width="100px">采购单位</th>
                             <th width="100px">单价</th>
                             <th width="100px">总价</th>
+                            <th width="100px">发票号</th>
+                            <th width="100px">计划数量</th>
+                            <th width="100px">折算关系</th>
+                            <th width="100px">折合计划数量</th>
                             <th width="150px">实际提/送货日期</th>
-                            <th width="100px">供应商</th>
                             <th width="100px">制造商</th>
                             <th width="100px">原产国</th>
                             <th width="100px">运单号</th>
@@ -119,7 +123,7 @@
                             <th width="100px">申报单位</th>
                             <th width="100px">法定单位1</th>
                             <th width="100px">法定单位2</th>
-                           
+
                         </tr>
                     </thead>
                     <tbody>
@@ -128,11 +132,16 @@
                         <tr>
                             <td>
                                 <input type="hidden" name="hidden" value="@item.Id" />
+                                <input type="checkbox" name="checkboxId" value="@item.Id" />
                             </td>
-                            <td>@item.Buyer</td>
+                            <td>
+                                @item.Consignor
+                            </td>
                             <td>@item.OrderNo</td>
+                            <td>@item.CodeNo</td>
                             <td>@item.OrderLine</td>
                             <td>@item.ReferenceNo</td>
+                            <td>@item.MaterialCode</td>
                             <td>@item.MaterialCode</td>
                             <td>@item.Description</td>
                             <td>@item.Type</td>
@@ -142,6 +151,9 @@
                             <td>@item.Width</td>
                             <td>
                                 <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="Package" value="@item.Package" style="width:80px" />
                             </td>
                             <td>
                                 <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
@@ -158,7 +170,18 @@
                             <td>
                                 <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
                             </td>
-
+                            <td>
+                                <input type="text" name="InvoiceNo" value="@item.InvoiceNo" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="PlanNo" value="@item.PlanNo" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="Reduced" value="@item.Reduced" style="width:80px" />
+                            </td>
+                            <td>
+                                @item.ReducedNo
+                            </td>
                             @if (@item.ShipmentDate == null)
                             {
                                 <td>
@@ -170,9 +193,6 @@
                                     <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
                                 </td>}
 
-                            <td>
-                                <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
-                            </td>
 
                             <td>
                                 <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
@@ -204,9 +224,7 @@
                             <td>
                                 <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
                             </td>
-                            <td>
-                                <a href="@Url.RouteUrl("editBuyerce", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                            </td>
+                            
                         </tr>
                         }
                     </tbody>
@@ -214,7 +232,6 @@
                 <pager page-value="Model.Paging"></pager>
             }
         </div>
-
     </form>
     <script>
         function quanxuan() {
@@ -227,41 +244,44 @@
                 $("input:checkbox").prop("checked", false);//全部设置为未选中
                 obj.value = "全选"
             }
-        }
-    </script>
-    <script>
-        $(function () {
+        } function jieshou() {
             $('#formitBuyer').submit(function () {
                 var form = $(this);
                 var subArray = [];
                 $("input[name='hidden']").each(function () {
                     var test = $(this).next();
                     var i = 0;
-                    var id = $(this).closest("tr").find("td").eq(0).find("input[name='hidden']");
-                    var batchno = $(this).closest("tr").find("td").eq(12).find("input:text");
-                    var purchasequantity = $(this).closest("tr").find("td").eq(13).find("input:text");
-                    var purchaseunit = $(this).closest("tr").find("td").eq(14).find("input:text");
-                    var unitprice = $(this).closest("tr").find("td").eq(15).find("input:text");
-                    var totalprice = $(this).closest("tr").find("td").eq(16).find("input:text");
-                    var shipmentdate = $(this).closest("tr").find("td").eq(17).find("input:data");
-                    var consignor = $(this).closest("tr").find("td").eq(18).find("input:text");
-                    var manufacturers = $(this).closest("tr").find("td").eq(19).find("input:text");
-                    var origincountry = $(this).closest("tr").find("td").eq(20).find("input:text");
-                    var waybill = $(this).closest("tr").find("td").eq(21).find("input:text");
-                    var books = $(this).closest("tr").find("td").eq(22).find("input:text");
-                    var booksitem = $(this).closest("tr").find("td").eq(23).find("input:text");
-                    var recordunit = $(this).closest("tr").find("td").eq(24).find("input:text");
-                    var recordunitreducedprice = $(this).closest("tr").find("td").eq(25).find("input:text");
-                    var legalunits = $(this).closest("tr").find("td").eq(26).find("input:text");
-                   
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var batchno = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var package = $(this).closest("tr").find("td").eq(15).find("input:text");
+                    var purchasequantity = $(this).closest("tr").find("td").eq(16).find("input:text");
+                    var purchaseunit = $(this).closest("tr").find("td").eq(17).find("input:text");
+                    var unitprice = $(this).closest("tr").find("td").eq(18).find("input:text");
+                    var totalprice = $(this).closest("tr").find("td").eq(19).find("input:text");
+                    var invoiceNo = $(this).closest("tr").find("td").eq(20).find("input:text");
+                    var planNo = $(this).closest("tr").find("td").eq(21).find("input:text");
+                    var reduced = $(this).closest("tr").find("td").eq(22).find("input:text");
+                    var shipmentdate = $(this).closest("tr").find("td").eq(24).find("input:data");
+                    var manufacturers = $(this).closest("tr").find("td").eq(25).find("input:text");
+                    var origincountry = $(this).closest("tr").find("td").eq(26).find("input:text");
+                    var waybill = $(this).closest("tr").find("td").eq(27).find("input:text");
+                    var books = $(this).closest("tr").find("td").eq(28).find("input:text");
+                    var booksitem = $(this).closest("tr").find("td").eq(29).find("input:text");
+                    var recordunit = $(this).closest("tr").find("td").eq(30).find("input:text");
+                    var recordunitreducedprice = $(this).closest("tr").find("td").eq(31).find("input:text");
+                    var legalunits = $(this).closest("tr").find("td").eq(32).find("input:text");
+
                     var mSub = {
                         id: id.val(),
                         purchasequantity: purchasequantity.val(),
                         purchaseunit: purchaseunit.val(),
+                        package: package.val(),
                         unitprice: unitprice.val(),
                         totalprice: totalprice.val(),
                         shipmentdate: shipmentdate.val(),
-                        consignor: consignor.val(),
+                        invoiceNo: invoiceNo.val(),
+                        planNo: planNo.val(),
+                        reduced: reduced.val(),
                         manufacturers: manufacturers.val(),
                         origincountry: origincountry.val(),
                         batchno: batchno.val(),
@@ -293,13 +313,43 @@
                     }
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
-
-
             });
-
-        });
+        } function tuihui() {
+            $('#formitBuyer').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {
+                    var test = $(this).next();
+                    var i = 0;
+                    var id = $(this).closest("tr").find("td").eq(0).find("input[name='checkboxId']");
+                    var mSub = {
+                        id: id.val(),
+                      
+                    };
+                    subArray.push(mSub);
+                });
+                alert(JSON.stringify(subArray));
+                var _url = "/admin/itBuyer/itBuyerScheduleDeleteList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+            });
+        }
     </script>
-
 </div>
 
 

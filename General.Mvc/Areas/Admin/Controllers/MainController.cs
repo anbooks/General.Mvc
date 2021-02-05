@@ -60,9 +60,12 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult Index()
         {
             var userrole = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
-            var list = _importTrans_main_recordService.getCount(WorkContext.CurrentUser.Co, userrole.RoleName);
-            if (list!=null) {
-                ViewBag.Count = "当前有" + list.Count + "个任务";
+            if (userrole!=null) {
+                var list = _importTrans_main_recordService.getCount(WorkContext.CurrentUser.Co, userrole.RoleName);
+                if (list != null)
+                {
+                    ViewBag.Count = "当前有" + list.Count + "个任务";
+                }
             }
             return View();
         }

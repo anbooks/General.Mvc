@@ -43,6 +43,8 @@ namespace General.Entities
         public string Currency { get; set; }//币种
         public string Manufacturer { get; set; }//制造商
         public string Origin { get; set; }//原产国
+        public double? PlanUnit { get; set; }//计划单位
+        public double? Reduced { get; set; }//折算单位
         public int MainId { get; set; }
         public bool IsDeleted { get; set; }
         // public ProcurementPlanMain PlanMain { get; set; }

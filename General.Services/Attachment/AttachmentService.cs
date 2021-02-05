@@ -32,7 +32,7 @@ namespace General.Services.Attachment
         /// <returns></returns>
         public IPagedList<Entities.Attachment> searchAttachment(SysCustomizedListSearchArg arg, int page, int size,int id)
         {
-            var query = _sysAttachmentRepository.Table.Where(o=>o.ImportId==id && o.Type != "破损记录");
+            var query = _sysAttachmentRepository.Table.Where(o=>o.ImportId==id && o.Type != "破损记录" && o.IsDelet != true);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.pono))
@@ -43,7 +43,7 @@ namespace General.Services.Attachment
         }
         public IPagedList<Entities.Attachment> searchPorkAttachment(SysCustomizedListSearchArg arg, int page, int size, int id)
         {
-            var query = _sysAttachmentRepository.Table.Where(o => o.ImportId == id&&o.Type=="破损记录");
+            var query = _sysAttachmentRepository.Table.Where(o => o.ImportId == id&&o.Type=="破损记录" && o.IsDelet != true);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.pono))
@@ -87,10 +87,10 @@ namespace General.Services.Attachment
         /// <param name="model"></param>
       public  void updateAttachment(Entities.Attachment model)
         {
-            _sysAttachmentRepository.DbContext.Entry(model).State = EntityState.Unchanged;
-            _sysAttachmentRepository.DbContext.Entry(model).Property("AttachmentCode").IsModified = true;
-            _sysAttachmentRepository.DbContext.Entry(model).Property("Describe").IsModified = true;
-            _sysAttachmentRepository.DbContext.SaveChanges();
+            var item = _sysAttachmentRepository.getById(model.Id);
+            if (item == null)
+                return;
+            _sysAttachmentRepository.update(model);
         }
     }
 }

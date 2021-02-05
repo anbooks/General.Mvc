@@ -27,7 +27,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <a asp-route="editITPorkCustoms" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加</a>
+            <!--<a asp-route="excelimportCon" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>生成货物交接单</a>-->
         </div>
     </div>
     <div class="space-2"></div>
@@ -39,7 +39,7 @@
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="订单号" />
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -49,13 +49,12 @@
             </div>
         </div>
     </div>
-    <form asp-route="itPorkCustoms" method="post" id="formitPorkCustoms" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="itPorkCustoms" method="post" id="formitPorkCustoms" class="form-horizontal">
         <div class="panel panel-default">
             <div class="form-inline">
-                <button class="btn btn-info btn-sm" type="submit">
-                    <i class="ace-icon fa fa-check bigger-110"></i>
-                    确认修改
-                </button>  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" /> </div>
+                <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="tuihui()" value="保存" />
+                <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
+            </div>
         </div>
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
             <div class="form-group">
@@ -67,7 +66,7 @@
                                 <th width="50px"></th>
                                 <th width="80px">编号</th>
                                 <th width="80px">发货人</th>
-                                <th width="80px">合同号</th>
+                                <th width="80px">订单号</th>
                                 <th width="80px">贸易条款</th>
                                 <th width="80px">货物类型</th>
                                 <th width="80px">实际收/提货日期</th>
@@ -94,7 +93,7 @@
                             {
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                        <input type="hidden" name="hiddenId" value="@item.Id" />
                                     </td>
                                     <td>@item.Id</td>
                                     <td>@item.Shipper</td>
@@ -207,18 +206,18 @@
                                         </td>
                                     }
 
-                                        <td>
-                                            @if (@item.Note != null && @item.Note != "")
-                                            {
-                                                <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                                <a href="@Url.RouteUrl("PorkAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
-                                            }
-                                            else
-                                            {
-                                                <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                               
-                                            }
-                                        </td>
+                                    <td>
+                                        @if (@item.Note != null && @item.Note != "")
+                                        {
+                                            <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                            <a href="@Url.RouteUrl("PorkAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.RouteUrl("editITPorkCustoms", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+
+                                        }
+                                    </td>
                                     @if (@item.F_ShippingModeGiven != true)
                                     {
                                         <td>
@@ -253,18 +252,14 @@
                 obj.value = "全选"
             }
         }
-    </script>
-    <script>
-        $(function () {
+        function tuihui() {
             $('#formitPorkCustoms').submit(function () {
                 var form = $(this);
                 var subArray = [];
-                $("input[name='checkboxId']:checked").each(function () {
+                $("input[name='hiddenId']").each(function () {
                     var test = $(this).next();
                     var i = 0;
-                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
-                    //var shippingMode = $(this).closest("tr").find("td").eq(12).find("select[name='ShippingMode']");
-                    //var deliveryRequiredDate = $(this).closest("tr").find("td").eq(13).find("input:data");BrokenRecord
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:hidden");
                     var blDate = $(this).closest("tr").find("td").eq(12).find("input:data");
                     var declarationDate = $(this).closest("tr").find("td").eq(13).find("input:data");
                     var releaseDate = $(this).closest("tr").find("td").eq(14).find("input:data");
@@ -307,12 +302,11 @@
                     }
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
-
-
             });
 
-        });
+        }
     </script>
+
 </div>
 
 

@@ -313,6 +313,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.MobilePhone = StringUitls.toDBC(model.MobilePhone);
             if (!String.IsNullOrEmpty(model.Co))
                 model.Co = StringUitls.toDBC(model.Co);
+            if (!String.IsNullOrEmpty(model.Port))
+                model.Port = StringUitls.toDBC(model.Port);
+            if (!String.IsNullOrEmpty(model.Transport))
+                model.Transport = StringUitls.toDBC(model.Transport);
             model.Name = model.Name.Trim();
 
             if (model.Id == Guid.Empty)
@@ -323,7 +327,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Account = StringUitls.toDBC(model.Account.Trim());
                 model.Enabled = true;
                 model.IsAdmin = false;
-                model.Password = EncryptorHelper.GetMD5(model.Account + model.Salt);
+                model.Password = EncryptorHelper.GetMD5("Sacc2020" + model.Salt);
                 model.Creator = WorkContext.CurrentUser.Id;
                 _sysUserService.insertSysUser(model);
             }
@@ -333,7 +337,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Modifier = WorkContext.CurrentUser.Id;
                 _sysUserService.updateSysUser(model);
             }
-            return Redirect(ViewBag.ReturnUrl);
+           // ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");
+            return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("userIndex"));
         }
         /// <summary>
         /// 设置启用与禁用账号
@@ -404,7 +409,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <returns></returns>
         [Route("resetPwd/{id}", Name = "resetPassword")]
         [Function("重置密码", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
-        public JsonResult ResetPassword(Guid id)
+        public ActionResult ResetPassword(Guid id)
         {
             var modelpass = _sysUserService.getById(id);
             modelpass.Password = EncryptorHelper.GetMD5("Sacc2020" + modelpass.Salt);
@@ -412,7 +417,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             _sysUserService.resetPassword(modelpass);
             AjaxData.Status = true;
             AjaxData.Message = "用户密码已重置为原始密码";
-            return Json(AjaxData);
+           // return Json(AjaxData);
+            return Redirect(Url.IsLocalUrl(null) ? null : Url.RouteUrl("userIndex"));
         }
 
 

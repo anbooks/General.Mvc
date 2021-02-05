@@ -116,21 +116,51 @@ namespace General.Services.ImportTrans_main_record
             if (arg.invcurr != null||arg.itemno!=null || arg.keyword != null || arg.materiel != null || arg.pono != null || arg.realreceivingdatestrat != null || arg.realreceivingdateend != null || arg.shipper != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                    query = query.Where(o => o.Id == Convert.ToInt32(arg.itemno));
                 if (!String.IsNullOrEmpty(arg.shipper))
                     query = query.Where(o => o.Shipper.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
                     query = query.Where(o => o.PoNo.Contains(arg.pono));
                 if (!String.IsNullOrEmpty(arg.invcurr))    
                     query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
-                if (arg.realreceivingdateend!=null&&arg.realreceivingdatestrat!=null)
-                    query = query.Where(o => o.RealReceivingDate>arg.realreceivingdatestrat&&o.RealReceivingDate<arg.realreceivingdateend.Value.AddDays(1));
+                if (arg.realreceivingdateend!=null)
+                    query = query.Where(o => o.RealReceivingDate<arg.realreceivingdateend.Value.AddDays(1));
+                if ( arg.realreceivingdatestrat != null)
+                    query = query.Where(o => o.RealReceivingDate > arg.realreceivingdatestrat);
             }
             else {
                  query = query.Where(o => o.CreationTime.ToString("yyMMdd") == DateTime.Now.ToString("yyMMdd")); 
             }
             query = query.OrderByDescending(o => o.Id);
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public IPagedList<Entities.ImportTrans_main_record> searchListYd(SysCustomizedListSearchArg arg, int page, int size,string port,string tran)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true);
+            if (arg.invcurr != null || arg.itemno != null || arg.keyword != null || arg.materiel != null || arg.pono != null || arg.realreceivingdatestrat != null || arg.realreceivingdateend != null || arg.shipper != null)
+            {
+                if (!String.IsNullOrEmpty(port))
+                    query = query.Where(o => o.Forwarder.Contains(port)|| o.Transportation.Contains(tran));
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Id==Convert.ToInt32(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+                if (arg.realreceivingdateend != null)
+                    query = query.Where(o => o.RealReceivingDate < arg.realreceivingdateend.Value.AddDays(1));
+                if (arg.realreceivingdatestrat != null)
+                    query = query.Where(o => o.RealReceivingDate > arg.realreceivingdatestrat);
+            }
+            else
+            {
+                query = query.Where(o => o.CreationTime.ToString("yyMMdd") == DateTime.Now.ToString("yyMMdd"));
+            }
+            query = query.OrderByDescending(o => o.Id);
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
             return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListBuyer(SysCustomizedListSearchArg arg, int page, int size,string buyer)
@@ -153,7 +183,7 @@ namespace General.Services.ImportTrans_main_record
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size,string forwarder)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.Forwarder== forwarder&& o.IsDeleted != true);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.Forwarder== forwarder&& o.Forwarder != null&& o.IsDeleted != true);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))

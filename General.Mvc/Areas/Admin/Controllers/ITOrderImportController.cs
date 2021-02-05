@@ -211,8 +211,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                     int ColCount = worksheet.Dimension.Columns;
                     int materialno = 0; int partno = 0; int technical = 0; int item = 0; int lineitem = 0;
                     int width = 0; int name = 0; int size = 0;
-                    int length = 0; int planno = 0; int planunit = 0; int packages = 0; int currency = 0; int unitprice = 0;
-                    int totamount = 0; int deliverydate = 0; int manufacturer = 0; int origin = 0;
+                    int length = 0; int orderno = 0; int orderunit = 0; int packages = 0; int currency = 0; int unitprice = 0;
+                    int totamount = 0; int deliverydate = 0; int manufacturer = 0; int origin = 0; int planunit = 0; int reduced = 0;
                     for (int columns = 1; columns <= ColCount; columns++)
                     {
                         //Entities.Order model = new Entities.Order();
@@ -226,14 +226,16 @@ namespace General.Mvc.Areas.Admin.Controllers
                         if (worksheet.Cells[1, columns].Value.ToString() == "宽") { width = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "长") { length = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { packages = columns; }
-                        if (worksheet.Cells[1, columns].Value.ToString() == "订单数量") { planno = columns; }
-                        if (worksheet.Cells[1, columns].Value.ToString() == "订单单位") { planunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "订单数量") { orderno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "订单单位") { orderunit = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "币种") { currency = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "单价") { unitprice = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "总价") { totamount = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "交货日期") { deliverydate = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "制造商") { manufacturer = columns; }
                         if (worksheet.Cells[1, columns].Value.ToString() == "原产国") { origin = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "计划单位") { planunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "折算关系") { reduced = columns; }
                     }
                     Entities.OrderMain modelmain = new Entities.OrderMain();
                     var listmain = _sysOrderMainService.existAccount(modelplan.OrderNo);
@@ -243,17 +245,19 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.OrderSigner = modelplan.OrderSigner;
                     modelmain.SignerCard = modelplan.SignerCard;
                     modelmain.SupplierCode = modelplan.SupplierCode;
-                   // modelmain.SupplierName = modelplan.SupplierName;
+                    modelmain.Payment = modelplan.Payment;
+                    modelmain.CodeNo = modelplan.CodeNo;
+                    modelmain.LongDealNo = modelplan.LongDealNo;
                     modelmain.TradeTerms = modelplan.TradeTerms;
                     modelmain.Transport = modelplan.Transport;
                     var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
-                    modelmain.Project = modelproject.Describe;
+                    if (modelproject != null) { modelmain.Project = modelproject.Describe; }
                     var modelBuyer = _sysUserService.getByBuyer(modelplan.OrderNo.Substring(1, 2));
-                    modelmain.Buyer = modelBuyer.Account;
+                    if (modelBuyer != null) { modelmain.Buyer = modelBuyer.Account; }
                     var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
-                    modelmain.MaterialCategory = modelMaterial.Describe;
+                    if (modelMaterial != null) { modelmain.MaterialCategory = modelMaterial.Describe; }
                     var modelSupplier = _sysSupplierService.getByAccount(modelplan.SupplierCode);
-                    modelmain.SupplierName = modelSupplier.Describe;
+                    if (modelSupplier != null) { modelmain.SupplierName = modelSupplier.Describe; }
                     modelmain.CreationTime = DateTime.Now;
                     modelmain.Creator = WorkContext.CurrentUser.Id;
                     _sysOrderMainService.insertOrderMain(modelmain);
@@ -287,10 +291,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                             if (worksheet.Cells[row, name].Value != null)
                             {
                                 model.Name = worksheet.Cells[row, name].Value.ToString();
-                            }
-                           
-                                model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
-                            
+                            } model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
                             if (worksheet.Cells[row, technical].Value != null)
                             {
                                 model.Specification = worksheet.Cells[row, technical].Value.ToString();
@@ -311,13 +312,13 @@ namespace General.Mvc.Areas.Admin.Controllers
                             {
                                 model.Package = worksheet.Cells[row, packages].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planno].Value != null)
+                            if (worksheet.Cells[row, orderno].Value != null)
                             {
-                                model.Qty = worksheet.Cells[row, planno].Value.ToString();
+                                model.Qty = worksheet.Cells[row, orderno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planunit].Value != null)
+                            if (worksheet.Cells[row, orderunit].Value != null)
                             {
-                                model.Unit = worksheet.Cells[row, planunit].Value.ToString();
+                                model.Unit = worksheet.Cells[row, orderunit].Value.ToString();
                             }
                             if (worksheet.Cells[row, unitprice].Value != null)
                             {
@@ -347,6 +348,14 @@ namespace General.Mvc.Areas.Admin.Controllers
                             {
                                 model.PartNo = worksheet.Cells[row, partno].Value.ToString();
                             }
+                            if (worksheet.Cells[row, planunit].Value != null)
+                            {
+                                model.PlanUnit = Convert.ToDouble(worksheet.Cells[row, planunit].Value);
+                            }
+                            if (worksheet.Cells[row, reduced].Value != null)
+                            {
+                                model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);
+                            }
                             model.CreationTime = DateTime.Now;
                             model.Creator = WorkContext.CurrentUser.Id;
                             _sysOrderService.insertOrder(model);
@@ -368,6 +377,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.SupplierCode = modelplan.SupplierCode;
                 model.SupplierName = modelplan.SupplierName;
                 model.TradeTerms = modelplan.TradeTerms;
+                model.LongDealNo = modelplan.LongDealNo;
+                model.CodeNo = modelplan.CodeNo;
                 model.Transport = modelplan.Transport;
                 model.Project = modelplan.Project;
                 model.MaterialCategory = modelplan.MaterialCategory;

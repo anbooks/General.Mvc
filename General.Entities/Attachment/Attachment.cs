@@ -14,7 +14,8 @@ namespace General.Entities
         public string Name { get; set; }//附件
         public string Type { get; set; }//附件
         public int? ImportId { get; set; }//附件
-        public string Creator { get; set; }//
+        public string Creator { get; set; }//IsDelet
+        public bool? IsDelet { get; set; }//附件
         public DateTime? CreationTime { get; set; }//
         
     }

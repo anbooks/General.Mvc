@@ -339,7 +339,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 // 添加worksheet
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("sheet1");
                 //添加头
-                worksheet.Cells[1, 1].Value = "合同号";
+                worksheet.Cells[1, 1].Value = "订单号";
                 worksheet.Cells[1, 2].Value = "供应商";
                 worksheet.Cells[1, 3].Value = "制造商";
                 worksheet.Cells[1, 4].Value = "合格证号";

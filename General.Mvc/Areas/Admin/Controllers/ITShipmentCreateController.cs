@@ -36,100 +36,108 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IScheduleService _scheduleService;
         private IOrderMainService _orderMainService;
         private ISysUserRoleService _sysUserRoleService;
-        public ITShipmentCreateController(IOrderMainService orderMainService,ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        private ISysUserService _sysUserService;
+        public ITShipmentCreateController(ISysUserService sysUserService,IOrderMainService orderMainService,ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
             this._scheduleService = scheduleService;
+            this._sysUserService = sysUserService;
             this._orderMainService = orderMainService;
             this._importTrans_main_recordService = importTrans_main_recordService;
             this._sysCustomizedListService = sysCustomizedListService;
         }
-        [Route("", Name = "itShipmentCreate")]
-        [Function("创建发运条目(新)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
+        [Route("itShipmentCreate", Name = "itShipmentCreate")]
+        [Function("创建发运条目", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
         [HttpGet]
         public IActionResult ITShipmentCreateIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         { 
             RolePermissionViewModel model = new RolePermissionViewModel();
-            var customizedList = _sysCustomizedListService.getByAccount("货币类型");
-            ViewData["Invcurr"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
-            ViewBag.QX = USER.RoleName;
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
             return View(dataSource);//sysImport
         }
+
+        [Route("itShipmentCreatetran", Name = "itShipmentCreatetran")]
+        [Function("创建发运条目(运代)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
+        [HttpGet]
+        public IActionResult ITShipmentCreateTranIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            RolePermissionViewModel model = new RolePermissionViewModel();
+           string port= WorkContext.CurrentUser.Port;
+            string tran = WorkContext.CurrentUser.Transport;
+            var pageList = _importTrans_main_recordService.searchListYd(arg, page, size, port, tran);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreatetran", arg);
+            return View(dataSource);//sysImport
+        }
+        [HttpGet]
+        [Route("editTran", Name = "editITShipmentTranCreate")]
+        [Function("编辑发运条目(运代)", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateTranIndex")]
+        public IActionResult EditITShipmentTranCreate(int? id, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreatetran");
+            var customizedList2 = _sysUserService.getTran();
+            ViewData["Transportation"] = new SelectList(customizedList2, "Transport", "Transport");
+
+            if (id != null)
+            {
+                var model = _importTrans_main_recordService.getById(id.Value);
+                if (model == null)
+                    return Redirect(ViewBag.ReturnUrl);
+                return View(model);
+            }
+
+            return View();
+        }
+
         [HttpPost]
-        [Route("itShipmentCreateList", Name = "itShipmentCreateList")]
-        [Function("发运条目编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
-        public ActionResult ITShipmentCreateList(string kevin)
+        [Route("editTran")]
+        public ActionResult EditITShipmentTranCreate(Entities.ImportTrans_main_record model, IFormFile excelfile, string returnUrl = null)
         {
-            string test = kevin;
-            List<Entities.ImportTrans_main_record> jsonlist = JsonHelper.DeserializeJsonToList<Entities.ImportTrans_main_record>(test);
-            //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
-            try { 
-            foreach (Entities.ImportTrans_main_record u in jsonlist)
+            ModelState.Remove("Id");
+            int a = 0;
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreatetran");
+            if (!ModelState.IsValid)
+                return View(model);
+            if (!String.IsNullOrEmpty(model.Invcurr))
+                model.Invcurr = model.Invcurr.Trim();
+            if (!String.IsNullOrEmpty(model.Shipper))
+                model.Shipper = model.Shipper.Trim();
+            if (!String.IsNullOrEmpty(model.Itemno))
+                model.Itemno = model.Itemno.Trim();
+            if (!String.IsNullOrEmpty(model.PoNo))
+                model.PoNo = model.PoNo.Trim();
+            if (!String.IsNullOrEmpty(model.PoNo))
+                model.Buyer = model.PoNo.Substring(1, 2);
+            if (model.Id.Equals(0))
             {
-                var model = _importTrans_main_recordService.getById(u.Id);
-                model.Itemno = u.Itemno;
-                model.Shipper = u.Shipper;
-                model.PoNo = u.PoNo;
-                model.Incoterms = u.Incoterms;
-                model.CargoType = u.CargoType;
-                model.Invamou = u.Invamou;
-                if (u.Invcurr!="") { model.Invcurr = u.Invcurr; }
-                model.RealReceivingDate = u.RealReceivingDate;
-                model.Gw = u.Gw;
-                model.Pcs = u.Pcs;
-                model.Buyer = u.PoNo.Substring(1, 2);
-                _importTrans_main_recordService.updateImportTransmain(model);
-                //u就是jsonlist里面的一个实体类
-            }
-            AjaxData.Status = true;
-            AjaxData.Message = "OK";
-        }
-            catch
-            {
-                AjaxData.Status = false;
-                AjaxData.Message = "OK";
-            }
-            return Json(AjaxData);
-        }
-       
-        [Route("downLoadInventory", Name = "downLoadInventory")]
-        [Function("下载附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
-        public FileStreamResult DownLoadInventory(int? id)
-        {
-            var model = _importTrans_main_recordService.getById(id.Value);
-            string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var fileProfile = sWebRootFolder + "\\Files\\inventoryfile\\";
-            string sFileName = model.Id.ToString();
-            FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
-            FileStream fs = new FileStream(file.ToString(), FileMode.Create);
-            return File(fs, "application/octet-stream", sFileName);
-        }
-        public IActionResult Download(string fileName, string NewName = "")
-        {
-            var addrUrl = fileName;
-            var stream = System.IO.File.OpenRead(addrUrl); //Path.GetExtension
-            string fileExt = Path.GetExtension(fileName);
-            //获取文件的ContentType
-            var provider = new FileExtensionContentTypeProvider();
-            var memi = provider.Mappings[fileExt];
-            // var downloadName = Path.GetFileName(addrUrl);
-            return File(stream, memi, NewName + "Data.xlsx");
+                model.CreationTime = DateTime.Now;
+                model.IsDeleted = false;
+                model.Modifier = null;
+                model.ModifiedTime = null;
+                model.Creator = WorkContext.CurrentUser.Id;
+                var inc = _orderMainService.getByAccount(model.PoNo);
+                model.Incoterms = inc.TradeTerms;
+                if (model.PoNo == null || model.Shipper == null || model.Transportation == null)
+                {
 
+                    return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITShipmentTranCreate"));
+                }
+                _importTrans_main_recordService.insertImportTransmain(model);
+            }
+            return Redirect(ViewBag.ReturnUrl);
         }
-
         [HttpGet]
         [Route("edit", Name = "editITShipmentCreate")]
         [Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
         public IActionResult EditITShipmentCreate(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
-            var customizedList = _sysCustomizedListService.getByAccount("运输代理");
-            ViewData["Transportation"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
+            var customizedList2 = _sysUserService.getTran();
+            ViewData["Transportation"] = new SelectList(customizedList2, "Transport", "Transport");
+            
             if (id != null)
             {
                 ViewBag.FJ = 1;
@@ -141,13 +149,7 @@ namespace General.Mvc.Areas.Admin.Controllers
            
             return View();
         }
-        private void DicCreate(string path)
-        {
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-        }
+       
         [HttpPost]
         [Route("edit")]
         public ActionResult EditITShipmentCreate(Entities.ImportTrans_main_record model, IFormFile excelfile, string returnUrl = null)
@@ -181,29 +183,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITShipmentCreate"));
                 }
                 _importTrans_main_recordService.insertImportTransmain(model);
-               
             }
-            else
-            {
-                if (excelfile!=null) {
-                    string sWebRootFolder = _hostingEnvironment.WebRootPath;
-                    var dirpath = sWebRootFolder + "\\Files\\inventoryfile\\"+model.Id+"\\";
-                    var fileProfile = sWebRootFolder + "\\Files\\inventoryfile\\";
-                    DicCreate(Path.Combine(fileProfile, dirpath));
-                    string sFileName = model.Id + "-" + $"{DateTime.Now.ToString("yyMMdd")}" + excelfile.FileName;
-                    FileInfo file = new FileInfo(Path.Combine(dirpath, sFileName));
-                    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
-                    {
-                        excelfile.CopyTo(fs);
-                        fs.Flush();
-                    }
-                    model.InventoryAttachment = sFileName;
-                }
-                model.Modifier = WorkContext.CurrentUser.Id;
-                model.ModifiedTime = DateTime.Now;
-                _importTrans_main_recordService.updateImportTransmain(model);
-            }
-            
             return Redirect(ViewBag.ReturnUrl);
         }
     }

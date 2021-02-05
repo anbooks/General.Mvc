@@ -22,6 +22,7 @@ using System.Text;
 using Microsoft.AspNetCore.Hosting;
 using General.Services.Attachment;
 using Microsoft.AspNetCore.StaticFiles;
+using NPOI.SS.Util;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -95,6 +96,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             var memi = provider.Mappings[fileExt];
             // var downloadName = Path.GetFileName(addrUrl);
             return File(stream, memi, model.Name);
+        }
+        [Route("PorkAttachment", Name = "deleLoadPork")]
+        [Function("删除破损记录", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        public ActionResult Deleload(int? id)
+        {
+            var model = _attachmentService.getById(id.Value);
+            model.IsDelet = true;
+            _attachmentService.updateAttachment(model);
+            return View();
         }
         [Route("schedule", Name = "itPorkCustomsSchedule")]
         [Function("口岸报关行明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
@@ -172,7 +182,30 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Json(AjaxData);
         }
-        
+        [Route("excelimportCon", Name = "excelimportCon")]
+        [Function("生成货物交接单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        public IActionResult Export2()
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            var path = Path.Combine(sWebRootFolder, "Files", "abc.xlsx");
+            string sFileName = "明细表" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\ejdfile\\", sFileName));
+            using (var fs = System.IO.File.Open(path, FileMode.Open, FileAccess.Read))
+            using (ExcelPackage package = new ExcelPackage(fs))
+            {
+                var worksheet = package.Workbook.Worksheets["sheet1"];
+
+                var sc = worksheet.Dimension.Start.Column;
+                var ec = worksheet.Dimension.End.Column;
+                var sr = worksheet.Dimension.Start.Row;
+                var er = worksheet.Dimension.End.Row;
+                var value = worksheet.Cells[sc, sr + 1].Value;
+                worksheet.Cells[2, 3].Value = "采购员";
+                package.Save();
+            }
+           
+            return File("\\Files\\ejdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+        }
         [HttpPost]
         [Route("itPorkCustomsList", Name = "itPorkCustomsList")]
         [Function("口岸报关行数据填写", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
@@ -300,12 +333,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itPorkCustoms");
             if (!ModelState.IsValid)
                 return View(model);
-          //  if (!String.IsNullOrEmpty(model.InvoiceNo))
-          //      model.InvoiceNo = model.InvoiceNo.Trim();
-          //  if (!String.IsNullOrEmpty(model.MaterielNo))
-          //      model.MaterielNo = model.MaterielNo.Trim();
-          //  if (!String.IsNullOrEmpty(model.PurchasingDocuments))
-          //      model.PurchasingDocuments = model.PurchasingDocuments.Trim();
+
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;

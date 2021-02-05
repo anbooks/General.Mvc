@@ -33,6 +33,7 @@ namespace General.Entities
         public string OriginCountry { get; set; }//原产国
         public string BatchNo { get; set; }//炉批号（质量编号）
         public string Waybill { get; set; }//运单号
+        public string Package { get; set; }//包装规格
         public string Books { get; set; }//账册号
         public string BooksItem { get; set; }//账册项号
         public string RecordUnit { get; set; }//备案单位
@@ -40,7 +41,11 @@ namespace General.Entities
         public string LegalUnits { get; set; }//法定单位
         public string LegalUniteReducedPrice { get; set; }//按法定单位折算单价
         public string Qualification { get; set; }//合格证号
-
+        public string CodeNo { get; set; }//打码号
+        public double? PlanNo { get; set; }//计划数量
+        public double? Reduced { get; set; }//折算关系
+        public string ReducedNo { get; set; }//折算数量
+        public string InvoiceNo { get; set; }//发票号
         public int MainId { get; set; }
         public Guid Creator { get; set; }
 

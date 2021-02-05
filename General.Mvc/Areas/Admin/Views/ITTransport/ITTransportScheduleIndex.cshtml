@@ -27,7 +27,7 @@
             @ViewData["Title"]
         </h1>
     </div>
-  
+
     <div class="space-2"></div>
     <div class="row">
         <div class="col-sm-12">
@@ -48,14 +48,7 @@
         </div>
     </div>
     <form asp-route="itTransportSchedule" method="post" id="formitBuyer" class="form-horizontal" onsubmit="return false;">
-        <div class="panel panel-default">
-            <div class="form-inline">
-                <button class="btn btn-info btn-sm" type="submit">
-                    <i class="ace-icon fa fa-check bigger-110"></i>
-                    确认修改
-                </button>
-            </div>
-        </div>
+
         @Html.AntiForgeryToken()
         @Html.Hidden("Id", 1)
         <div class="form-group" id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
@@ -71,7 +64,7 @@
                             <th width="120px">索引号</th>
                             <th width="100px">物料代码</th>
                             <th width="100px">品名</th>
-                            <th width="100px">型号</th>
+                            <th width="100px">牌号</th>
                             <th width="100px">规范</th>
                             <th width="100px">厚度</th>
                             <th width="100px">长</th>
@@ -88,11 +81,9 @@
                             <th width="100px">炉批号</th>
                             <th width="100px">账册号</th>
                             <th width="100px">账册项号</th>
-                            <th width="100px">备案单位</th>
-                            <th width="100px">按备案单位折算单价</th>
-                            <th width="100px">法定单位</th>
-                            <th width="100px">按法定单位折算单价</th>
-                            <th width="100px">合格证号</th>
+                            <th width="100px">申报单位</th>
+                            <th width="100px">法定单位1</th>
+                            <th width="100px">法定单位2</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -139,76 +130,49 @@
                                     @item.Width
                                 </td>
                                 <td>
-                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
-                                </td>
-
-                                @if (@item.ShipmentDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
-
-                                <td>
-                                    <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
+                                    @item.PurchaseQuantity
                                 </td>
                                 <td>
-                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
+                                    @item.PurchaseUnit
                                 </td>
-
                                 <td>
-                                    <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
+                                    @item.UnitPrice
                                 </td>
-
                                 <td>
-                                    <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
+                                    @item.TotalPrice
                                 </td>
-
                                 <td>
-                                    <input type="text" name="Books" value="@item.Books" style="width:80px" />
+                                    @item.ShipmentDate
                                 </td>
-
                                 <td>
-                                    <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
+                                    @item.Consignor
                                 </td>
-
                                 <td>
-                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
+                                    @item.Manufacturers
                                 </td>
-
                                 <td>
-                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
+                                    @item.OriginCountry
                                 </td>
-
                                 <td>
-                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
-
-                                <td>
-                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:80px" />
+                                    @item.BatchNo
                                 </td>
-
                                 <td>
-                                    <input type="text" name="Qualification" value="@item.Qualification" style="width:80px" />
+                                    @item.Waybill
+                                </td>
+                                <td>
+                                    @item.Books
+                                </td>
+                                <td>
+                                    @item.BooksItem
+                                </td>
+                                <td>
+                                    @item.RecordUnit
+                                </td>
+                                <td>
+                                    @item.RecordUnitReducedPrice
+                                </td>
+                                <td>
+                                    @item.LegalUnits
                                 </td>
                             </tr>
                         }

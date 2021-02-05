@@ -73,6 +73,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.Attachment, SysCustomizedListSearchArg>("itTransport", arg);
             return View(dataSource);//sysImport
         }
+        [Route("TransportAttachment", Name = "deleLoadTransport")]
+        [Function("删除运代附件", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
+        public ActionResult Deleload(int? id)
+        {
+            var model = _attachmentService.getById(id.Value);
+            model.IsDelet = true;
+            _attachmentService.updateAttachment(model);
+            return View();
+        }
         [Route("schedule", Name = "itTransportSchedule")]
         [Function("运代明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITTransportController.ITTransportIndex")]
         [HttpGet]

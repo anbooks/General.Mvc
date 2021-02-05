@@ -46,7 +46,7 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right">@Html.RequiredSpan()账号</label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" asp-for="Account" placeholder="用户账号" disabled/>
+                            <input type="text" class="form-control" asp-for="Account" placeholder="用户账号"  />
                         </div>
                     </div>
                 }
@@ -72,12 +72,25 @@
                     <span asp-validation-for="Email" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">运输代理</label>
+                    <label class="col-sm-2 control-label no-padding-right">采购员编号</label>
                     <div class="col-sm-5">
-                        
-                        <select asp-for="Co" class="form-control" asp-items="ViewBag.Colist"></select>
+                        <input type="text" asp-for="Co" class="form-control" placeholder="采购员编号" />
                     </div>
                     <span asp-validation-for="Co" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">运输代理</label>
+                    <div class="col-sm-5">
+                        <input type="text" asp-for="Transport" class="form-control" placeholder="运输代理" />
+                    </div>
+                    <span asp-validation-for="Transport" class="inline text-danger "></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">口岸报关行</label>
+                    <div class="col-sm-5">
+                        <input type="text" asp-for="Port" class="form-control" placeholder="口岸报关行" />
+                    </div>
+                    <span asp-validation-for="Port" class="inline text-danger "></span>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">性别</label>

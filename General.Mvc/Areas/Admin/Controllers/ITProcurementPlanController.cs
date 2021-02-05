@@ -69,7 +69,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             return View(dataSource);//sysImport
         }
         [Route("ITProcurementPlanMainDelete", Name = "ITProcurementPlanMainDelete")]
-        [Function("采购计划删除", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        [Function("采购计划删除", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
         public IActionResult ITProcurementPlanMainDelete(int id)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itProcurementPlanMainIndex");

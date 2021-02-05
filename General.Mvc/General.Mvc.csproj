@@ -10,11 +10,13 @@
     <Compile Remove="Areas\Admin\Views\ITCustomsBrokerSelect\**" />
     <Compile Remove="Areas\Admin\Views\ITDeliveryDateRequired\**" />
     <Compile Remove="Areas\Admin\Views\ITDeliveryStatusInput\**" />
+    <Compile Remove="Areas\Admin\Views\ITDetail\**" />
     <Compile Remove="Areas\Admin\Views\ITGoodsHandover\**" />
     <Compile Remove="Areas\Admin\Views\ITInspectionCreateIs\**" />
     <Compile Remove="Areas\Admin\Views\ITInventoryInput\**" />
     <Compile Remove="Areas\Admin\Views\ITModeShippingGiven\**" />
     <Compile Remove="Areas\Admin\Views\ITPortCustomerBrokerInput\**" />
+    <Compile Remove="Areas\Admin\Views\ITReceiptInput\**" />
     <Compile Remove="Areas\Admin\Views\ITSecondCheckIs\**" />
     <Compile Remove="Areas\Ordinary\**" />
     <Content Remove="Areas\Admin\Views\ITArrivalTimeRequest\**" />
@@ -22,11 +24,13 @@
     <Content Remove="Areas\Admin\Views\ITCustomsBrokerSelect\**" />
     <Content Remove="Areas\Admin\Views\ITDeliveryDateRequired\**" />
     <Content Remove="Areas\Admin\Views\ITDeliveryStatusInput\**" />
+    <Content Remove="Areas\Admin\Views\ITDetail\**" />
     <Content Remove="Areas\Admin\Views\ITGoodsHandover\**" />
     <Content Remove="Areas\Admin\Views\ITInspectionCreateIs\**" />
     <Content Remove="Areas\Admin\Views\ITInventoryInput\**" />
     <Content Remove="Areas\Admin\Views\ITModeShippingGiven\**" />
     <Content Remove="Areas\Admin\Views\ITPortCustomerBrokerInput\**" />
+    <Content Remove="Areas\Admin\Views\ITReceiptInput\**" />
     <Content Remove="Areas\Admin\Views\ITSecondCheckIs\**" />
     <Content Remove="Areas\Ordinary\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITArrivalTimeRequest\**" />
@@ -34,11 +38,13 @@
     <EmbeddedResource Remove="Areas\Admin\Views\ITCustomsBrokerSelect\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITDeliveryDateRequired\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITDeliveryStatusInput\**" />
+    <EmbeddedResource Remove="Areas\Admin\Views\ITDetail\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITGoodsHandover\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITInspectionCreateIs\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITInventoryInput\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITModeShippingGiven\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITPortCustomerBrokerInput\**" />
+    <EmbeddedResource Remove="Areas\Admin\Views\ITReceiptInput\**" />
     <EmbeddedResource Remove="Areas\Admin\Views\ITSecondCheckIs\**" />
     <EmbeddedResource Remove="Areas\Ordinary\**" />
     <None Remove="Areas\Admin\Views\ITArrivalTimeRequest\**" />
@@ -46,11 +52,13 @@
     <None Remove="Areas\Admin\Views\ITCustomsBrokerSelect\**" />
     <None Remove="Areas\Admin\Views\ITDeliveryDateRequired\**" />
     <None Remove="Areas\Admin\Views\ITDeliveryStatusInput\**" />
+    <None Remove="Areas\Admin\Views\ITDetail\**" />
     <None Remove="Areas\Admin\Views\ITGoodsHandover\**" />
     <None Remove="Areas\Admin\Views\ITInspectionCreateIs\**" />
     <None Remove="Areas\Admin\Views\ITInventoryInput\**" />
     <None Remove="Areas\Admin\Views\ITModeShippingGiven\**" />
     <None Remove="Areas\Admin\Views\ITPortCustomerBrokerInput\**" />
+    <None Remove="Areas\Admin\Views\ITReceiptInput\**" />
     <None Remove="Areas\Admin\Views\ITSecondCheckIs\**" />
     <None Remove="Areas\Ordinary\**" />
   </ItemGroup>
@@ -61,7 +69,9 @@
     <Compile Remove="Areas\Admin\Controllers\ITCustomsBrokerSelectController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITDeliveryDateRequiredController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITDeliveryStatusInputController.cs" />
+    <Compile Remove="Areas\Admin\Controllers\ITDetailController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITGoodsHandoverController.cs" />
+    <Compile Remove="Areas\Admin\Controllers\ITInspectionCreateIsController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITInventoryInputController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITItemImportController.cs" />
     <Compile Remove="Areas\Admin\Controllers\ITModeShippingGivenController.cs" />
@@ -398,9 +408,6 @@
     <Content Update="Areas\Admin\Views\ITProcurementPlan\ITProcurementPlanMainIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Areas\Admin\Views\ITReceiptInput\EditITReceiptInput.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
     <Content Update="Areas\Admin\Views\ITBuyer\EditBuyer.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -414,6 +421,12 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITLogistics\ITLogisticsScheduleIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITShipmentCreate\EditITShipmentTranCreate.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITShipmentCreate\ITShipmentCreateTranIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITTransport\EditITTransport.cshtml">

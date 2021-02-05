@@ -76,8 +76,6 @@
                         <th width="110px">手机号</th>
                         <th width="60px">性别</th>
                         <th width="150px">活动时间</th>
-                        <th width="100px">启用</th>
-                        <th width="120px">登录锁</th>
                         <th width="50px;">密码</th>
                         <th>操作</th>
                     </tr>
@@ -91,7 +89,7 @@
                             <td>@item.MobilePhone</td>
                             <td>@item.Sex</td>
                             <td>@(item.LastActivityTime?.ToString("yyyy-MM-dd HH;mm"))</td>
-                            <td>
+                            <!--<td>
                                 @if (!item.IsAdmin)
                                 {
                                     if (item.Enabled)
@@ -129,7 +127,7 @@
                                         <span class="lbl"></span>
                                     </label>
                                 }
-                            </td>
+                            </td>-->
                             <td>
                                 @if (!item.IsAdmin)
                                 {

@@ -16,7 +16,8 @@ namespace General.Entities
         public int Id { get; set; }
 
         public string OrderNo { get; set; }//订单号
-       
+        public string CodeNo { get; set; }//打码号
+        public string LongDealNo { get; set; }//长协号
         public string SupplierCode { get; set; }//供应商代码
         public string SupplierName { get; set; }//供应商名称
         public DateTime? OrderConfirmDate { get; set; }//订单确认日期
@@ -27,6 +28,7 @@ namespace General.Entities
         public string Project { get; set; }//项目
         public string Buyer { get; set; }//项目
         public string MaterialCategory { get; set; }//物料类别
+        public string Payment { get; set; }//付款方式
         public bool IsDeleted { get; set; }
         public Guid? Creator { get; set; }//
         public DateTime? CreationTime { get; set; }//

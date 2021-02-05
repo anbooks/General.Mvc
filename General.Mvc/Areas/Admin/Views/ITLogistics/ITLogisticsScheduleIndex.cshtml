@@ -27,7 +27,23 @@
             @ViewData["Title"]
         </h1>
     </div>
-   
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form asp-route="itOrderBuyerIndex" method="get" class="form-inline">
+                                <a asp-route="excelimportaej" class="btn btn-sm btn-pink">生成二检单</a>
+
+                                <a asp-route="excelimportLogistics" class="btn btn-sm btn-pink">明细表导出</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="space-2"></div>
     <div class="row">
         <div class="col-sm-12">
@@ -71,7 +87,7 @@
                             <th width="120px">索引号</th>
                             <th width="100px">物料代码</th>
                             <th width="100px">品名</th>
-                            <th width="100px">型号</th>
+                            <th width="100px">牌号</th>
                             <th width="100px">规范</th>
                             <th width="100px">厚度</th>
                             <th width="100px">长</th>
@@ -88,8 +104,8 @@
                             <th width="100px">炉批号</th>
                             <th width="100px">账册号</th>
                             <th width="100px">账册项号</th>
-                            <th width="100px">备案单位</th>
-                            <th width="100px">按备案单位折算单价</th>
+                            <th width="100px">申报单位</th>
+                            <th width="100px">按申报单位折算单价</th>
                             <th width="100px">法定单位</th>
                             <th width="100px">按法定单位折算单价</th>
                             <th width="100px">合格证号</th>

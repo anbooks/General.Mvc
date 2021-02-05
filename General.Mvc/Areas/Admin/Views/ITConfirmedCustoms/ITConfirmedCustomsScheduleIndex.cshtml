@@ -34,7 +34,8 @@
                 <div class="col-sm-12">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                             <a asp-route="excelimportConfirmedCustoms" class="btn btn-sm btn-pink">明细表导出</a> 
+                            <a asp-route="excelimportConfirmedCustoms" class="btn btn-sm btn-pink">明细表导出</a>  
+                           
                         </div>
                     </div>
                 </div>
@@ -55,12 +56,12 @@
             </div>
         </div>
     </div>
-    <form asp-route="itConfirmedCustomsSchedule" method="post" id="formitBuyer" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="excelConfirmedCustoms" method="post" class="form-horizontal" >
         <div class="panel panel-default">
             <div class="form-inline">
                 <button class="btn btn-info btn-sm" type="submit">
                     <i class="ace-icon fa fa-check bigger-110"></i>
-                    确认修改
+                    生成核注清单
                 </button>
             </div>
         </div>
@@ -69,159 +70,130 @@
         <div class="form-group" id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
             @if (Model != null)
             {
-                <table id="user_datatable" style="table-layout:fixed" class="table table-striped table-bordered table-hover dataTable no-footer">
-                    <thead>
+            <table id="user_datatable" style="table-layout:fixed" class="table table-striped table-bordered table-hover dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th width="40px"></th>
+                        <th width="80px">采购员</th>
+                        <th width="100px">订单号</th>
+                        <th width="50px">订单行号</th>
+                        <th width="120px">索引号</th>
+                        <th width="100px">物料代码</th>
+                        <th width="100px">品名</th>
+                        <th width="100px">牌号</th>
+                        <th width="100px">规范</th>
+                        <th width="100px">厚度</th>
+                        <th width="100px">长</th>
+                        <th width="100px">宽</th>
+                        <th width="100px">采购数量</th>
+                        <th width="100px">采购单位</th>
+                        <th width="100px">单价</th>
+                        <th width="100px">总价</th>
+                        <th width="150px">发运日期</th>
+                        <th width="100px">发货人</th>
+                        <th width="100px">制造商</th>
+                        <th width="100px">原产国</th>
+                        <th width="100px">运单号</th>
+                        <th width="100px">炉批号</th>
+                        <th width="100px">账册号</th>
+                        <th width="100px">账册项号</th>
+                        <th width="100px">申报单位</th>
+                        <th width="100px">法定单位1</th>
+                        <th width="100px">法定单位2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Data)
+                    {
                         <tr>
-                            <th width="40px"></th>
-                            <th width="80px">采购员</th>
-                            <th width="100px">订单号</th>
-                            <th width="50px">订单行号</th>
-                            <th width="120px">索引号</th>
-                            <th width="100px">物料代码</th>
-                            <th width="100px">品名</th>
-                            <th width="100px">型号</th>
-                            <th width="100px">规范</th>
-                            <th width="100px">厚度</th>
-                            <th width="100px">长</th>
-                            <th width="100px">宽</th>
-                            <th width="100px">采购数量</th>
-                            <th width="100px">采购单位</th>
-                            <th width="100px">单价</th>
-                            <th width="100px">总价</th>
-                            <th width="150px">发运日期</th>
-                            <th width="100px">发货人</th>
-                            <th width="100px">制造商</th>
-                            <th width="100px">原产国</th>
-                            <th width="100px">运单号</th>
-                            <th width="100px">炉批号</th>
-                            <th width="100px">账册号</th>
-                            <th width="100px">账册项号</th>
-                            <th width="100px">备案单位</th>
-                            <th width="100px">按备案单位折算单价</th>
-                            <th width="100px">法定单位</th>
-                            <th width="100px">按法定单位折算单价</th>
-                            <th width="100px">合格证号</th>
+                            <td>
+                                <input type="checkbox" name="checkboxId" value="@item.Id"   />
+                            </td>
+                            <td>
+                                @item.Buyer
+                            </td>
+
+                            <td>
+                                @item.OrderNo
+                            </td>
+
+                            <td>
+                                @item.OrderLine
+                            </td>
+
+                            <td>
+                                @item.ReferenceNo
+                            </td>
+                            <td>
+                                @item.MaterialCode
+                            </td>
+                            <td>
+                                @item.Description
+                            </td>
+                            <td>
+                                @item.Type
+                            </td>
+                            <td>
+                                @item.Specification
+                            </td>
+                            <td>
+                                @item.Thickness
+                            </td>
+                            <td>
+                                @item.Length
+                            </td>
+                            <td>
+                                @item.Width
+                            </td>
+                            <td>
+                                @item.PurchaseQuantity
+                            </td>
+                            <td>
+                                @item.PurchaseUnit
+                            </td>
+                            <td>
+                                @item.UnitPrice
+                            </td>
+                            <td>
+                                @item.TotalPrice
+                            </td>
+                            <td>
+                                @item.ShipmentDate
+                            </td>
+                            <td>
+                                @item.Consignor
+                            </td>
+                            <td>
+                                @item.Manufacturers
+                            </td>
+                            <td>
+                                @item.OriginCountry
+                            </td>
+                            <td>
+                                @item.BatchNo
+                            </td>
+                            <td>
+                                @item.Waybill
+                            </td>
+                            <td>
+                                @item.Books
+                            </td>
+                            <td>
+                                @item.BooksItem
+                            </td>
+                            <td>
+                                @item.RecordUnit
+                            </td>
+                            <td>
+                                @item.RecordUnitReducedPrice
+                            </td>
+                            <td>
+                                @item.LegalUnits
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model.Data)
-                        {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
-                                </td>
-                                <td>
-                                    @item.Buyer
-                                </td>
-
-                                <td>
-                                    @item.OrderNo
-                                </td>
-
-                                <td>
-                                    @item.OrderLine
-                                </td>
-
-                                <td>
-                                    @item.ReferenceNo
-                                </td>
-                                <td>
-                                    @item.MaterialCode
-                                </td>
-                                <td>
-                                    @item.Description
-                                </td>
-                                <td>
-                                    @item.Type
-                                </td>
-                                <td>
-                                    @item.Specification
-                                </td>
-                                <td>
-                                    @item.Thickness
-                                </td>
-                                <td>
-                                    @item.Length
-                                </td>
-                                <td>
-                                    @item.Width
-                                </td>
-                                <td>
-                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
-                                </td>
-
-                                @if (@item.ShipmentDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
-
-                                <td>
-                                    <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Books" value="@item.Books" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
-
-                                <td>
-                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:80px" />
-                                </td>
-
-                                <td>
-                                    <input type="text" name="Qualification" value="@item.Qualification" style="width:80px" />
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+                    }
+                </tbody>
+            </table>
                 <pager page-value="Model.Paging"></pager>
             }
         </div>
@@ -277,26 +249,16 @@
                     subArray.push(mSub);
                 });
                 alert(JSON.stringify(subArray));
-                var _url = "/admin/itConfirmedCustoms/itConfirmedCustomsScheduleList"
+                var _url = "/admin/itConfirmedCustoms/excelConfirmedCustoms"
                 form.ajaxSubmit({
                     type: 'post', // 提交方式 get/post
                     url: _url, // 需要提交的 url
                     dataType: "json", //数据类型 注意这里！！！！！
                     data: { "kevin": JSON.stringify(subArray) },
-                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
-                        // 此处可对 data 作相关处理
-                        var rs = data;
-                        if (rs.status == true) {
-                            alert('提交成功！');
-                        } else {
-                            alert('提交失败！数据有误！！！');
-                            window.parent.location.reload();
-                        }
-                    }
+                   
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
-
-
+                
             });
 
         });

@@ -43,7 +43,7 @@
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="发货人" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="合同号" />
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="订单号" />
                         @Html.DropDownList("invcurr", ViewData["Companys"] as SelectList, "货币类型", new { @class = "form-control  input-small" })
 
 
@@ -89,6 +89,8 @@
                             <th width="80px">币种</th>
                             <th width="80px">单价</th>
                             <th width="80px">总价</th>
+                            <th width="80px">计划数量</th>
+                            <th width="80px">折算关系</th>
                             <th width="80px">交货日期</th>
                             <th width="80px">制造商</th>
                             <th width="80px">原产国</th>
@@ -97,29 +99,31 @@
                     <tbody>
                         @foreach (var item in Model.Data)
                         {
-                            <tr>
-                                <td><input type="checkbox" name="checkboxId" value="@item.Id" /></td>
-                                <td>@item.OrderNo</td>
-                                <td>@item.Item</td>
-                                <td>@item.PlanItem</td>
-                                <td>@item.MaterialCode</td>
-                                <td>@item.Name</td>
-                                <td>@item.PartNo</td>
-                                <td>@item.Specification</td>
-                                <td>@item.Size</td>
-                                <td>@item.Width</td>
-                                <td>@item.Length</td>
-                                <td>@item.Package</td>
-                                <td>@item.Qty</td>
-                                <td>@item.Unit</td>
-                                <td>@item.Currency</td>
-                                <td>@item.UnitPrice</td>
-                                <td>@item.TotalPrice</td>
-                                <td>@item.LeadTime</td>
-                                <td>@item.Manufacturer</td>
-                                <td>@item.Origin</td>
+                        <tr>
+                            <td><input type="checkbox" name="checkboxId" value="@item.Id" /></td>
+                            <td>@item.OrderNo</td>
+                            <td>@item.Item</td>
+                            <td>@item.PlanItem</td>
+                            <td>@item.MaterialCode</td>
+                            <td>@item.Name</td>
+                            <td>@item.PartNo</td>
+                            <td>@item.Specification</td>
+                            <td>@item.Size</td>
+                            <td>@item.Width</td>
+                            <td>@item.Length</td>
+                            <td>@item.Package</td>
+                            <td>@item.Qty</td>
+                            <td>@item.Unit</td>
+                            <td>@item.Currency</td>
+                            <td>@item.UnitPrice</td>
+                            <td>@item.TotalPrice</td>
+                            <td>@item.PlanUnit</td>
+                            <td>@item.Reduced</td>
+                            <td>@item.LeadTime</td>
+                            <td>@item.Manufacturer</td>
+                            <td>@item.Origin</td>
 
-                            </tr>
+                        </tr>
                         }
                     </tbody>
                 </table>
