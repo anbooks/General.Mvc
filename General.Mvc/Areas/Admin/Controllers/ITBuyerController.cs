@@ -492,11 +492,14 @@ namespace General.Mvc.Areas.Admin.Controllers
                 int recordunitreducedprice = 0;//按申报单位折算单价
                 int legalunits = 0;//法定单位
                 int legalunitereducedprice = 0;//按法定单位折算单价
-                int qualification = 0;//合格证号
+                int qualification = 0;//合格证号 
+                int planno = 0;//合格证号
+                int reduced = 0;//合格证号
+                int codeno=0;
                 for (int columns = 1; columns <= ColCount; columns++)
                 {
                     //Entities.Order model = new Entities.Order();
-                    if (worksheet.Cells[1, columns].Value.ToString() == "采购员") { buyer = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "供应商") { buyer = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "订单号") { orderno = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "订单行号") { orderline = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "索引号") { referenceno = columns; }
@@ -504,9 +507,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (worksheet.Cells[1, columns].Value.ToString() == "品名") { description = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "牌号") { type = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "规范") { specification = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "厚度") { thickness = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "长") { length = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "宽") { width = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "规格1") { thickness = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "规格2") { length = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "规格3") { width = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "采购数量") { purchasequantity = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "采购单位") { purchaseunit = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "单价") { unitprice = columns; }
@@ -522,7 +525,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (worksheet.Cells[1, columns].Value.ToString() == "申报单位") { recordunit = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "法定单位1") { recordunitreducedprice = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "法定单位2") { legalunits = columns; }
-                 
+                    if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { qualification = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "发票号") { legalunitereducedprice = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "计划数量") { planno = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "折算关系") { reduced = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "打码号") { codeno = columns; }
                 }
                 for (int row = 2; row <= rowCount; row++)
                 {
@@ -533,7 +540,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                         model.MainId = ViewBag.mainid;
                         if (worksheet.Cells[row, buyer].Value != null)
                         {
-                            model.Buyer = worksheet.Cells[row, buyer].Value.ToString();//采购员
+                            model.Manufacturers = worksheet.Cells[row, buyer].Value.ToString();//供应商
                         }
                         if (worksheet.Cells[row, orderno].Value != null)
                         {
@@ -639,7 +646,22 @@ namespace General.Mvc.Areas.Admin.Controllers
                         {
                             model.LegalUniteReducedPrice = worksheet.Cells[row, legalunitereducedprice].Value.ToString();//按法定单位折算单价
                         }
-                       
+                        if (worksheet.Cells[row, qualification].Value != null)
+                        {
+                            model.InvoiceNo = worksheet.Cells[row, qualification].Value.ToString();//按法定单位折算单价
+                        }
+                        if (worksheet.Cells[row, planno].Value != null)
+                        {
+                            model.PlanNo =Convert.ToDouble(worksheet.Cells[row, planno].Value) ;//按法定单位折算单价
+                        }
+                        if (worksheet.Cells[row, codeno].Value != null)
+                        {
+                            model.CodeNo = worksheet.Cells[row, codeno].Value.ToString();//按法定单位折算单价
+                        }
+                        if (worksheet.Cells[row, reduced].Value != null)
+                        {
+                            model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);//按法定单位折算单价
+                        }
                         model.Creator = WorkContext.CurrentUser.Id;
                         model.CreationTime = DateTime.Now;
                         _scheduleService.insertSchedule(model);
