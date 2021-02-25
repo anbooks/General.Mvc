@@ -39,6 +39,10 @@ namespace General.Services.ProcurementPlan
                     query = query.Where(o => o.Materialno.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
                     query = query.Where(o => o.Name.Contains(arg.pono));
+                if (arg.realreceivingdateend != null)
+                    query = query.Where(o => o.CreationTime < arg.realreceivingdateend.Value.AddDays(1));
+                if (arg.realreceivingdatestrat != null)
+                    query = query.Where(o => o.CreationTime > arg.realreceivingdatestrat);
             }
             query = query.OrderBy(o => o.Id);
             return new PagedList<Entities.ProcurementPlan>(query, page, size);

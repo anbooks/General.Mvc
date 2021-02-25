@@ -40,6 +40,10 @@ namespace General.Services.OrderMain
                     query = query.Where(o => o.Buyer.Contains(arg.pono));
                 if (!String.IsNullOrEmpty(arg.invcurr))
                     query = query.Where(o => o.Project.Contains(arg.invcurr));
+                if (arg.realreceivingdateend != null)
+                    query = query.Where(o => o.OrderConfirmDate < arg.realreceivingdateend.Value.AddDays(1));
+                if (arg.realreceivingdatestrat != null)
+                    query = query.Where(o => o.OrderConfirmDate > arg.realreceivingdatestrat);
             }
             query = query.OrderBy(o => o.OrderNo);
             return new PagedList<Entities.OrderMain>(query, page, size);

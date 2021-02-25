@@ -23,7 +23,7 @@
             @ViewData["Title"]
         </h1>
     </div>
-    <a asp-route="editITOrderImportMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>采购订单导入</a>
+    <a asp-route="editITOrderImportMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入采购订单</a>
     
     <div class="space-2"></div>
     <div class="row">
@@ -36,6 +36,15 @@
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="供应商代码" />
                         <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="采购员" />
                         <input type="text" class="form-control" name="invcurr" style="width:180px;" value="@Model.Paging.RouteArg.invcurr" placeholder="项目" />
+                        @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
+                        {
+                        <label>订单确认日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
+                            <label>----</label> <input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdateend.ToString("yyyy-MM-dd")" placeholder="" />
+                        }
+                        else
+                        { <label>订单确认日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
+                            <label>----</label><input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" placeholder="" />
+                        }
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
@@ -99,12 +108,7 @@
                 <pager page-value="Model.Paging"></pager>
             }
         </div>
-        <div class="col-md-offset-1">
-            <button class="btn btn-info" type="submit">
-                <i class="ace-icon fa fa-check bigger-110"></i>
-                确认创建
-            </button>
-        </div>
+       
     </form>
     <script>
 

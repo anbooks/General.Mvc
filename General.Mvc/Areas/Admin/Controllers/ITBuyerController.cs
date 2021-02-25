@@ -226,7 +226,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 13].Value = "单价";
                 worksheet.Cells[1, 14].Value = "总价";
                 worksheet.Cells[1, 15].Value = "发运日期";
-                worksheet.Cells[1, 16].Value = "发货人";
+                worksheet.Cells[1, 16].Value = "供应商名称";
                 worksheet.Cells[1, 17].Value = "制造商";
                 worksheet.Cells[1, 18].Value = "原产国";
                 worksheet.Cells[1, 19].Value = "炉批号";
@@ -481,7 +481,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 int unitprice = 0;//单价
                 int totalprice = 0;//总价
                 int shipmentdate = 0;//发运日期
-                int consignor = 0;//发货人
+                int consignor = 0;//供应商名称
                 int manufacturers = 0;//制造商
                 int origincountry = 0;//原产国
                 int batchno = 0;//炉批号（质量编号）
@@ -515,7 +515,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (worksheet.Cells[1, columns].Value.ToString() == "单价") { unitprice = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "总价") { totalprice = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "发运日期") { shipmentdate = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "发货人") { consignor = columns; }
+                    if (worksheet.Cells[1, columns].Value.ToString() == "供应商名称") { consignor = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "制造商") { manufacturers = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "原产国") { origincountry = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "炉批号") { batchno = columns; }
@@ -604,7 +604,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                         }
                         if (worksheet.Cells[row, consignor].Value != null)
                         {
-                            model.Consignor = worksheet.Cells[row, consignor].Value.ToString();//发货人
+                            model.Consignor = worksheet.Cells[row, consignor].Value.ToString();//供应商名称
                         }
                         if (worksheet.Cells[row, manufacturers].Value != null)
                         {

@@ -161,8 +161,12 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult EditITOrderImportMain(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
+            var customizedList = _sysCustomizedListService.getByAccount("付款方式");
+            ViewData["Payment"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             var customizedList2 = _sysUserService.getTran();
             ViewData["Transport"] = new SelectList(customizedList2, "Transport", "Transport");
+            var customizedList3 = _sysCustomizedListService.getByAccount("贸易条款");
+            ViewData["TradeTerms"] = new SelectList(customizedList3, "CustomizedValue", "CustomizedValue");
             ViewBag.Person = WorkContext.CurrentUser.Name;
             ViewBag.Card = WorkContext.CurrentUser.Account;
             if (id != null)
@@ -243,7 +247,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.OrderNo = modelplan.OrderNo;
                     modelmain.OrderConfirmDate = modelplan.OrderConfirmDate;
                     modelmain.OrderSigner = modelplan.OrderSigner;
-                    modelmain.SignerCard = modelplan.SignerCard;
+                    var sc = _sysUserService.getByName(modelplan.OrderSigner);
+                    modelmain.SignerCard = sc.Account;
                     modelmain.SupplierCode = modelplan.SupplierCode;
                     modelmain.Payment = modelplan.Payment;
                     modelmain.CodeNo = modelplan.CodeNo;
@@ -253,7 +258,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
                     if (modelproject != null) { modelmain.Project = modelproject.Describe; }
                     var modelBuyer = _sysUserService.getByBuyer(modelplan.OrderNo.Substring(1, 2));
-                    if (modelBuyer != null) { modelmain.Buyer = modelBuyer.Account; }
+                    if (modelBuyer != null) { modelmain.Buyer = modelBuyer.Name; }
                     var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
                     if (modelMaterial != null) { modelmain.MaterialCategory = modelMaterial.Describe; }
                     var modelSupplier = _sysSupplierService.getByAccount(modelplan.SupplierCode);

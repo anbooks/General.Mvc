@@ -197,7 +197,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <param name="returnUrl"></param>
         /// <returns></returns>
         [HttpGet]
-        [Function("修改密码", false, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.MainController", Sort = 4)]
+        [Function("修改密码", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
         [Route("password", Name = "password")]
         public IActionResult EditPassword(Guid? id, string returnUrl = null)
         {
@@ -240,7 +240,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("message", Name = "usermessages")]
-        [Function("个人信息", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.MainController.UserIndex")]
+        [Function("个人信息", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]
         public IActionResult Usermessages(Guid? id, Entities.SysUserMessage model, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("mainIndex");

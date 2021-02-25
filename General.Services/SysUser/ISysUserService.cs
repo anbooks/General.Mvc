@@ -23,6 +23,7 @@ namespace General.Services.SysUser
         /// <param name="account"></param>
         /// <returns></returns>
         Entities.SysUser getByAccount(string account);
+        Entities.SysUser getByName(string account);
         Entities.SysUser getByBuyer(string account);
         List<Entities.SysUser> getBuyer();
         List<Entities.SysUser> getPorkCustoms();
@@ -79,7 +80,7 @@ namespace General.Services.SysUser
         /// <param name="account"></param>
         /// <returns></returns>
         bool existAccount(string account);
-
+        bool existName(string account);
 
         /// <summary>
         /// 启用禁用账号

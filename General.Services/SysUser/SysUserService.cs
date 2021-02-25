@@ -363,6 +363,10 @@ namespace General.Services.SysUser
         {
             return _sysUserRepository.Table.FirstOrDefault(o => o.Account == account && !o.IsDeleted);
         }
+        public Entities.SysUser getByName(string account)
+        {
+            return _sysUserRepository.Table.FirstOrDefault(o => o.Name == account && !o.IsDeleted);
+        }
         public Entities.SysUser getByBuyer(string account)
         {
             return _sysUserRepository.Table.FirstOrDefault(o => o.Co == account && !o.IsDeleted);
@@ -538,12 +542,15 @@ namespace General.Services.SysUser
         {
             return _sysUserRepository.Table.Any(o => o.Account == account && !o.IsDeleted);
         }
-
-   //     void ISysUserService.updateSysUser(Entities.SysUser model)
-     //   {
-       //     throw new NotImplementedException();
+        public bool existName(string account)
+        {
+            return _sysUserRepository.Table.Any(o => o.Name == account && !o.IsDeleted);
+        }
+        //     void ISysUserService.updateSysUser(Entities.SysUser model)
+        //   {
+        //     throw new NotImplementedException();
         //}
-       
+
         public void enabled(Guid id, bool enabled, Guid modifer)
         {
             throw new NotImplementedException();

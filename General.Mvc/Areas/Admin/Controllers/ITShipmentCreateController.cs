@@ -103,8 +103,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return View(model);
             if (!String.IsNullOrEmpty(model.Invcurr))
                 model.Invcurr = model.Invcurr.Trim();
-            if (!String.IsNullOrEmpty(model.Shipper))
-                model.Shipper = model.Shipper.Trim();
+           
             if (!String.IsNullOrEmpty(model.Itemno))
                 model.Itemno = model.Itemno.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
@@ -120,6 +119,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
                 model.Incoterms = inc.TradeTerms;
+                model.Shipper = inc.SupplierName;
                 if (model.PoNo == null || model.Shipper == null || model.Transportation == null)
                 {
 

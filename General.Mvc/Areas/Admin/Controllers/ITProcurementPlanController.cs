@@ -336,9 +336,12 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.PlanItem = modelplan.PlanItem;
                     modelmain.Prepare = modelplan.Prepare;
                     modelmain.Project = modelplan.Project;
-                    modelmain.CreationTime = DateTime.Now;
+                    modelmain.CreationTime = modelplan.CreationTime;
                     modelmain.Creator = modelplan.Creator;
-                    _sysProcurementPlanMainService.insertProcurementPlanMain(modelmain);
+                    var pre = _sysUserService.existAccount(modelplan.Prepare);
+                    var cre = _sysUserService.existAccount(modelplan.Creator);
+                    if (pre == true) { return Redirect(ViewBag.ReturnUrl); }
+                    if (cre == true) { return Redirect(ViewBag.ReturnUrl); }
                     for (int row = 2; row <= rowCount; row++)
                     {
                         try
@@ -431,6 +434,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                             }
                               model.CreationTime = DateTime.Now;
                               model.Creator = WorkContext.CurrentUser.Id;
+                            _sysProcurementPlanMainService.insertProcurementPlanMain(modelmain);
                             _sysProcurementPlanService.insertProcurementPlan(model);
                         }
                         catch (Exception e)

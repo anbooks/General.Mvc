@@ -161,7 +161,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 13].Value = "单价";
                 worksheet.Cells[1, 14].Value = "总价";
                 worksheet.Cells[1, 15].Value = "发运日期";
-                worksheet.Cells[1, 16].Value = "发货人";
+                worksheet.Cells[1, 16].Value = "供应商名称";
                 worksheet.Cells[1, 17].Value = "制造商";
                 worksheet.Cells[1, 18].Value = "原产国";
                 worksheet.Cells[1, 19].Value = "炉批号";
