@@ -21,7 +21,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="editITProcurementPlanMain" enctype="multipart/form-data" method="post" class="form-horizontal" onsubmit="return false;">
+            <form asp-route="editITProcurementPlanMain" enctype="multipart/form-data" method="post" class="form-horizontal" >
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
                 <div class="form-group">
@@ -71,7 +71,7 @@
                 }
 
                 <div class="col-md-offset-2 col-md-9">
-                    <button class="btn btn-info" type="submit">
+                    <button class="btn btn-info" type="submit"onclick="javascript:return confirm('确定提交吗?');">
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         提交
                     </button>
