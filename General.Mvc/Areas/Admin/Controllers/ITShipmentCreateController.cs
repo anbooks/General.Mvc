@@ -118,6 +118,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
+                if (inc==null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312")); }
                 model.Incoterms = inc.TradeTerms;
                 model.Shipper = inc.SupplierName;
                 if (model.PoNo == null || model.Shipper == null || model.Transportation == null)
@@ -177,6 +178,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
+                if (inc == null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312")); }
                 model.Incoterms = inc.TradeTerms;
                 if (model.PoNo==null||model.Shipper==null||model.Transportation==null) {
                    

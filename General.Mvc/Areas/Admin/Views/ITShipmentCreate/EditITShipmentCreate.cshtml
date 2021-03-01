@@ -28,7 +28,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="editITShipmentCreate" method="post" enctype="multipart/form-data" class="form-horizontal" onsubmit="return false;">
+            <form asp-route="editITShipmentCreate" method="post" enctype="multipart/form-data" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
                 @if (ViewBag.FJ == 1)
@@ -93,7 +93,7 @@
             </div>
         }
                 <div class="col-md-offset-2 col-md-9">
-                    <button class="btn btn-info" type="submit" >
+                    <button class="btn btn-info" type="submit"onclick="javascript:return confirm('确定提交吗?');" >
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         提交
                     </button>

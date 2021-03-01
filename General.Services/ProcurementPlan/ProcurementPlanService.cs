@@ -57,7 +57,7 @@ namespace General.Services.ProcurementPlan
         /// <returns></returns>
         public bool existAccount(string account)
         {
-            return _sysProcurementPlanRepository.Table.Any(o => o.Name == account );
+            return _sysProcurementPlanRepository.Table.Any(o => o.Name == account && o.IsDeleted != true);
         }
         /// <summary>
         /// 获取用户详情

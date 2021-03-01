@@ -21,7 +21,7 @@ namespace General.Services.Supplier
         }
         public Entities.Supplier getByAccount(string account)
         {
-            return _sysSupplierRepository.Table.FirstOrDefault(o => o.SupplierCode == account);
+            return _sysSupplierRepository.Table.FirstOrDefault(o => o.SupplierCode == account&&o.SupplierCode!=null);
         }
         /// <summary>
         /// 搜索数据

@@ -36,7 +36,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IProcurementPlanMainService _sysProcurementPlanMainService;
         private ISysCustomizedListService _sysCustomizedListService;
         private ISysUserService _sysUserService;
-        public ITProcurementPlanController(ISysUserService sysUserService,ISysCustomizedListService sysCustomizedListService, IProcurementPlanMainService sysProcurementPlanMainService, IProcurementPlanService sysProcurementPlanService, IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
+        public ITProcurementPlanController(ISysUserService sysUserService, ISysCustomizedListService sysCustomizedListService, IProcurementPlanMainService sysProcurementPlanMainService, IProcurementPlanService sysProcurementPlanService, IImportTrans_main_recordService importTrans_main_recordService, IHostingEnvironment hostingEnvironment, ISysRoleService sysRoleService)
         {
             this._sysCustomizedListService = sysCustomizedListService;
             this._importTrans_main_recordService = importTrans_main_recordService;
@@ -49,21 +49,23 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("itProcurementPlanIndex", Name = "itProcurementPlanIndex")]
         [Function("采购计划详细", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
 
-        public IActionResult ITProcurementPlanIndex(int id,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        public IActionResult ITProcurementPlanIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             string s;
-            if (id!=0) {
-            Response.Cookies.Append("Plan",Convert.ToString(id));
+            if (id != 0)
+            {
+                Response.Cookies.Append("Plan", Convert.ToString(id));
                 s = Convert.ToString(id);
             }
-            else {
+            else
+            {
                 Request.Cookies.TryGetValue("Plan", out s);
             }
             int ida = Convert.ToInt32(s);
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            var pageList = _sysProcurementPlanService.searchProcurementPlan(arg, page, size,ida);
+            var pageList = _sysProcurementPlanService.searchProcurementPlan(arg, page, size, ida);
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ProcurementPlan, SysCustomizedListSearchArg>("itProcurementPlanIndex", arg);
             return View(dataSource);//sysImport
@@ -125,7 +127,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpPost]
         [Route("importexcelPlan", Name = "importexcelPlan")]
         [Function("Excel导入采购计划", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
-        public ActionResult Import(Entities.ProcurementPlanMain modelplan,IFormFile excelfile,string excelbh, string returnUrl = null)
+        public ActionResult Import(Entities.ProcurementPlanMain modelplan, IFormFile excelfile, string excelbh, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanMainIndex");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
@@ -137,6 +139,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 excelfile.CopyTo(fs);
                 fs.Flush();
             }
+
             using (ExcelPackage package = new ExcelPackage(file))
             {
                 StringBuilder sb = new StringBuilder();
@@ -172,7 +175,12 @@ namespace General.Mvc.Areas.Admin.Controllers
                 }
                 Entities.ProcurementPlanMain modelmain = new Entities.ProcurementPlanMain();
                 var listmain = _sysProcurementPlanMainService.existAccount(modelplan.PlanItem);
-                if (listmain == true) { return Redirect(ViewBag.ReturnUrl); }
+                if (listmain == true)
+                {
+
+                    return Redirect(ViewBag.ReturnUrl);
+                }
+
                 modelmain.PlanItem = modelplan.PlanItem;
                 modelmain.Prepare = modelplan.Prepare;
                 modelmain.Project = modelplan.Project;
@@ -187,61 +195,79 @@ namespace General.Mvc.Areas.Admin.Controllers
                         model.Project = modelplan.Project;
                         var main = _sysProcurementPlanMainService.getByAccount(model.PlanItem);
                         model.MainId = main.Id;
-                        if (worksheet.Cells[row, item].Value!=null){
+                        if (worksheet.Cells[row, item].Value != null)
+                        {
                             model.Item = worksheet.Cells[row, item].Value.ToString();
                         }
-                        if (worksheet.Cells[row, materialno].Value!=null){
+                        if (worksheet.Cells[row, materialno].Value != null)
+                        {
                             model.Materialno = worksheet.Cells[row, materialno].Value.ToString();
                         }
                         if (worksheet.Cells[row, name].Value != null)
-                        { model.Name = worksheet.Cells[row, name].Value.ToString();
+                        {
+                            model.Name = worksheet.Cells[row, name].Value.ToString();
                         }
                         if (worksheet.Cells[row, partno].Value != null)
-                        { model.PartNo = worksheet.Cells[row, partno].Value.ToString();
+                        {
+                            model.PartNo = worksheet.Cells[row, partno].Value.ToString();
                         }
                         if (worksheet.Cells[row, technical].Value != null)
-                        { model.Technical = worksheet.Cells[row, technical].Value.ToString();
+                        {
+                            model.Technical = worksheet.Cells[row, technical].Value.ToString();
                         }
                         if (worksheet.Cells[row, width].Value != null)
-                        { model.Width = worksheet.Cells[row, width].Value.ToString();
+                        {
+                            model.Width = worksheet.Cells[row, width].Value.ToString();
                         }
                         if (worksheet.Cells[row, size].Value != null)
-                        { model.Size = worksheet.Cells[row, size].Value.ToString();
+                        {
+                            model.Size = worksheet.Cells[row, size].Value.ToString();
                         }
                         if (worksheet.Cells[row, length].Value != null)
-                        { model.Length = worksheet.Cells[row, length].Value.ToString();
+                        {
+                            model.Length = worksheet.Cells[row, length].Value.ToString();
                         }
                         if (worksheet.Cells[row, planno].Value != null)
-                        { model.PlanNo = worksheet.Cells[row, planno].Value.ToString();
+                        {
+                            model.PlanNo = worksheet.Cells[row, planno].Value.ToString();
                         }
                         if (worksheet.Cells[row, planunit].Value != null)
-                        { model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
+                        {
+                            model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
                         }
                         if (worksheet.Cells[row, planorderno].Value != null)
-                        { model.PlanOrderNo = worksheet.Cells[row, planorderno].Value.ToString();
+                        {
+                            model.PlanOrderNo = worksheet.Cells[row, planorderno].Value.ToString();
                         }
                         if (worksheet.Cells[row, planorderunit].Value != null)
-                        { model.PlanOrderUnit = worksheet.Cells[row, planorderunit].Value.ToString();
+                        {
+                            model.PlanOrderUnit = worksheet.Cells[row, planorderunit].Value.ToString();
                         }
                         if (worksheet.Cells[row, requireddockdate].Value != null)
-                        { model.RequiredDockDate =Convert.ToDateTime(worksheet.Cells[row,requireddockdate].Value.ToString()) ;
+                        {
+                            model.RequiredDockDate = Convert.ToDateTime(worksheet.Cells[row, requireddockdate].Value.ToString());
                         }
                         if (worksheet.Cells[row, accovers].Value != null)
-                        { model.ACCovers = worksheet.Cells[row, accovers].Value.ToString();
+                        {
+                            model.ACCovers = worksheet.Cells[row, accovers].Value.ToString();
                         }
                         if (worksheet.Cells[row, purchasing].Value != null)
-                        { model.Purchasing = worksheet.Cells[row, purchasing].Value.ToString();
+                        {
+                            model.Purchasing = worksheet.Cells[row, purchasing].Value.ToString();
                         }
                         if (worksheet.Cells[row, application].Value != null)
-                        { model.Application = worksheet.Cells[row, application].Value.ToString();
+                        {
+                            model.Application = worksheet.Cells[row, application].Value.ToString();
                         }
                         if (worksheet.Cells[row, single].Value != null)
-                        { model.SingleQuota = worksheet.Cells[row, single].Value.ToString();
+                        {
+                            model.SingleQuota = worksheet.Cells[row, single].Value.ToString();
                         }
                         if (worksheet.Cells[row, packagea].Value != null)
-                        { model.Package = worksheet.Cells[row, packagea].Value.ToString();
+                        {
+                            model.Package = worksheet.Cells[row, packagea].Value.ToString();
                         }
-                        if (worksheet.Cells[row, remark1].Value!=null)
+                        if (worksheet.Cells[row, remark1].Value != null)
                         {
                             model.Remark1 = worksheet.Cells[row, remark1].Value.ToString();
                         }
@@ -289,10 +315,16 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return View(modelplan);
             if (modelplan.Id.Equals(0))
             {
+                if (excelfile == null)
+                {
+
+                    Response.WriteAsync("<script>alert('未添加导入模板!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
+                }
                 string sWebRootFolder = _hostingEnvironment.WebRootPath;
                 var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
                 string sFileName = excelfile.FileName;
                 FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+
                 using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
                 {
                     excelfile.CopyTo(fs);
@@ -332,16 +364,30 @@ namespace General.Mvc.Areas.Admin.Controllers
                     }
                     Entities.ProcurementPlanMain modelmain = new Entities.ProcurementPlanMain();
                     var listmain = _sysProcurementPlanMainService.existAccount(modelplan.PlanItem);
-                    if (listmain == true) { return Redirect(ViewBag.ReturnUrl); }
+                    if (listmain == true)
+                    {
+                        Response.WriteAsync("<script>alert('采购计划编号重复!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
+                        return Redirect(ViewBag.ReturnUrl);
+                    }
                     modelmain.PlanItem = modelplan.PlanItem;
                     modelmain.Prepare = modelplan.Prepare;
                     modelmain.Project = modelplan.Project;
                     modelmain.CreationTime = modelplan.CreationTime;
                     modelmain.Creator = modelplan.Creator;
-                    var pre = _sysUserService.existAccount(modelplan.Prepare);
-                    var cre = _sysUserService.existAccount(modelplan.Creator);
-                    if (pre == true) { return Redirect(ViewBag.ReturnUrl); }
-                    if (cre == true) { return Redirect(ViewBag.ReturnUrl); }
+                    var pre = _sysUserService.existName(modelplan.Prepare);
+                    var cre = _sysUserService.existName(modelplan.Creator);
+                    if (pre == false)
+                    {
+                        Response.WriteAsync("<script>alert('采购计划编制人不存在!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
+                        return Redirect(ViewBag.ReturnUrl);
+                    }
+                    if (cre == false)
+                    {
+                        Response.WriteAsync("<script>alert('采购计划接收人不存在!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
+                        return Redirect(ViewBag.ReturnUrl);
+                    }
+                    _sysProcurementPlanMainService.insertProcurementPlanMain(modelmain);
+                    var main = _sysProcurementPlanMainService.getByAccount(modelplan.PlanItem);
                     for (int row = 2; row <= rowCount; row++)
                     {
                         try
@@ -350,100 +396,102 @@ namespace General.Mvc.Areas.Admin.Controllers
                             model.PlanItem = modelplan.PlanItem;
                             model.Prepare = modelplan.Prepare;
                             model.Project = modelplan.Project;
-                            var main = _sysProcurementPlanMainService.getByAccount(model.PlanItem);
+                           
                             model.MainId = main.Id;
-                            if (worksheet.Cells[row, item].Value != null)
+                            if (item > 0 && worksheet.Cells[row, item].Value != null)
                             {
                                 model.Item = worksheet.Cells[row, item].Value.ToString();
                             }
-                            if (worksheet.Cells[row, materialno].Value != null)
+                            if (materialno > 0 && worksheet.Cells[row, materialno].Value != null)
                             {
                                 model.Materialno = worksheet.Cells[row, materialno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, name].Value != null)
+                            if (name > 0 && worksheet.Cells[row, name].Value != null)
                             {
                                 model.Name = worksheet.Cells[row, name].Value.ToString();
                             }
-                            if (worksheet.Cells[row, partno].Value != null)
+                            if (partno > 0 && worksheet.Cells[row, partno].Value != null)
                             {
                                 model.PartNo = worksheet.Cells[row, partno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, technical].Value != null)
+                            if (technical > 0 && worksheet.Cells[row, technical].Value != null)
                             {
                                 model.Technical = worksheet.Cells[row, technical].Value.ToString();
                             }
-                            if (worksheet.Cells[row, width].Value != null)
+                            if (width > 0 && worksheet.Cells[row, width].Value != null)
                             {
                                 model.Width = worksheet.Cells[row, width].Value.ToString();
                             }
-                            if (worksheet.Cells[row, size].Value != null)
+                            if (size > 0 && worksheet.Cells[row, size].Value != null)
                             {
                                 model.Size = worksheet.Cells[row, size].Value.ToString();
                             }
-                            if (worksheet.Cells[row, length].Value != null)
+                            if (length > 0 && worksheet.Cells[row, length].Value != null)
                             {
                                 model.Length = worksheet.Cells[row, length].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planno].Value != null)
+                            if (planno > 0 && worksheet.Cells[row, planno].Value != null)
                             {
                                 model.PlanNo = worksheet.Cells[row, planno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planunit].Value != null)
+                            if (planunit > 0 && worksheet.Cells[row, planunit].Value != null)
                             {
                                 model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planorderno].Value != null)
+                            if (planorderno > 0 && worksheet.Cells[row, planorderno].Value != null)
                             {
                                 model.PlanOrderNo = worksheet.Cells[row, planorderno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planorderunit].Value != null)
+                            if (planorderunit > 0 && worksheet.Cells[row, planorderunit].Value != null)
                             {
                                 model.PlanOrderUnit = worksheet.Cells[row, planorderunit].Value.ToString();
                             }
-                            if (worksheet.Cells[row, requireddockdate].Value != null)
+                            if (requireddockdate > 0 && worksheet.Cells[row, requireddockdate].Value != null)
                             {
                                 model.RequiredDockDate = Convert.ToDateTime(worksheet.Cells[row, requireddockdate].Value.ToString());
+
                             }
-                            if (worksheet.Cells[row, accovers].Value != null)
+                            if (accovers > 0 && worksheet.Cells[row, accovers].Value != null)
                             {
                                 model.ACCovers = worksheet.Cells[row, accovers].Value.ToString();
                             }
-                            if (worksheet.Cells[row, purchasing].Value != null)
+                            if (purchasing > 0 && worksheet.Cells[row, purchasing].Value != null)
                             {
                                 model.Purchasing = worksheet.Cells[row, purchasing].Value.ToString();
                             }
-                            if (worksheet.Cells[row, application].Value != null)
+                            if (application > 0 && worksheet.Cells[row, application].Value != null)
                             {
                                 model.Application = worksheet.Cells[row, application].Value.ToString();
                             }
-                            if (worksheet.Cells[row, single].Value != null)
+                            if (single > 0 && worksheet.Cells[row, single].Value != null)
                             {
                                 model.SingleQuota = worksheet.Cells[row, single].Value.ToString();
                             }
-                            if (worksheet.Cells[row, packagea].Value != null)
+                            if (packagea > 0 && worksheet.Cells[row, packagea].Value != null)
                             {
                                 model.Package = worksheet.Cells[row, packagea].Value.ToString();
                             }
-                            if (worksheet.Cells[row, remark1].Value != null)
+                            if (remark1 > 0 && worksheet.Cells[row, remark1].Value != null)
                             {
                                 model.Remark1 = worksheet.Cells[row, remark1].Value.ToString();
                             }
-                            if (worksheet.Cells[row, remark2].Value != null)
+                            if (remark2 > 0 && worksheet.Cells[row, remark2].Value != null)
                             {
                                 model.Remark2 = worksheet.Cells[row, remark2].Value.ToString();
                             }
-                              model.CreationTime = DateTime.Now;
-                              model.Creator = WorkContext.CurrentUser.Id;
-                            _sysProcurementPlanMainService.insertProcurementPlanMain(modelmain);
+                            model.CreationTime = DateTime.Now;
+                            model.Creator = WorkContext.CurrentUser.Id;
                             _sysProcurementPlanService.insertProcurementPlan(model);
                         }
                         catch (Exception e)
                         {
-                           
+                            main.IsDeleted = true;
+                            _sysProcurementPlanMainService.updateProcurementPlanMain(main);
+                            Response.WriteAsync("<script>alert('要求到货时间格式有误!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
                         }
                     }
-                  }
                 }
+            }
             else
             {
                 var modelmain = _sysProcurementPlanMainService.getById(modelplan.Id);
@@ -454,6 +502,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 modelmain.ModifiedTime = DateTime.Now;
                 _sysProcurementPlanMainService.updateProcurementPlanMain(modelplan);
             }
+
+
             return Redirect(ViewBag.ReturnUrl);
         }
         [HttpGet]
@@ -462,11 +512,11 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult EditITProcurementPlan(int? id, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanIndex");
-          
+
             if (id != null)
             {
                 ViewBag.fw = 1;
-                   var model = _sysProcurementPlanService.getById(id.Value);
+                var model = _sysProcurementPlanService.getById(id.Value);
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);

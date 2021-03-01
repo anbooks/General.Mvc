@@ -21,7 +21,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="editITProcurementPlanMain" enctype="multipart/form-data" method="post" class="form-horizontal" >
+            <form asp-route="editITProcurementPlanMain" enctype="multipart/form-data" method="post" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
                 <div class="form-group">
@@ -52,7 +52,7 @@
                         <input type="text" asp-for="Project" class="form-control" placeholder="项目" />
                     </div>
                     <span asp-validation-for="Project" class="inline text-danger "></span>
-                </div> 
+                </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">采购计划下达日期</label>
                     <div class="col-sm-3">
@@ -71,7 +71,7 @@
                 }
 
                 <div class="col-md-offset-2 col-md-9">
-                    <button class="btn btn-info" type="submit"onclick="javascript:return confirm('确定提交吗?');">
+                    <button class="btn btn-info" type="submit" onclick="javascript:return confirm('确定提交吗?');">
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         提交
                     </button>
@@ -80,3 +80,13 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+
+  function ts(){
+  swal({ title: "Auto close alert!", text: "I will close in 2 seconds.", timer: 2000, showConfirmButton: false });
+t;span style="white-space:pre">  </span>}
+  if (@ViewData["tishi"] == 888)
+  {
+      window.onload = ts;
+  }
+</script>   

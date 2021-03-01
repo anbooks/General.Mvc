@@ -58,7 +58,7 @@ namespace General.Services.OrderMain
         /// <returns></returns>
         public bool existAccount(string account)
         {
-            return _sysOrderMainRepository.Table.Any(o => o.OrderNo == account);
+            return _sysOrderMainRepository.Table.Any(o => o.OrderNo == account&&o.IsDeleted!=true);
         }
         /// <summary>
         /// 获取用户详情

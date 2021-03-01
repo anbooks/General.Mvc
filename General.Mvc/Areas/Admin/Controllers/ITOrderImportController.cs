@@ -243,7 +243,9 @@ namespace General.Mvc.Areas.Admin.Controllers
                     }
                     Entities.OrderMain modelmain = new Entities.OrderMain();
                     var listmain = _sysOrderMainService.existAccount(modelplan.OrderNo);
-                    if (listmain == true) { return Redirect(ViewBag.ReturnUrl); }
+                    if (listmain == true) {
+                        Response.WriteAsync("<script>alert('采购订单号重复!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                        return Redirect(ViewBag.ReturnUrl); }
                     modelmain.OrderNo = modelplan.OrderNo;
                     modelmain.OrderConfirmDate = modelplan.OrderConfirmDate;
                     modelmain.OrderSigner = modelplan.OrderSigner;
@@ -266,12 +268,12 @@ namespace General.Mvc.Areas.Admin.Controllers
                     modelmain.CreationTime = DateTime.Now;
                     modelmain.Creator = WorkContext.CurrentUser.Id;
                     _sysOrderMainService.insertOrderMain(modelmain);
+                    var main = _sysOrderMainService.getByAccount(modelplan.OrderNo);
                     for (int row = 2; row <= rowCount; row++)
                     {
                         try
                         {
                             Entities.Order model = new Entities.Order();
-                            var main = _sysOrderMainService.getByAccount(modelplan.OrderNo);
                             model.MainId = main.Id;
                             model.OrderNo = main.OrderNo;
                             model.OrderConfirmDate = main.OrderConfirmDate;
@@ -367,7 +369,16 @@ namespace General.Mvc.Areas.Admin.Controllers
                         }
                         catch (Exception e)
                         {
-                            ViewData["IsShowAlert"] = "True";
+ 
+                            main.IsDeleted = true;
+                            _sysOrderMainService.updateOrderMain(main);
+                            if (e.Message== "String was not recognized as a valid DateTime.") {
+                                Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                            }
+                            if (e.Message == "Input string was not in a correct format.")
+                            {
+                                Response.WriteAsync("<script>alert('计划单位或折算关系错误!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                            }
                         }
                     }
                    
@@ -378,8 +389,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.OrderNo = modelplan.OrderNo;
                 model.OrderConfirmDate = modelplan.OrderConfirmDate;
                 model.OrderSigner = modelplan.OrderSigner;
-                model.SignerCard = modelplan.SignerCard;
+                var sc = _sysUserService.getByName(modelplan.OrderSigner);
+                model.SignerCard = sc.Account;
                 model.SupplierCode = modelplan.SupplierCode;
+                var modelSupplier = _sysSupplierService.getByAccount(modelplan.SupplierCode);
+                if (modelSupplier != null) { model.SupplierName = modelSupplier.Describe; }
                 model.SupplierName = modelplan.SupplierName;
                 model.TradeTerms = modelplan.TradeTerms;
                 model.LongDealNo = modelplan.LongDealNo;
