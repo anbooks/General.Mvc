@@ -68,6 +68,8 @@
                             <th width="80px">包装规格</th>
                             <th width="80px">订单数量</th>
                             <th width="80px">订单单位</th>
+                            <th width="80px">计划单位</th>
+                            <th width="80px">折算关系</th>
                             <th width="80px">币种</th>
                             <th width="80px">单价</th>
                             <th width="80px">总价</th>
@@ -97,6 +99,8 @@
                             <td>@item.Package</td>
                             <td>@item.Qty</td>
                             <td>@item.Unit</td>
+                            <td>@item.PlanUnit</td>
+                            <td>@item.Reduced</td>
                             <td>@item.Currency</td>
                             <td>@item.UnitPrice</td>
                             <td>@item.TotalPrice</td>
@@ -104,7 +108,7 @@
                             <td>@item.Manufacturer</td>
                             <td>@item.Origin</td>
                             <td>
-                                <a href="@Url.RouteUrl("editITOrderImport", new { id = item.Id })"  class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
+                                <a href="@Url.RouteUrl("editITOrderImport", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
                             </td>
                         </tr>
                         }

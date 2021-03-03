@@ -865,7 +865,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Length = item.Length;
                     model.Width = item.Width;
                     model.Package = item.Package;
-                    model.PlanNo = item.PlanUnit;
+                    //model.PlanNo = item.PlanUnit;
                     var itema = _sysOrderMainService.getById(item.MainId);
                     model.Consignor = itema.SupplierName;
                     model.CodeNo = itema.CodeNo;

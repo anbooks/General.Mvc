@@ -149,6 +149,15 @@ namespace General.Mvc.Areas.Admin.Controllers
                 modela.LeadTime = model.LeadTime;
                 modela.Manufacturer = model.Manufacturer;
                 modela.Origin = model.Origin;
+                modela.TotalPrice = model.TotalPrice;
+                modela.PlanUnit = model.PlanUnit;
+                try {
+                    modela.Reduced =Convert.ToDouble(model.Reduced);
+                } catch (Exception e)
+                {
+                    Response.WriteAsync("<script>alert('折算关系必须为数字!');window.location.href ='edit2'</script>", Encoding.GetEncoding("GB2312"));
+                    return Redirect(ViewBag.ReturnUrl);
+                }
                 modela.Modifier = WorkContext.CurrentUser.Id;
                 modela.ModifiedTime = DateTime.Now;
                 _sysOrderService.updateOrder(modela);
@@ -192,13 +201,21 @@ namespace General.Mvc.Areas.Admin.Controllers
         //    return File(fs,"application/octet-stream", sFileName);
         //}
         [HttpPost]
-        [Route("importexcelorder", Name = "importexcelorder")]
+        [Route("edit", Name = "importexcelorder")]
         [Function("采购订单修改、批量导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
         public ActionResult Import(Entities.OrderMain modelplan, IFormFile excelfile, string excelbh, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
-            if (excelfile!=null) {
+            if (modelplan.Id.Equals(0))
+            {
+                if (excelfile == null)
+                {
+                    Response.WriteAsync("<script>alert('未添加导入模板!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                    return Redirect(ViewBag.ReturnUrl);
+                }
                 string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                try
+                {
                 var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
                 string sFileName = excelfile.FileName;
                 FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
@@ -244,7 +261,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     Entities.OrderMain modelmain = new Entities.OrderMain();
                     var listmain = _sysOrderMainService.existAccount(modelplan.OrderNo);
                     if (listmain == true) {
-                        Response.WriteAsync("<script>alert('采购订单号重复!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                        Response.WriteAsync("<script>alert('采购订单号重复!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                         return Redirect(ViewBag.ReturnUrl); }
                     modelmain.OrderNo = modelplan.OrderNo;
                     modelmain.OrderConfirmDate = modelplan.OrderConfirmDate;
@@ -357,7 +374,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                             }
                             if (worksheet.Cells[row, planunit].Value != null)
                             {
-                                model.PlanUnit = Convert.ToDouble(worksheet.Cells[row, planunit].Value);
+                                model.PlanUnit =worksheet.Cells[row, planunit].Value.ToString();
                             }
                             if (worksheet.Cells[row, reduced].Value != null)
                             {
@@ -373,18 +390,21 @@ namespace General.Mvc.Areas.Admin.Controllers
                             main.IsDeleted = true;
                             _sysOrderMainService.updateOrderMain(main);
                             if (e.Message== "String was not recognized as a valid DateTime.") {
-                                Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                                Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                             }
                             if (e.Message == "Input string was not in a correct format.")
                             {
-                                Response.WriteAsync("<script>alert('计划单位或折算关系错误!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                                Response.WriteAsync("<script>alert('计划单位或折算关系错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                             }
                         }
                     }
                    
                 }
+                }
+                catch {
+                    Response.WriteAsync("<script>alert('请将文件名中的空格或特殊字符去掉!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                }
             } else {
-                if (modelplan.Id.Equals(0)) { }
                 var model = _sysOrderMainService.getById(modelplan.Id);
                 model.OrderNo = modelplan.OrderNo;
                 model.OrderConfirmDate = modelplan.OrderConfirmDate;
