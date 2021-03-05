@@ -25,7 +25,7 @@
     <hr />
 
     <div class="space-2"></div>
-    <form asp-route="roleDetail" method="post" id="formRoleDetail" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="roleDetail" method="post" id="formRoleDetail" class="form-horizontal" >
         @Html.AntiForgeryToken()
         @Html.Hidden("Id",1)
         <div class="form-group">
@@ -59,36 +59,22 @@
                                         </td>
                                         <td>@item.Name</td>
                                         <td>@item.CreationTime.ToString("F")</td>
-         
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
                 </div>
-
-
             }
         </div>
         <div class="col-md-offset-1">
-            <button class="btn btn-info" type="submit">
+            <button class="btn btn-info" type="submit" onclick="javascript:return confirm('您确定要保存此用户角色数据?');">
                 <i class="ace-icon fa fa-check bigger-110"></i>
                 提交保存
             </button>
         </div>
     </form>
-    <script>
-        $(function () {
-            $('#formRoleDetail').submit(function () {
-                var form = $(this);
-                $.modal.confirm('您确定要保存此用户角色数据？', function () {
-                    form.ajaxSubmit(function (data) {
-                        $.modal.alert(data);
-                    });
-                });
-            }); return false; 
-        });
-    </script>
+  
 </div>
 
 

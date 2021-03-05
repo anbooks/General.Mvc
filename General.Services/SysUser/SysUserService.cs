@@ -546,6 +546,10 @@ namespace General.Services.SysUser
         {
             return _sysUserRepository.Table.Any(o => o.Name == account && !o.IsDeleted);
         }
+        public bool existBuyerId(string account)
+        {
+            return _sysUserRepository.Table.Any(o => o.Co == account && !o.IsDeleted);
+        }
         //     void ISysUserService.updateSysUser(Entities.SysUser model)
         //   {
         //     throw new NotImplementedException();

@@ -376,9 +376,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                         modelmain.Project = modelplan.Project;
                         modelmain.CreationTime = modelplan.CreationTime;
                         modelmain.Creator = modelplan.Creator;
+                      
                         var pre = _sysUserService.existName(modelplan.Prepare);
                         var cre = _sysUserService.existName(modelplan.Creator);
-                        if (pre == false)
+                        if (pre == false && modelplan.Prepare!=null)
                         {
                             Response.WriteAsync("<script>alert('采购计划编制人不存在!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
                             return Redirect(ViewBag.ReturnUrl);

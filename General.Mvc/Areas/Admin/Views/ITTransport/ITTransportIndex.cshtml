@@ -283,7 +283,6 @@
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
-                    var incoterms = $(this).closest("tr").find("td").eq(4).find("input:text");
                     var cargotype = $(this).closest("tr").find("td").eq(5).find("input:text");
                     var invamou = $(this).closest("tr").find("td").eq(6).find("input:data");
                     var invcurr = $(this).closest("tr").find("td").eq(7).find("select[name='Invcurr']");
@@ -302,7 +301,6 @@
                     var ata = $(this).closest("tr").find("td").eq(22).find("input:data");
                     var mSub = {
                         id: id.val(),
-                        incoterms: incoterms.val(),
                         cargotype: cargotype.val(),
                         invamou: invamou.val(),
                         invcurr: invcurr.val(),

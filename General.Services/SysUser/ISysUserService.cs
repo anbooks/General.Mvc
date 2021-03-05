@@ -81,9 +81,9 @@ namespace General.Services.SysUser
         /// <returns></returns>
         bool existAccount(string account);
         bool existName(string account);
-
+        bool existBuyerId(string account);
         /// <summary>
-        /// 启用禁用账号
+        /// 启用禁用账号existBuyerId
         /// </summary>
         /// <param name="id"></param>
         /// <param name="enabled"></param>

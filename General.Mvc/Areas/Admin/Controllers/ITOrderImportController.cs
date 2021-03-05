@@ -183,6 +183,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 ViewBag.Id = id;
                 var model = _sysOrderMainService.getById(id.Value);
                 ViewBag.tran = model.Transport;
+                ViewBag.pay = model.Payment;
+                ViewBag.trade = model.TradeTerms;
                 if (model == null)
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
@@ -304,79 +306,79 @@ namespace General.Mvc.Areas.Admin.Controllers
                             model.Project = main.Project;
                             //var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
                             model.MaterialCategory = main.MaterialCategory;
-                            if (worksheet.Cells[row, item].Value != null)
+                            if (item>0&&worksheet.Cells[row, item].Value != null)
                             {
                                 model.Item = worksheet.Cells[row, item].Value.ToString();
                             }
-                            if (worksheet.Cells[row, materialno].Value != null)
+                            if (materialno > 0 && worksheet.Cells[row, materialno].Value != null)
                             {
                                 model.MaterialCode = worksheet.Cells[row, materialno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, name].Value != null)
+                            if (name > 0 && worksheet.Cells[row, name].Value != null)
                             {
                                 model.Name = worksheet.Cells[row, name].Value.ToString();
                             } model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
-                            if (worksheet.Cells[row, technical].Value != null)
+                            if (technical > 0 && worksheet.Cells[row, technical].Value != null)
                             {
                                 model.Specification = worksheet.Cells[row, technical].Value.ToString();
                             }
-                            if (worksheet.Cells[row, width].Value != null)
+                            if (width > 0 && worksheet.Cells[row, width].Value != null)
                             {
                                 model.Width = worksheet.Cells[row, width].Value.ToString();
                             }
-                            if (worksheet.Cells[row, size].Value != null)
+                            if (size > 0 && worksheet.Cells[row, size].Value != null)
                             {
                                 model.Size = worksheet.Cells[row, size].Value.ToString();
                             }
-                            if (worksheet.Cells[row, length].Value != null)
+                            if (length > 0 && worksheet.Cells[row, length].Value != null)
                             {
                                 model.Length = worksheet.Cells[row, length].Value.ToString();
                             }
-                            if (worksheet.Cells[row, packages].Value != null)
+                            if (packages > 0 && worksheet.Cells[row, packages].Value != null)
                             {
                                 model.Package = worksheet.Cells[row, packages].Value.ToString();
                             }
-                            if (worksheet.Cells[row, orderno].Value != null)
+                            if (orderno > 0 && worksheet.Cells[row, orderno].Value != null)
                             {
                                 model.Qty = worksheet.Cells[row, orderno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, orderunit].Value != null)
+                            if (orderunit > 0 && worksheet.Cells[row, orderunit].Value != null)
                             {
                                 model.Unit = worksheet.Cells[row, orderunit].Value.ToString();
                             }
-                            if (worksheet.Cells[row, unitprice].Value != null)
+                            if (unitprice > 0 && worksheet.Cells[row, unitprice].Value != null)
                             {
                                 model.UnitPrice = worksheet.Cells[row, unitprice].Value.ToString();
                             }
-                            if (worksheet.Cells[row, totamount].Value != null)
+                            if (totamount > 0 && worksheet.Cells[row, totamount].Value != null)
                             {
                                 model.TotalPrice = worksheet.Cells[row, totamount].Value.ToString();
                             }
-                            if (worksheet.Cells[row, currency].Value != null)
+                            if (currency > 0 && worksheet.Cells[row, currency].Value != null)
                             {
                                 model.Currency = worksheet.Cells[row, currency].Value.ToString();
                             }
-                            if (worksheet.Cells[row, deliverydate].Value != null)
+                            if (deliverydate > 0 && worksheet.Cells[row, deliverydate].Value != null)
                             {
                                 model.LeadTime = Convert.ToDateTime(worksheet.Cells[row, deliverydate].Value.ToString());
                             }
-                            if (worksheet.Cells[row, manufacturer].Value != null)
+                            if (manufacturer > 0 && worksheet.Cells[row, manufacturer].Value != null)
                             {
                                 model.Manufacturer = worksheet.Cells[row, manufacturer].Value.ToString();
                             }
-                            if (worksheet.Cells[row, origin].Value != null)
+                            if (origin > 0 && worksheet.Cells[row, origin].Value != null)
                             {
                                 model.Origin = worksheet.Cells[row, origin].Value.ToString();
                             }
-                            if (worksheet.Cells[row, partno].Value != null)
+                            if (partno > 0 && worksheet.Cells[row, partno].Value != null)
                             {
                                 model.PartNo = worksheet.Cells[row, partno].Value.ToString();
                             }
-                            if (worksheet.Cells[row, planunit].Value != null)
+                            if (planunit > 0 && worksheet.Cells[row, planunit].Value != null)
                             {
                                 model.PlanUnit =worksheet.Cells[row, planunit].Value.ToString();
                             }
-                            if (worksheet.Cells[row, reduced].Value != null)
+                            if (reduced > 0 && worksheet.Cells[row, reduced].Value != null)
                             {
                                 model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);
                             }

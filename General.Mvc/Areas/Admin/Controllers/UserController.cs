@@ -63,11 +63,11 @@ namespace General.Mvc.Areas.Admin.Controllers
 
         [HttpPost]
         [Route("roledetail")]
-        public JsonResult RoleDetail(Guid id,Guid sysResource)
+        public ActionResult RoleDetail(Guid id,Guid sysResource)
         {
             var model = _sysUserRoleService.getById(id);
             //var model = "";
-           
+            ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("userIndex");
             //  _sysPermissionService.saveRolePermission(id, sysResource, WorkContext.CurrentUser.Id);
             if (model == null)
             {
@@ -87,9 +87,7 @@ namespace General.Mvc.Areas.Admin.Controllers
 
                 _sysUserRoleService.updateSysUserRole(model);
             }
-            AjaxData.Status = true;
-            AjaxData.Message = "角色权限设置成功";
-            return Json(AjaxData);
+            return Redirect(ViewBag.ReturnUrl);
         }
       //  [Route("roledetail", Name = "roleDetail")]
       //  [Function("用户角色", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.UserController.UserIndex")]

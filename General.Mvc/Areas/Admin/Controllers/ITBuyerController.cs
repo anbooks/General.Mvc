@@ -68,8 +68,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             // var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
-            ViewBag.QX = WorkContext.CurrentUser.Co;
-            var pageList = _importTrans_main_recordService.searchListBuyer(arg, page, size, WorkContext.CurrentUser.Co);
+            ViewBag.QX = WorkContext.CurrentUser.Account;
+            var pageList = _importTrans_main_recordService.searchListBuyer(arg, page, size, WorkContext.CurrentUser.Account);
 
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itBuyer", arg);
@@ -244,59 +244,59 @@ namespace General.Mvc.Areas.Admin.Controllers
                 //添加值
                 for (int i = 0; i <= list.Count - 1; i++)
                 {
-                    if (list[i].Buyer.ToString() != null)
+                    if (list[i].Buyer != null)
                     {
                         worksheet.Cells[i + 2, 1].Value = list[i].Buyer.ToString();
                     }
-                    if (list[i].OrderNo.ToString() != null)
+                    if (list[i].OrderNo != null)
                     {
                         worksheet.Cells[i + 2, 2].Value = list[i].OrderNo.ToString();
                     }
-                    if (list[i].ReferenceNo.ToString() != null)
+                    if (list[i].ReferenceNo != null)
                     { worksheet.Cells[i + 2, 3].Value = list[i].ReferenceNo.ToString(); }
-                    if (list[i].MaterialCode.ToString() != null)
+                    if (list[i].MaterialCode != null)
                     { worksheet.Cells[i + 2, 4].Value = list[i].MaterialCode.ToString(); }
-                    if (list[i].Description.ToString() != null)
+                    if (list[i].Description!= null)
                     { worksheet.Cells[i + 2, 5].Value = list[i].Description.ToString(); }
-                    if (list[i].Type.ToString() != null)
+                    if (list[i].Type != null)
                     { worksheet.Cells[i + 2, 6].Value = list[i].Type.ToString(); }
-                    if (list[i].Specification.ToString() != null)
+                    if (list[i].Specification != null)
                     { worksheet.Cells[i + 2, 7].Value = list[i].Specification.ToString(); }
-                    if (list[i].Thickness.ToString() != null)
+                    if (list[i].Thickness != null)
                     { worksheet.Cells[i + 2, 8].Value = Convert.ToDouble(list[i].Thickness); }
-                    if (list[i].Length.ToString() != null)
+                    if (list[i].Length != null)
                     { worksheet.Cells[i + 2, 9].Value = Convert.ToDouble(list[i].Length.ToString()); }
-                    if (list[i].Width.ToString() != null)
+                    if (list[i].Width != null)
                     { worksheet.Cells[i + 2, 10].Value = Convert.ToDouble(list[i].Width.ToString()); }
-                    if (list[i].PurchaseQuantity.ToString() != null)
+                    if (list[i].PurchaseQuantity != null)
                     { worksheet.Cells[i + 2, 11].Value = list[i].PurchaseQuantity.ToString(); }
-                    if (list[i].PurchaseUnit.ToString() != null)
+                    if (list[i].PurchaseUnit != null)
                     { worksheet.Cells[i + 2, 12].Value = list[i].PurchaseUnit.ToString(); }
-                    if (list[i].UnitPrice.ToString() != null)
+                    if (list[i].UnitPrice != null)
                     { worksheet.Cells[i + 2, 13].Value = list[i].UnitPrice.ToString(); }
-                    if (list[i].TotalPrice.ToString() != null)
+                    if (list[i].TotalPrice != null)
                     { worksheet.Cells[i + 2, 14].Value = list[i].TotalPrice.ToString(); }
                     if (list[i].ShipmentDate != null)
                     { worksheet.Cells[i + 2, 15].Value = list[i].ShipmentDate.ToString(); }
-                    if (list[i].Consignor.ToString() != null)
+                    if (list[i].Consignor != null)
                     { worksheet.Cells[i + 2, 16].Value = list[i].Consignor.ToString(); }
-                    if (list[i].Manufacturers.ToString() != null)
+                    if (list[i].Manufacturers != null)
                     { worksheet.Cells[i + 2, 17].Value = list[i].Manufacturers.ToString(); }
-                    if (list[i].OriginCountry.ToString() != null)
+                    if (list[i].OriginCountry != null)
                     { worksheet.Cells[i + 2, 18].Value = list[i].OriginCountry.ToString(); }
-                    if (list[i].BatchNo.ToString() != null)
+                    if (list[i].BatchNo != null)
                     { worksheet.Cells[i + 2, 19].Value = list[i].BatchNo.ToString(); }
-                    if (list[i].Waybill.ToString() != null)
+                    if (list[i].Waybill != null)
                     { worksheet.Cells[i + 2, 20].Value = list[i].Waybill.ToString(); }
-                    if (list[i].Books.ToString() != null)
+                    if (list[i].Books != null)
                     { worksheet.Cells[i + 2, 21].Value = list[i].Books.ToString(); }
-                    if (list[i].BooksItem.ToString() != null)
+                    if (list[i].BooksItem != null)
                     { worksheet.Cells[i + 2, 22].Value = list[i].BooksItem.ToString(); }
-                    if (list[i].RecordUnit.ToString() != null)
+                    if (list[i].RecordUnit != null)
                     { worksheet.Cells[i + 2, 23].Value = list[i].RecordUnit.ToString(); }
-                    if (list[i].RecordUnitReducedPrice.ToString() != null)
+                    if (list[i].RecordUnitReducedPrice != null)
                     { worksheet.Cells[i + 2, 24].Value = list[i].RecordUnitReducedPrice.ToString(); }
-                    if (list[i].LegalUnits.ToString() != null)
+                    if (list[i].LegalUnits != null)
                     { worksheet.Cells[i + 2, 25].Value = list[i].LegalUnits.ToString(); }
 
                 }

@@ -9,7 +9,7 @@
             <i class="ace-icon fa fa-home home-icon"></i>
             <a href="@Url.RouteUrl("mainIndex")">首页</a>
         </li>
-        <li><a href="@ViewBag.ReturnUrl">系统用户列表</a></li>
+        <li><a href="@ViewBag.ReturnUrl">采购订单</a></li>
         <li class="active">@ViewBag.Title</li>
     </ul>
 </div>
@@ -21,7 +21,7 @@
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <form asp-route="importexcelorder" enctype="multipart/form-data" method="post" class="form-horizontal" >
+            <form asp-route="importexcelorder" enctype="multipart/form-data" method="post" class="form-horizontal">
                 @Html.HiddenFor(m => m.Id)
                 <div asp-validation-summary="All"></div>
                 <div class="form-group">
@@ -38,22 +38,34 @@
                     </div>
                     <span asp-validation-for="OrderConfirmDate" class="inline text-danger "></span>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">订单签订人</label>
-                    <div class="col-sm-3">
-                        <input type="text" asp-for="OrderSigner" class="form-control" value="@ViewBag.Person" placeholder="订单签订人" />
+                @if (ViewBag.Id != null)
+                {<div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">订单签订人</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="OrderSigner" class="form-control" placeholder="订单签订人" />
+                        </div>
+                        <span asp-validation-for="OrderSigner" class="inline text-danger "></span>
+                    </div>}
+                else
+                {
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">订单签订人</label>
+                        <div class="col-sm-3">
+                            <input type="text" asp-for="OrderSigner" class="form-control" value="@ViewBag.Person" placeholder="订单签订人" />
+                        </div>
+                        <span asp-validation-for="OrderSigner" class="inline text-danger "></span>
                     </div>
-                    <span asp-validation-for="OrderSigner" class="inline text-danger "></span>
-                </div> 
+                }
+
                 @if (ViewBag.Id != null)
                 {
                     <div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right">签订人胸卡号</label>
                         <div class="col-sm-3">
-                            <input type="text" asp-for="SignerCard" class="form-control" value="@ViewBag.Card" placeholder="签订人胸卡号" />
+                            <input type="text" asp-for="SignerCard" class="form-control" placeholder="签订人胸卡号" />
                         </div>
                         <span asp-validation-for="SignerCard" class="inline text-danger "></span>
-                    </div>      }
+                    </div>}
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">供应商代码</label>
@@ -71,14 +83,25 @@
                         <span asp-validation-for="SupplierName" class="inline text-danger "></span>
                     </div>
                 }
-
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">付款方式</label>
-                    <div class="col-sm-3">
-                        <select asp-for="Payment" class="form-control" asp-items="ViewBag.Payment"></select>
+                @if (ViewBag.pay != null)
+                {<div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">付款方式</label>
+                        <div class="col-sm-3">
+                            <select asp-for="Payment" class="form-control" asp-items="ViewBag.Payment"></select>
+                        </div>
+                        <span asp-validation-for="Payment" class="inline text-danger "></span>
+                    </div> }
+                else
+                {
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">付款方式</label>
+                        <div class="col-sm-3">
+                            @Html.DropDownList("Payment", ViewData["Payment"] as SelectList, "-请选择付款方式-", new { @class = "form-control" })
+                        </div>
+                        <span asp-validation-for="Payment" class="inline text-danger"></span>
                     </div>
-                    <span asp-validation-for="Payment" class="inline text-danger "></span>
-                </div>
+                }
+
 
                 <div class="form-group">
                     <label class="col-sm-2 control-label no-padding-right">长协号</label>
@@ -93,14 +116,26 @@
                         <input type="text" asp-for="CodeNo" class="form-control" placeholder="打码号" />
                     </div>
                     <span asp-validation-for="CodeNo" class="inline text-danger "></span>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label no-padding-right">贸易条款</label>
-                    <div class="col-sm-3">
-                        <select asp-for="TradeTerms" class="form-control" asp-items="ViewBag.TradeTerms"></select>
+                </div> 
+                @if (ViewBag.trade != null)
+                {<div class="form-group">
+                     <label class="col-sm-2 control-label no-padding-right">贸易条款</label>
+                        <div class="col-sm-3">
+                            <select asp-for="TradeTerms" class="form-control" asp-items="ViewBag.TradeTerms"></select>
+                        </div>
+                        <span asp-validation-for="TradeTerms" class="inline text-danger "></span>
+                    </div> }
+                else
+                {
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">贸易条款</label>
+                        <div class="col-sm-3">
+                            @Html.DropDownList("TradeTerms", ViewData["TradeTerms"] as SelectList, "-请选择贸易条款-", new { @class = "form-control" })
+                        </div>
+                        <span asp-validation-for="TradeTerms" class="inline text-danger"></span>
                     </div>
-                    <span asp-validation-for="TradeTerms" class="inline text-danger "></span>
-                </div>
+                }
+               
                 @if (ViewBag.tran != null)
                 {<div class="form-group">
                         <label class="col-sm-2 control-label no-padding-right">运输代理</label>
@@ -146,7 +181,7 @@
                     </div>
                 }
                 <div class="col-md-offset-2 col-md-9">
-                    <button class="btn btn-info" type="submit"  onclick="javascript:return confirm('确定提交吗?');">
+                    <button class="btn btn-info" type="submit" onclick="javascript:return confirm('确定提交吗?');">
                         <i class="ace-icon fa fa-check bigger-110"></i>
                         提交
                     </button>

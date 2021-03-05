@@ -37,7 +37,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         private IOrderMainService _orderMainService;
         private ISysUserRoleService _sysUserRoleService;
         private ISysUserService _sysUserService;
-        public ITShipmentCreateController(ISysUserService sysUserService,IOrderMainService orderMainService,ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
+        public ITShipmentCreateController(ISysUserService sysUserService, IOrderMainService orderMainService, ISysUserRoleService sysUserRoleService, IHostingEnvironment hostingEnvironment, IScheduleService scheduleService, IImportTrans_main_recordService importTrans_main_recordService, ISysCustomizedListService sysCustomizedListService)
         {
             this._hostingEnvironment = hostingEnvironment;
             this._sysUserRoleService = sysUserRoleService;
@@ -50,8 +50,8 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Route("itShipmentCreate", Name = "itShipmentCreate")]
         [Function("创建发运条目", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
         [HttpGet]
-        public IActionResult ITShipmentCreateIndex( SysCustomizedListSearchArg arg, int page = 1, int size = 20)
-        { 
+        public IActionResult ITShipmentCreateIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
             ViewBag.Arg = arg;//传参数
@@ -65,7 +65,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         public IActionResult ITShipmentCreateTranIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
-           string port= WorkContext.CurrentUser.Port;
+            string port = WorkContext.CurrentUser.Port;
             string tran = WorkContext.CurrentUser.Transport;
             var pageList = _importTrans_main_recordService.searchListYd(arg, page, size, port, tran);
             ViewBag.Arg = arg;//传参数
@@ -103,13 +103,12 @@ namespace General.Mvc.Areas.Admin.Controllers
                 return View(model);
             if (!String.IsNullOrEmpty(model.Invcurr))
                 model.Invcurr = model.Invcurr.Trim();
-           
+
             if (!String.IsNullOrEmpty(model.Itemno))
                 model.Itemno = model.Itemno.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
                 model.PoNo = model.PoNo.Trim();
-            if (!String.IsNullOrEmpty(model.PoNo))
-                model.Buyer = model.PoNo.Substring(1, 2);
+          
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;
@@ -118,13 +117,15 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
-                if (inc==null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312")); }
+               // var buy = _sysUserService.getByAccount(inc.SignerCard);
+                model.Buyer = inc.SignerCard;
+                if (inc == null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312")); }
+               
                 model.Incoterms = inc.TradeTerms;
                 model.Shipper = inc.SupplierName;
-                if (model.PoNo == null || model.Shipper == null || model.Transportation == null)
+                if (model.Transportation == null|| model.Transportation == "")
                 {
-
-                    return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITShipmentTranCreate"));
+                    Response.WriteAsync("<script>alert('未填写运输代理!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312"));
                 }
                 _importTrans_main_recordService.insertImportTransmain(model);
             }
@@ -138,7 +139,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itShipmentCreate");
             var customizedList2 = _sysUserService.getTran();
             ViewData["Transportation"] = new SelectList(customizedList2, "Transport", "Transport");
-            
+
             if (id != null)
             {
                 ViewBag.FJ = 1;
@@ -147,10 +148,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                     return Redirect(ViewBag.ReturnUrl);
                 return View(model);
             }
-           
+
             return View();
         }
-       
+
         [HttpPost]
         [Route("edit")]
         public ActionResult EditITShipmentCreate(Entities.ImportTrans_main_record model, IFormFile excelfile, string returnUrl = null)
@@ -168,8 +169,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.Itemno = model.Itemno.Trim();
             if (!String.IsNullOrEmpty(model.PoNo))
                 model.PoNo = model.PoNo.Trim();
-            if (!String.IsNullOrEmpty(model.PoNo))
-                model.Buyer = model.PoNo.Substring(1, 2);
+            
             if (model.Id.Equals(0))
             {
                 model.CreationTime = DateTime.Now;
@@ -178,11 +178,12 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
+                model.Buyer = inc.SignerCard;
                 if (inc == null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312")); }
                 model.Incoterms = inc.TradeTerms;
-                if (model.PoNo==null||model.Shipper==null||model.Transportation==null) {
-                   
-                    return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("editITShipmentCreate"));
+                if (model.Transportation == null || model.Transportation == "")
+                {
+                    Response.WriteAsync("<script>alert('未填写运输代理!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                 }
                 _importTrans_main_recordService.insertImportTransmain(model);
             }
