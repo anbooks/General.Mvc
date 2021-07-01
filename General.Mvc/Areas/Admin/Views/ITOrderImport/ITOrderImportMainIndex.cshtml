@@ -24,7 +24,7 @@
         </h1>
     </div>
     <a asp-route="editITOrderImportMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入采购订单</a>
-    
+    <a asp-route="excelinsertorder" class="btn btn-sm btn-pink">采购订单导入模板</a>
     <div class="space-2"></div>
     <div class="row">
         <div class="col-sm-12">
@@ -34,15 +34,16 @@
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="订单号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="供应商代码" />
-                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="采购员" />
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="订单签订人" />
                         <input type="text" class="form-control" name="invcurr" style="width:180px;" value="@Model.Paging.RouteArg.invcurr" placeholder="项目" />
                         @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
                         {
-                        <label>订单确认日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
+                            <label>订单确认日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
                             <label>----</label> <input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdateend.ToString("yyyy-MM-dd")" placeholder="" />
                         }
                         else
-                        { <label>订单确认日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
+                        {
+                            <label>订单确认日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
                             <label>----</label><input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" placeholder="" />
                         }
                         <button type="submit" class="btn btn-purple btn-sm">
@@ -55,7 +56,7 @@
         </div>
     </div>
     <form asp-route="itOrderImportMainIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
-        <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;"class="form-group">
+        <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;" class="form-group">
             @if (Model != null)
             {
                 <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
@@ -75,6 +76,8 @@
                             <th width="80px">运输代理</th>
                             <th width="80px">项目</th>
                             <th width="80px">物料类别</th>
+                            <th width="80px">运输方式</th>
+                            <th width="80px">采购员</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -86,7 +89,14 @@
                             <td>@item.OrderNo</td>
                             <td>@item.SupplierCode</td>
                             <td>@item.SupplierName</td>
-                            <td>@item.OrderConfirmDate</td>
+                            @if (@item.OrderConfirmDate != null)
+                            {
+                                <td>@item.OrderConfirmDate.Value.ToString("yyyy-MM-dd")</td>
+                            }
+                            else
+                            {
+                                <td>@item.OrderConfirmDate</td>
+                            }
                             <td>@item.OrderSigner</td>
                             <td>@item.SignerCard</td>
                             <td>@item.TradeTerms</td>
@@ -96,10 +106,13 @@
                             <td>@item.Transport</td>
                             <td>@item.Project</td>
                             <td>@item.MaterialCategory</td>
+                            <td>@item.Transportion</td>
+                            <td>@item.Buyer</td>
                             <td>
+                                <!--<input id="confirm" type="button"class="btn btn-xs btn-danger btnDelete"  value="@item.Id" />-->
                                 <a href="@Url.RouteUrl("itOrderImportIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>订单数据</a>
                                 <a href="@Url.RouteUrl("editITOrderImportMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改主数据</a>
-                                <a href="@Url.RouteUrl("itOrderImportDelete", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete" onclick="javascript:return confirm('确定删除吗?');"><i class="fa fa-bolt"></i>删除</a>
+                                <a href="@Url.RouteUrl("itOrderImportDelete", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete" onclick="javascript:return confirm('您确定删除这条记录吗！')"><i class="fa fa-bolt"></i>删除</a>
                             </td>
                         </tr>
                         }
@@ -108,9 +121,19 @@
                 <pager page-value="Model.Paging"></pager>
             }
         </div>
-       
+
     </form>
-    <script>
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/alert.js"></script>
+    <script type="text/javascript">
+        $("#confirm").bind("click", function () {
+            myConfirm('系统确认框', '您确定删除这条记录吗！', function (r) {
+                if (r) {
+                    var _url = "/admin/itOrderImport/itOrderImportDelete"
+                    window.location.href = _url ? id =;
+                }
+            });
+        });
 
         $(function () {
             $('#formitInventoryInput').submit(function () {

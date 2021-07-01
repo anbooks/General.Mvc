@@ -1,0 +1,63 @@
+﻿@*@{
+        ViewData["Title"] = "EditUser";
+    }
+
+    <h2>EditUser</h2>*@
+
+@using General.Entities
+@model ForwardChoose
+@{
+    ViewData["Title"] = "编辑口岸报关行选择规则";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li><a href="@ViewBag.ReturnUrl">口岸报关行选择规则</a></li>
+        <li class="active">@ViewBag.Title</li>
+    </ul>
+</div>
+
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <form asp-route="editForwardChoose" method="post" class="form-horizontal">
+                @Html.HiddenFor(m => m.Id)
+                <div asp-validation-summary="All"></div>
+              
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label no-padding-right">目的港 </label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" asp-for="Dest" placeholder="目的港" />
+                        </div>
+                        <span class="inline text-danger" asp-validation-for="Dest"></span>
+                    </div>
+      
+               
+                <div class="form-group">
+                    <label class="col-sm-2 control-label no-padding-right">口岸报关行</label>
+                    <div class="col-sm-3">
+                        <input type="text" asp-for="Forward" class="form-control" placeholder="口岸报关行" />
+                    </div>
+                    <span asp-validation-for="Forward" class="inline text-danger "></span>
+                </div>
+               
+
+                
+                <div class="col-md-offset-2 col-md-9">
+                    <button class="btn btn-info" type="submit">
+                        <i class="ace-icon fa fa-check bigger-110"></i>
+                        提交
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

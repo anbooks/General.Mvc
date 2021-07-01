@@ -127,10 +127,27 @@ namespace General.Services.ImportTrans_main_record
 
             if (list != null)
                 return list;
-            list = _scheduleRepository.Table.Where(o=>o.MainId==id).ToList();
+            list = _scheduleRepository.Table.Where(o=>o.MainId==id && o.IsDeleted != true).ToList();
             return list;
         }
-       
+        public List<Entities.Schedule> getItem(string Item)
+        {
+            List<Entities.Schedule> list = null;
+
+            if (list != null)
+                return list;
+            list = _scheduleRepository.Table.Where(o => o.ReferenceNo == Item&&o.IsDeleted!=true).ToList();
+            return list;
+        }
+        public List<Entities.Schedule> getOrder(string a, string b)
+        {
+            List<Entities.Schedule> list = null;
+
+            if (list != null)
+                return list;
+            list = _scheduleRepository.Table.Where(o => o.OrderNo == a && o.OrderLine == b && o.IsDeleted != true).ToList();
+            return list;
+        }
         public void removeCache()
         {
             _memoryCache.Remove(MODEL_KEY);

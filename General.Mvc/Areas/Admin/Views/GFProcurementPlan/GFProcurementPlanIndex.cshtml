@@ -1,0 +1,140 @@
+﻿@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<ProcurementPlan, SysCustomizedListSearchArg>
+@{
+    ViewData["Title"] = "采购计划";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+            <a href="">数据导入</a>
+        </li>
+        <li class="active">采购计划</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+
+    <div>
+        <div class="col-lg-12">
+            <a asp-route="gfProcurementPlanMainIndex" class="btn btn-sm btn-pink">返回</a>
+        </div>
+        <div class="space-2"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-route="gfProcurementPlanIndex" method="get" class="form-inline">
+                            <label>关键字</label>
+                            <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="序号" />
+                            <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="物料编码" />
+                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="名称" />
+                            <button type="submit" class="btn btn-purple btn-sm">
+                                查询
+                                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form asp-route="gfProcurementPlanIndex" method="post" id="formitInventoryInput" class="form-horizontal" onsubmit="return false;">
+            @Html.AntiForgeryToken()
+            @Html.Hidden("Id", 1)
+            <div class="form-group">
+                @if (Model != null)
+                {
+                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                        <thead>
+                            <tr>
+                                <th width="100px"></th>
+                                <th width="100px">采购计划编号</th>
+                                <th width="100px">采购计划编制人</th>
+                                <th width="100px">项目</th>
+                                <th width="100px">序号</th>
+                                <th width="100px">物料编码</th>
+                                <th width="100px">名称</th>
+                                <th width="100px">牌号</th>
+                                <th width="100px">技术规范</th>
+                                <th width="100px">规格</th>
+                                <th width="100px">宽</th>
+                                <th width="100px">长</th>
+                                <th width="100px">单机定额</th>
+                                <th width="100px">包装规格</th>
+                                <th width="100px">计划数量</th>
+                                <th width="100px">计划单位</th>
+                                <th width="100px">采购订单数量</th>
+                                <th width="100px">采购订单单位</th>
+                                <th width="100px">要求到货时间</th>
+                                <th width="100px">采购起止架份</th>
+                                <th width="100px">采购依据及批准人</th>
+                                <th width="100px">申请号</th>
+                                <th width="100px">备注1</th>
+                                <th width="100px">备注2</th>
+                              
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Data)
+                            {
+                                <tr>
+                                    <td>
+                                        
+                                    </td>
+                                    <td>@item.PlanMain.PlanItem</td>
+                                    <td>@item.PlanMain.Prepare</td>
+                                    <td>@item.PlanMain.Project</td>
+                                    <td>@item.Item</td>
+                                    <td>@item.Materialno</td>
+                                    <td>@item.Name</td>
+                                    <td>@item.PartNo</td>
+                                    <td>@item.Technical</td>
+                                    <td>@item.Size</td>
+                                    <td>@item.Width</td>
+                                    <td>@item.Length</td>
+                                    <td>@item.SingleQuota</td>
+                                    <td>@item.Package</td>
+                                    <td>@item.PlanNo</td>
+                                    <td>@item.PlanUnit</td>
+                                    <td>@item.PlanOrderNo</td>
+                                    <td>@item.PlanOrderUnit</td>
+                                    <td>@item.RequiredDockDate</td>
+                                    <td>@item.ACCovers</td>
+                                    <td>@item.Purchasing</td>
+                                    <td>@item.Application</td>
+                                    <td>@item.Remark1</td>
+                                    <td>@item.Remark2</td>
+                                   
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <pager page-value="Model.Paging"></pager>
+                }
+            </div>
+           
+        </form>
+        <script>
+            $(function () {
+                $('#formitInventoryInput').submit(function () {
+                    var form = $(this);
+                    $.modal.confirm('您确定要保存此用户角色数据？', function () {
+                        form.ajaxSubmit(function (data) {
+                            $.modal.alert(data);
+                        });
+                    });
+                });
+            });
+        </script>
+    </div>
+
+</div>

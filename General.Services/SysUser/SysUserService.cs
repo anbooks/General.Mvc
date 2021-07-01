@@ -374,7 +374,14 @@ namespace General.Services.SysUser
         public List<Entities.SysUser> getBuyer()
         {
             List<Entities.SysUser> list = null;
-            list = _sysUserRepository.Table.Where(o => o.Co != null && !o.IsDeleted && o.Co != "").ToList();
+            list = _sysUserRepository.Table.Where(o => o.RoleName == "采购员" && !o.IsDeleted ).ToList();
+
+            return list;
+        }
+        public List<Entities.SysUser> getJhy()
+        {
+            List<Entities.SysUser> list = null;
+            list = _sysUserRepository.Table.Where(o => o.RoleName == "计划员" && !o.IsDeleted ).ToList();
 
             return list;
         }
@@ -402,10 +409,10 @@ namespace General.Services.SysUser
             Entities.SysUserToken userToken = null;
             Entities.SysUser sysUser = null;
 
-            _memoryCache.TryGetValue<Entities.SysUserToken>(token, out userToken);
+         //   _memoryCache.TryGetValue<Entities.SysUserToken>(token, out userToken);
             if (userToken != null)
             {
-                _memoryCache.TryGetValue(String.Format(MODEL_KEY, userToken.SysUserId), out sysUser);
+        //        _memoryCache.TryGetValue(String.Format(MODEL_KEY, userToken.SysUserId), out sysUser);
             }
             if (sysUser != null)
                 return sysUser;
@@ -418,10 +425,12 @@ namespace General.Services.SysUser
                      .FirstOrDefault(o => o.Id == tokenId);
                 if (tokenItem != null)
                 {
-                    _memoryCache.Set(token, tokenItem, DateTimeOffset.Now.AddHours(4));
+                    //   _memoryCache.Set(token, tokenItem, DateTimeOffset.Now.AddHours(4));
                     //缓存
-                    _memoryCache.Set(String.Format(MODEL_KEY, tokenItem.SysUserId), tokenItem.SysUser, DateTimeOffset.Now.AddHours(4));
-                    return tokenItem.SysUser;
+                    //       _memoryCache.Set(String.Format(MODEL_KEY, tokenItem.SysUserId), tokenItem.SysUser, DateTimeOffset.Now.AddHours(4));
+                    var model = _sysUserRepository.Table.FirstOrDefault(o => o.Id == tokenItem.SysUserId);
+
+                    return model;
                 }
             }
             return null;
@@ -482,12 +491,13 @@ namespace General.Services.SysUser
         /// <param name="model"></param>
         public void updateSysUser(Entities.SysUser model)
         {
-            _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
+           // _sysUserRepository.DbContext.Entry(model).State = EntityState.Unchanged;
             _sysUserRepository.DbContext.Entry(model).Property("Name").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Email").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("MobilePhone").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Sex").IsModified = true;
             _sysUserRepository.DbContext.Entry(model).Property("Co").IsModified = true;
+            _sysUserRepository.DbContext.Entry(model).Property("RoleName").IsModified = true;
             _sysUserRepository.DbContext.SaveChanges();
         }
         public void updatePassword(Entities.SysUser model)

@@ -66,8 +66,9 @@
                             <tr>
                                 <th style="width:50px"></th>
                                 <th style="width:100px">编号</th>
+                                <th style="width:100px">运输代理</th>
                                 <th style="width:100px">供应商名称</th>
-                                <th style="width:100px">订单号</th>
+                                <th style="width:150px">订单号</th>
                                 <th style="width:100px">贸易条款</th>
                                 <th style="width:100px">货物类型</th>
                                 <th style="width:100px">发票金额</th>
@@ -100,74 +101,65 @@
                                 <th style="width:100px">实际提/送货日期</th>
                                 <th style="width:100px">是否核放</th>
                                 <th style="width:100px">是否已生成报检单</th>
-                                <th style="width:100px">操作</th>
+
                             </tr>
                         </thead>
                         <tbody>
 
                             @foreach (var item in Model.Data)
                             {
-                                <tr>
-                                    @if (item.CheckAndPass == null)
-                                    {
-                                        <td style="width:80px;color:red;font-size:20px" >   ★</td>
-                                    }
-                                    else {<td style="width:80px;color:red;font-size:20px"></td> }
-                                    
-                                    <td style="width:80px">@item.Id</td>
-                                    <td style="width:80px">@item.Shipper</td>
-                                    <td style="width:80px">@item.PoNo</td>
-                                    <td style="width:80px">@item.Incoterms</td>
-                                    <td style="width:80px">@item.CargoType</td>
-                                    <td style="width:80px">@item.Invamou</td>
-                                    <td style="width:80px">@item.Invcurr</td>
-                                    <td style="width:90px">@item.RealReceivingDate</td>
-                                    <td style="width:80px">@item.Pcs</td>
-                                    <td style="width:80px">@item.Gw</td>
-                                    <td style="width:80px">@item.Buyer</td>
-                                    <td style="width:90px">@item.RequestedArrivalTime</td>
-                                    <td style="width:80px">@item.ShippingMode</td>
-                                    <td style="width:80px">@item.Status</td>
-                                    <td style="width:80px">@item.FlighVessel</td>
-                                    <td style="width:80px">@item.Origin</td>
-                                    <td style="width:80px">@item.Dest</td>
-                                    <td style="width:80px">@item.Mbl</td>
-                                    <td style="width:80px">@item.Hbl</td>
-                                    <td style="width:80px">@item.Measurement</td>
-                                    <td style="width:80px">@item.Atd</td>
-                                    <td style="width:80px">@item.Ata</td>
-                                    <td style="width:80px">@item.Forwarder</td>
-                                    <td style="width:80px">@item.InventoryNo</td>
-                                    <td style="width:80px">@item.BlDate</td>
-                                    <td style="width:80px">@item.DeclarationDate</td>
-                                    <td style="width:80px">@item.ReleaseDate</td>
-                                    <td style="width:80px">@item.CustomsDeclarationNo</td>
-                                    <td style="width:80px">@item.InspectionLotNo</td>
-                                    <td style="width:80px">@item.IsNeedSecondCheck</td>
-                                    <td style="width:80px">@item.DeliveryRequiredDate</td>
-                                    <td style="width:80px">@item.ChooseDelivery</td>
-                                    <td style="width:80px">@item.ActualDeliveryDate</td>
-                                    <td style="width:80px">@item.CheckAndPass</td>
-                                    <td style="width:80px">@item.Declaration</td>
-                                    <td>
-                                        <a href="@Url.RouteUrl("itShipmentCreateSchedule", new { id = item.Id })" class="btn btn-xs btn-purple">
-                                            <i class="fa fa-bolt"></i>查看明细表
-                                        </a>
-                                    </td>
-                                </tr>
+                            <tr>
+                                @if (item.CheckAndPass == null)
+                                {
+                                    <td style="width:80px;color:red;font-size:20px">   ★</td>
+                                }
+                                else
+                                {
+                                    <td style="width:80px;color:red;font-size:20px"></td>}
+
+                                <td style="width:80px">@item.Id</td>
+                                <td style="width:80px">@item.Transportation</td>
+                                <td style="width:80px">@item.Shipper</td>
+                                <td style="width:80px">@item.PoNo</td>
+                                <td style="width:80px">@item.Incoterms</td>
+                                <td style="width:80px">@item.CargoType</td>
+                                <td style="width:80px">@item.Invamou</td>
+                                <td style="width:80px">@item.Invcurr</td>
+                                <td style="width:90px">@item.RealReceivingDate</td>
+                                <td style="width:80px">@item.Pcs</td>
+                                <td style="width:80px">@item.Gw</td>
+                                <td style="width:80px">@item.Buyer</td>
+                                <td style="width:90px">@item.RequestedArrivalTime</td>
+                                <td style="width:80px">@item.ShippingMode</td>
+                                <td style="width:80px">@item.Status</td>
+                                <td style="width:80px">@item.FlighVessel</td>
+                                <td style="width:80px">@item.Origin</td>
+                                <td style="width:80px">@item.Dest</td>
+                                <td style="width:80px">@item.Mbl</td>
+                                <td style="width:80px">@item.Hbl</td>
+                                <td style="width:80px">@item.Measurement</td>
+                                <td style="width:80px">@item.Atd</td>
+                                <td style="width:80px">@item.Ata</td>
+                                <td style="width:80px">@item.Forwarder</td>
+                                <td style="width:80px">@item.InventoryNo</td>
+                                <td style="width:80px">@item.BlDate</td>
+                                <td style="width:80px">@item.DeclarationDate</td>
+                                <td style="width:80px">@item.ReleaseDate</td>
+                                <td style="width:80px">@item.CustomsDeclarationNo</td>
+                                <td style="width:80px">@item.InspectionLotNo</td>
+                                <td style="width:80px">@item.IsNeedSecondCheck</td>
+                                <td style="width:80px">@item.DeliveryRequiredDate</td>
+                                <td style="width:80px">@item.ChooseDelivery</td>
+                                <td style="width:80px">@item.ActualDeliveryDate</td>
+                                <td style="width:80px">@item.CheckAndPass</td>
+                                <td style="width:80px">@item.Declaration</td>
+                            </tr>
                             }
                         </tbody>
                     </table>
                     <pager page-value="Model.Paging"></pager>
-
                 }
             </div>
-        </div>
-        <div class="col-md-offset-1">
-            <button class="btn btn-info" type="submit">
-                <i class="ace-icon fa fa-check bigger-110"></i>
-                确认创建
-            </button>
         </div>
     </form>
     <script>

@@ -23,6 +23,8 @@ using Microsoft.AspNetCore.Hosting;
 using General.Services.Attachment;
 using Microsoft.AspNetCore.StaticFiles;
 using NPOI.SS.Util;
+using NPOI.HSSF.UserModel;
+using OfficeOpenXml.Style;
 
 namespace General.Mvc.Areas.Admin.Controllers
 {
@@ -46,8 +48,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
             this._attachmentService = attachmentService;
         }
-        [Route("", Name = "itPorkCustoms")]
-        [Function("口岸报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 4)]
+        [Route("itPorkCustoms", Name = "itPorkCustoms")]
+        [Function("待办/在途（口岸）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 4)]
         [HttpGet]
         public IActionResult ITPorkCustomsIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -182,29 +184,97 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Json(AjaxData);
         }
+        [HttpPost]
         [Route("excelimportCon", Name = "excelimportCon")]
         [Function("生成货物交接单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
-        public IActionResult Export2()
+        public IActionResult Export2(List<int> checkboxId)
         {
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
-            var path = Path.Combine(sWebRootFolder, "Files", "abc.xlsx");
-            string sFileName = "明细表" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\ejdfile\\", sFileName));
-            using (var fs = System.IO.File.Open(path, FileMode.Open, FileAccess.Read))
-            using (ExcelPackage package = new ExcelPackage(fs))
-            {
-                var worksheet = package.Workbook.Worksheets["sheet1"];
+            string sFileName = "货物交接单" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
+            FileInfo finfo = new FileInfo(sWebRootFolder + "\\Files\\货物交接单.xlsx");
+            finfo.CopyTo(sWebRootFolder + "\\Files\\sjdfile\\" + sFileName, true);
 
-                var sc = worksheet.Dimension.Start.Column;
-                var ec = worksheet.Dimension.End.Column;
-                var sr = worksheet.Dimension.Start.Row;
-                var er = worksheet.Dimension.End.Row;
-                var value = worksheet.Cells[sc, sr + 1].Value;
-                worksheet.Cells[2, 3].Value = "采购员";
+            FileInfo file = new FileInfo(sWebRootFolder + "\\Files\\sjdfile\\" + sFileName);
+            // file.Delete();
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                // 添加worksheet
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                ////添加头
+                // worksheet.Cells[2, 2].Value = "采购员";
+                //  worksheet.Cells[2, 12].Value = "订单号";
+                worksheet.Row(1).Height = 38;
+                worksheet.Row(2).Height = 38;
+                worksheet.Row(3).Height = 38;
+                worksheet.Row(4).Height = 38;
+                worksheet.Row(5).Height = 38;
+                worksheet.Row(6).Height = 38;
+                worksheet.Row(7).Height = 38;
+                worksheet.Row(8).Height = 38;
+                worksheet.Row(9).Height = 38;
+                worksheet.Row(10).Height = 38;
+                worksheet.Row(11).Height = 38;
+                worksheet.Row(12).Height = 38;
+                worksheet.Row(13).Height = 38;
+                worksheet.InsertRow(14,checkboxId.Count-2);
+                for (int b = 0; b <= checkboxId.Count + 1; b++)
+                {
+                    worksheet.Cells[14 + b, 1].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 2].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 3].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 4].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 5].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 6].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 7].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 8].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 9].Style.Border.BorderAround(ExcelBorderStyle.Thin);
+                    worksheet.Cells[14 + b, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[14 + b, 9].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                    worksheet.Row(14 + b).Height = 38;
+                }
+                int a = 0;
+                foreach (int u in checkboxId)
+                {
+                    var model = _importTrans_main_recordService.getById(u);
+                    if (model.PoNo != null)
+                    {
+                        worksheet.Cells[13+a, 1].Value = model.PoNo;
+                    }
+                    if (model.Mbl != null)
+                    {
+                        worksheet.Cells[13 + a, 2].Value = model.Mbl;
+                    }
+                    if (model.Pcs != null)
+                    {
+                        worksheet.Cells[13 + a, 3].Value = model.Pcs;
+                    }
+                    if (model.Gw != null)
+                    {
+                        worksheet.Cells[13 + a, 4].Value = model.Gw;
+                    }
+                    if (model.ChooseDelivery != null)
+                    {
+                        worksheet.Cells[13 + a, 5].Value = model.ChooseDelivery;
+                    }
+                    if (model.BrokenRecord != null)
+                    {
+                        worksheet.Cells[13 + a, 6].Value = model.BrokenRecord;
+                    }
+                  
+                    a++;
+                }
                 package.Save();
             }
+            return File("\\Files\\sjdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
            
-            return File("\\Files\\ejdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+            //return File("\\Files\\ejdfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
         }
         [HttpPost]
         [Route("itPorkCustomsList", Name = "itPorkCustomsList")]
@@ -217,12 +287,54 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 var model = _importTrans_main_recordService.getById(u.Id);
                 if (u.ChooseDelivery != "") { model.ChooseDelivery = u.ChooseDelivery; }
-                model.BlDate = u.BlDate;
-                model.DeclarationDate = u.DeclarationDate;
-                model.ReleaseDate = u.ReleaseDate;
-                model.CustomsDeclarationNo = u.CustomsDeclarationNo;
-                model.InspectionLotNo = u.InspectionLotNo;
-                model.ActualDeliveryDate = u.ActualDeliveryDate;
+                try
+                {
+                    model.BlDate = u.BlDate;
+                }
+                catch
+                {
+
+                }
+                try
+                {
+                    model.DeclarationDate = u.DeclarationDate;
+                }
+                catch
+                {
+
+                }
+                try
+                {
+                    model.ReleaseDate = u.ReleaseDate;
+                }
+                catch
+                {
+
+                }
+                try
+                {
+                    model.CustomsDeclarationNo = u.CustomsDeclarationNo;
+                }
+                catch
+                {
+
+                }
+                try
+                {
+                    model.InspectionLotNo = u.InspectionLotNo;
+                }
+                catch
+                {
+
+                }
+                try
+                {
+                    model.ActualDeliveryDate = u.ActualDeliveryDate;
+                }
+                catch
+                {
+
+                }
                 if (u.DeliveryReceipt != "") { model.DeliveryReceipt = u.DeliveryReceipt; }
                 if (u.BrokenRecord != "") { model.BrokenRecord = u.BrokenRecord; }
                 _importTrans_main_recordService.updateImportTransmain(model);
@@ -230,6 +342,19 @@ namespace General.Mvc.Areas.Admin.Controllers
             AjaxData.Status = true;
             AjaxData.Message = "OK";
             return Json(AjaxData);
+        }
+        [HttpGet]
+        [Route("itPorkCustomsthList", Name = "itPorkCustomsthList")]
+        [Function("口岸报关行条目退回", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITPorkCustomsController.ITPorkCustomsIndex")]
+        public ActionResult ITPorkCustomsthList(int id)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itPorkCustoms");
+            var model = _importTrans_main_recordService.getById(id);
+                model.Forwarder = null;
+                _importTrans_main_recordService.updateImportTransmain(model);
+
+
+            return Redirect(ViewBag.ReturnUrl);
         }
         [HttpGet]
         [Route("edit", Name = "editITPorkCustoms")]

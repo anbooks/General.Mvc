@@ -10,7 +10,12 @@ namespace General.Entities
         public GeneralDbContext(DbContextOptions options) : base(options)
         {
         }
+        public DbSet<ForwardChoose> ForwardChoose { get; set; }
+        public DbSet<InspectionAttachment> InspectionAttachment { get; set; }
         public DbSet<ImportTrans_main_record_copy> ImportTrans_main_record_copy { get; set; }
+        public DbSet<InspecationMain> InspectionMain { get; set; }
+        public DbSet<InvoiceMain> InvoiceMain { get; set; }
+        public DbSet<Invoice> Invoice { get; set; }
         public DbSet<Project> Project { get; set; }
         public DbSet<Attachment> Attachment { get; set; }
         public DbSet<Inspection> Inspection { get; set; }

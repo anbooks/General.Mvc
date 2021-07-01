@@ -113,8 +113,12 @@ namespace General.Services.ImportTrans_main_record
         public IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted!=true);
-            if (arg.invcurr != null||arg.itemno!=null || arg.keyword != null || arg.materiel != null || arg.pono != null || arg.realreceivingdatestrat != null || arg.realreceivingdateend != null || arg.shipper != null)
+            if (arg.buy != null || arg.invcurr != null||arg.itemno!=null || arg.keyword != null || arg.materiel != null || arg.pono != null || arg.realreceivingdatestrat != null || arg.realreceivingdateend != null || arg.shipper != null)
             {
+                if (!String.IsNullOrEmpty(arg.keyword))
+                    query = query.Where(o => o.Transportation.Contains(arg.keyword));
+                if (!String.IsNullOrEmpty(arg.buy))
+                    query = query.Where(o => o.Buyer.Contains(arg.buy));
                 if (!String.IsNullOrEmpty(arg.itemno))
                     query = query.Where(o => o.Id == Convert.ToInt32(arg.itemno));
                 if (!String.IsNullOrEmpty(arg.shipper))
@@ -129,7 +133,7 @@ namespace General.Services.ImportTrans_main_record
                     query = query.Where(o => o.RealReceivingDate > arg.realreceivingdatestrat);
             }
             else {
-                 query = query.Where(o => o.CreationTime.ToString("yyMMdd") == DateTime.Now.ToString("yyMMdd")); 
+                query = query.Where(o => o.Ata > DateTime.Today.AddMonths(-2)||o.CheckAndPass!="是");
             }
             query = query.OrderByDescending(o => o.Id);
            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
@@ -138,26 +142,43 @@ namespace General.Services.ImportTrans_main_record
         public IPagedList<Entities.ImportTrans_main_record> searchListYd(SysCustomizedListSearchArg arg, int page, int size,string port,string tran)
         {
             var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true);
-            if (arg.invcurr != null || arg.itemno != null || arg.keyword != null || arg.materiel != null || arg.pono != null || arg.realreceivingdatestrat != null || arg.realreceivingdateend != null || arg.shipper != null)
+
+            query = query.Where(o => (o.Forwarder == port && o.Forwarder != null) || (o.Transportation == tran && o.Transportation != null));
+          
+            if ( arg.invcurr != null || arg.itemno != null || arg.keyword != null || arg.materiel != null || arg.pono != null || arg.realreceivingdatestrat != null || arg.realreceivingdateend != null || arg.shipper != null)
             {
-                if (!String.IsNullOrEmpty(port))
-                    query = query.Where(o => o.Forwarder.Contains(port)|| o.Transportation.Contains(tran));
-                if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.Id==Convert.ToInt32(arg.itemno));
-                if (!String.IsNullOrEmpty(arg.shipper))
-                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
-                if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.PoNo.Contains(arg.pono));
-                if (!String.IsNullOrEmpty(arg.invcurr))
-                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
-                if (arg.realreceivingdateend != null)
-                    query = query.Where(o => o.RealReceivingDate < arg.realreceivingdateend.Value.AddDays(1));
-                if (arg.realreceivingdatestrat != null)
-                    query = query.Where(o => o.RealReceivingDate > arg.realreceivingdatestrat);
+                if (port == null && tran == null )
+                {
+                        query = query.Where(o => o.Id == 0);
+                }
+                else
+                {
+                    if (!String.IsNullOrEmpty(arg.itemno))
+                        query = query.Where(o => o.Id == Convert.ToInt32(arg.itemno));
+                    if (!String.IsNullOrEmpty(arg.shipper))
+                        query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                    if (!String.IsNullOrEmpty(arg.pono))
+                        query = query.Where(o => o.PoNo.Contains(arg.pono));
+                    if (!String.IsNullOrEmpty(arg.invcurr))
+                        query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+                    if (arg.realreceivingdateend != null)
+                        query = query.Where(o => o.RealReceivingDate < arg.realreceivingdateend.Value.AddDays(1));
+                    if (arg.realreceivingdatestrat != null)
+                        query = query.Where(o => o.RealReceivingDate > arg.realreceivingdatestrat);
+                }
             }
             else
             {
-                query = query.Where(o => o.CreationTime.ToString("yyMMdd") == DateTime.Now.ToString("yyMMdd"));
+                if (port == null && tran == null)
+                {
+
+                    query = query.Where(o => o.Id == 0);
+
+                }
+                else
+                {
+                    query = query.Where(o => o.CheckAndPass != "是");
+                }
             }
             query = query.OrderByDescending(o => o.Id);
             // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
@@ -165,7 +186,7 @@ namespace General.Services.ImportTrans_main_record
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListBuyer(SysCustomizedListSearchArg arg, int page, int size,string buyer)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true&&o.Buyer==buyer);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true&&o.Buyer==buyer&& o.CheckAndPass != "是");
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -183,7 +204,7 @@ namespace General.Services.ImportTrans_main_record
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size,string forwarder)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.Forwarder== forwarder&& o.Forwarder != null&& o.IsDeleted != true);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.Forwarder== forwarder&& o.Forwarder != null&& o.IsDeleted != true && o.CheckAndPass != "是");
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -200,7 +221,24 @@ namespace General.Services.ImportTrans_main_record
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListTransport(SysCustomizedListSearchArg arg, int page, int size, string transport)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.Transportation == transport && o.IsDeleted != true);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.Transportation == transport && o.IsDeleted != true && o.CheckAndPass != "是");
+            if (arg != null)
+            {
+                if (!String.IsNullOrEmpty(arg.itemno))
+                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                if (!String.IsNullOrEmpty(arg.shipper))
+                    query = query.Where(o => o.Shipper.Contains(arg.shipper));
+                if (!String.IsNullOrEmpty(arg.pono))
+                    query = query.Where(o => o.PoNo.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.invcurr))
+                    query = query.Where(o => o.Invcurr.Contains(arg.invcurr));
+            }
+            // query = query.OrderBy(o => o.CustomizedClassify).ThenBy(o => o.CustomizedValue).ThenByDescending(o => o.CreationTime);
+            return new PagedList<Entities.ImportTrans_main_record>(query, page, size);
+        }
+        public IPagedList<Entities.ImportTrans_main_record> searchListTransportW(SysCustomizedListSearchArg arg, int page, int size, string transport)
+        {
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.Transportation == transport && o.IsDeleted != true && o.CheckAndPass != "是");
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -217,11 +255,11 @@ namespace General.Services.ImportTrans_main_record
         }
         public IPagedList<Entities.ImportTrans_main_record> searchListLogistics(SysCustomizedListSearchArg arg, int page, int size)
         {
-            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true);
+            var query = _importTrans_main_recordRepository.Table.Where(o => o.IsDeleted != true && o.CheckAndPass != "是");
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.Itemno.Contains(arg.itemno));
+                    query = query.Where(o => o.Id==Convert.ToInt32(arg.itemno));
                 if (!String.IsNullOrEmpty(arg.shipper))
                     query = query.Where(o => o.Shipper.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
@@ -263,16 +301,12 @@ namespace General.Services.ImportTrans_main_record
             if (list != null)
                 return list;
             if (role=="采购员") {
-                list = _importTrans_main_recordRepository.Table.Where(o => o.Buyer == co && o.IsDeleted != true).ToList();
-            }
-            if (role == "运输代理")
+                list = _importTrans_main_recordRepository.Table.Where(o => o.Buyer == co && o.IsDeleted != true&& o.CheckAndPass!="是").ToList();
+            }else
             {
-                list = _importTrans_main_recordRepository.Table.Where(o => o.Transportation == co && o.IsDeleted != true).ToList();
+                list = _importTrans_main_recordRepository.Table.Where(o => (o.Transportation == role || o.Forwarder== role) && o.IsDeleted != true && o.CheckAndPass != "是").ToList();
             }
-            if (role == "口岸报关行")
-            {
-                list = _importTrans_main_recordRepository.Table.Where(o => o.Forwarder == co && o.IsDeleted != true).ToList();
-            }
+           
             return list;
         }
         public List<Entities.ImportTrans_main_record> getAllShipModel()

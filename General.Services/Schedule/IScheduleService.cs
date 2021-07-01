@@ -18,8 +18,9 @@ namespace General.Services.ScheduleService
         /// </summary>
         /// <param name="model"></param>
         void insertSchedule(Entities.Schedule model);
-        List<Entities.Schedule> getAll(int id); 
-       
+        List<Entities.Schedule> getAll(int id);
+        List<Entities.Schedule> getItem(string Item);
+        List<Entities.Schedule> getOrder(string a, string b);
         /// <summary>
         /// 更新修改
         /// </summary>

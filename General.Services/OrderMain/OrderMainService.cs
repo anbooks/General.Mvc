@@ -27,9 +27,13 @@ namespace General.Services.OrderMain
         /// <param name="page"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public IPagedList<Entities.OrderMain> searchOrderMain(SysCustomizedListSearchArg arg, int page, int size)
+        public IPagedList<Entities.OrderMain> searchOrderMain(SysCustomizedListSearchArg arg, int page, int size,string role,string name)
         {
             var query = _sysOrderMainRepository.Table.Where(o=>o.IsDeleted!=true);
+            if (role == "采购员")
+            {
+                query = query.Where(o => o.OrderSigner==name);
+            }
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -37,7 +41,7 @@ namespace General.Services.OrderMain
                 if (!String.IsNullOrEmpty(arg.shipper))
                     query = query.Where(o => o.SupplierCode.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.Buyer.Contains(arg.pono));
+                    query = query.Where(o => o.OrderSigner.Contains(arg.pono));
                 if (!String.IsNullOrEmpty(arg.invcurr))
                     query = query.Where(o => o.Project.Contains(arg.invcurr));
                 if (arg.realreceivingdateend != null)

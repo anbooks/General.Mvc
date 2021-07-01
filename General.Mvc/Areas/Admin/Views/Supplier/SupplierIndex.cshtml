@@ -1,0 +1,79 @@
+﻿@using  General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<Supplier, SysCustomizedListSearchArg>
+@{
+    ViewData["Title"] = "供应商列表";
+}
+
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li class="active">系统用户</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+         
+                <a asp-route="editSupplier" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>添加供应商信息</a>
+            
+        </div>
+    </div>
+    <div class="space-2"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form asp-route="SupplierIndex" method="get" class="form-inline">
+                        <label>关键字</label>
+                        <input type="text" class="form-control" name="keyword" style="width:220px;" value="@Model.Paging.RouteArg.keyword" placeholder="供应商代码" />
+                        <button type="submit" class="btn btn-purple btn-sm">
+                            查询
+                            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th width="150px">供应商代码</th>
+                       
+                        <th width="110px">供应商名称</th>
+                        
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Data)
+                    {
+                    <tr>
+                        <td>@item.SupplierCode</td>
+                        <td>@item.Describe</td>
+                       
+                        <td>
+                            <a href="@Url.RouteUrl("editSupplier",new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>修改</a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+            <pager page-value="Model.Paging"></pager>
+
+        </div>
+    </div>
+</div>
+
+

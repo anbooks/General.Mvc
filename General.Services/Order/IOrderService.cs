@@ -17,9 +17,11 @@ namespace General.Services.Order
         /// <param name="id"></param>
         /// <returns></returns>
         Entities.Order getById(int id);
-        Entities.Order getAccount(string account);
+        Entities.Order getAccount(string account); 
+             Entities.Order getOrder(string a, string b);
+        List<Entities.Order> getPlan(string account);
         /// <summary>
-        /// 验证账号是否已经存在
+        /// 验证账号是否已经存在getPlan
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>

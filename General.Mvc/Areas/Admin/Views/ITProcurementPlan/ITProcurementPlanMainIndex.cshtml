@@ -24,9 +24,9 @@
         </h1>
     </div>
     <div>
-       
-         <a asp-route="editITProcurementPlanMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入采购计划</a>
-       
+
+        <a asp-route="editITProcurementPlanMain" class="btn btn-sm btn-pink"><i class="glyphicon glyphicon-plus"></i>导入采购计划</a>
+        <a asp-route="excelinsertplan" class="btn btn-sm btn-pink">采购计划导入模板</a>
         <div class="space-2"></div>
         <div class="row">
             <div class="col-sm-12">
@@ -37,10 +37,10 @@
                             <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="采购计划编号" />
                             <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="采购计划编制人" />
                             <input type="text" class="form-control" name="invcurr" style="width:180px;" value="@Model.Paging.RouteArg.invcurr" placeholder="采购计划接收人" />
-                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="项目" /> 
+                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="项目" />
                             @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
                             {
-                            <label>采购计划下达日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
+                                <label>采购计划下达日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
                                 <label>----</label> <input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdateend.ToString("yyyy-MM-dd")" placeholder="" />
                             }
                             else
@@ -64,7 +64,7 @@
                         <thead>
                             <tr>
                                 <th width="30px"></th>
-                                <th width="100px">采购计划编号</th>
+                                <th width="200px">采购计划编号</th>
                                 <th width="100px">采购计划编制人</th>
                                 <th width="100px">采购计划接收人</th>
                                 <th width="100px">采购计划下达日期</th>
@@ -76,28 +76,35 @@
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="sysResource" value="@item.Id" />
-                                </td>
-                                <td>@item.PlanItem</td>
-                                <td>@item.Prepare</td>
-                                <td>@item.Creator</td>
-                                <td>@item.CreationTime</td>
-                                <td>@item.Project</td>
-                                <td>
-                                    <a href="@Url.RouteUrl("itProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>计划数据</a>
-                                    <a href="@Url.RouteUrl("editITProcurementPlanMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改主数据</a>
-                                    <a href="@Url.RouteUrl("ITProcurementPlanMainDelete", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"onclick="javascript:return confirm('确定删除吗?');"><i class="fa fa-bolt"></i>删除</a>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="sysResource" value="@item.Id" />
+                                    </td>
+                                    <td>@item.PlanItem</td>
+                                    <td>@item.Prepare</td>
+                                    <td>@item.Creator</td>
+                                    @if (item.CreationTime != null)
+                                    {
+                                        <td>@item.CreationTime.Value.ToString("yyyy-MM-dd")</td>
+                                    }
+                                    else
+                                    {
+                                        <td>@item.CreationTime</td>
+                                    }
+                                    <td>@item.Project</td>
+                                    <td>
+                                        <a href="@Url.RouteUrl("itProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>计划数据</a>
+                                        <a href="@Url.RouteUrl("editITProcurementPlanMain", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改主数据</a>
+                                        <a href="@Url.RouteUrl("ITProcurementPlanMainDelete", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete" onclick="javascript:return confirm('确定删除吗?');"><i class="fa fa-bolt"></i>删除</a>
+                                    </td>
+                                </tr>
                             }
                         </tbody>
                     </table>
                     <pager page-value="Model.Paging"></pager>
                 }
             </div>
-           
+
         </form>
         <script>
             $(function () {

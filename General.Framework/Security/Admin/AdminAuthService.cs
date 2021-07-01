@@ -63,9 +63,7 @@ namespace General.Framework.Security.Admin
 
         public void signOut()
         {
-
             _httpContextAccessor.HttpContext.SignOutAsync(CookieAdminAuthInfo.AuthenticationScheme);
-
         }
 
         /// <summary>

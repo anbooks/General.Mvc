@@ -86,37 +86,44 @@
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="sysResource" value="@item.Id" />
-                                    </td>
-                                    <td>@item.PlanMain.PlanItem</td>
-                                    <td>@item.PlanMain.Prepare</td>
-                                    <td>@item.PlanMain.Project</td>
-                                    <td>@item.Item</td>
-                                    <td>@item.Materialno</td>
-                                    <td>@item.Name</td>
-                                    <td>@item.PartNo</td>
-                                    <td>@item.Technical</td>
-                                    <td>@item.Size</td>
-                                    <td>@item.Width</td>
-                                    <td>@item.Length</td>
-                                    <td>@item.SingleQuota</td>
-                                    <td>@item.Package</td>
-                                    <td>@item.PlanNo</td>
-                                    <td>@item.PlanUnit</td>
-                                    <td>@item.PlanOrderNo</td>
-                                    <td>@item.PlanOrderUnit</td>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="sysResource" value="@item.Id" />
+                                </td>
+                                <td>@item.PlanMain.PlanItem</td>
+                                <td>@item.PlanMain.Prepare</td>
+                                <td>@item.PlanMain.Project</td>
+                                <td>@item.Item</td>
+                                <td>@item.Materialno</td>
+                                <td>@item.Name</td>
+                                <td>@item.PartNo</td>
+                                <td>@item.Technical</td>
+                                <td>@item.Size</td>
+                                <td>@item.Width</td>
+                                <td>@item.Length</td>
+                                <td>@item.SingleQuota</td>
+                                <td>@item.Package</td>
+                                <td>@item.PlanNo</td>
+                                <td>@item.PlanUnit</td>
+                                <td>@item.PlanOrderNo</td>
+                                <td>@item.PlanOrderUnit</td>
+                                @if (@item.RequiredDockDate!=null)
+                                {
+                                    <td>@item.RequiredDockDate.Value.ToString("yyyy-MM-dd")</td>
+                                }
+                                else
+                                {
                                     <td>@item.RequiredDockDate</td>
-                                    <td>@item.ACCovers</td>
-                                    <td>@item.Purchasing</td>
-                                    <td>@item.Application</td>
-                                    <td>@item.Remark1</td>
-                                    <td>@item.Remark2</td>
-                                    <td>
-                                        <a href="@Url.RouteUrl("editITProcurementPlan", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
-                                    </td>
-                                </tr>
+                                }
+                                <td>@item.ACCovers</td>
+                                <td>@item.Purchasing</td>
+                                <td>@item.Application</td>
+                                <td>@item.Remark1</td>
+                                <td>@item.Remark2</td>
+                                <td>
+                                    <a href="@Url.RouteUrl("editITProcurementPlan", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>修改</a>
+                                </td>
+                            </tr>
                             }
                         </tbody>
                     </table>

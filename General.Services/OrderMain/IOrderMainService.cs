@@ -8,7 +8,7 @@ namespace General.Services.OrderMain
 {
     public interface IOrderMainService
     {
-        IPagedList<Entities.OrderMain> searchOrderMain(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.OrderMain> searchOrderMain(SysCustomizedListSearchArg arg, int page, int size, string role, string name);
 
         Entities.OrderMain getByAccount(string account);
         /// <summary>

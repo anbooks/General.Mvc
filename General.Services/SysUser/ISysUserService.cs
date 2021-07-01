@@ -26,6 +26,7 @@ namespace General.Services.SysUser
         Entities.SysUser getByName(string account);
         Entities.SysUser getByBuyer(string account);
         List<Entities.SysUser> getBuyer();
+        List<Entities.SysUser> getJhy();
         List<Entities.SysUser> getPorkCustoms();
         List<Entities.SysUser> getTran();
 

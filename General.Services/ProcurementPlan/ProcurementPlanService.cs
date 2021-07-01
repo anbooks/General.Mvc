@@ -30,7 +30,7 @@ namespace General.Services.ProcurementPlan
         public IPagedList<Entities.ProcurementPlan> searchProcurementPlan(SysCustomizedListSearchArg arg, int page, int size,int id)
         {
             
-            var query = _sysProcurementPlanRepository.Table.Include(p=>p.PlanMain).Where(o=>o.IsDeleted!=true&&o.MainId==id);
+            var query = _sysProcurementPlanRepository.Table.Include(p=>p.PlanMain).Where(o=>o.PlanMain.IsDeleted != true&&o.MainId==id);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -57,7 +57,7 @@ namespace General.Services.ProcurementPlan
         /// <returns></returns>
         public bool existAccount(string account)
         {
-            return _sysProcurementPlanRepository.Table.Any(o => o.Name == account && o.IsDeleted != true);
+            return _sysProcurementPlanRepository.Table.Any(o => o.Name == account && o.PlanMain.IsDeleted != true);
         }
         /// <summary>
         /// 获取用户详情
@@ -69,7 +69,24 @@ namespace General.Services.ProcurementPlan
             return _sysProcurementPlanRepository.getById(id);
         }
 
+        public List<Entities.ProcurementPlan> getAll(int id)
+        {
+            List<Entities.ProcurementPlan> list = null;
 
+            if (list != null)
+                return list;
+            list = _sysProcurementPlanRepository.Table.Include(p=>p.PlanMain).Where(o => o.MainId == id&&o.PlanMain.IsDeleted!=true).ToList();
+            return list;
+        }
+        public List<Entities.ProcurementPlan> getItem(string item)
+        {
+            List<Entities.ProcurementPlan> list = null;
+
+            if (list != null)
+                return list;
+            list = _sysProcurementPlanRepository.Table.Include(p => p.PlanMain).Where(o => o.Item == item && o.PlanMain.IsDeleted != true).ToList();
+            return list;
+        }
         /// <summary>
         /// 新增，插入
         /// </summary>

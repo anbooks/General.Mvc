@@ -104,7 +104,13 @@
                             <td>@item.Currency</td>
                             <td>@item.UnitPrice</td>
                             <td>@item.TotalPrice</td>
-                            <td>@item.LeadTime</td>
+                            @if (@item.LeadTime!=null)
+                            {
+                                <td>@item.LeadTime.Value.ToString("yyyy-MM-dd")</td>}
+                            else
+                            {
+                                <td>@item.LeadTime</td>}
+
                             <td>@item.Manufacturer</td>
                             <td>@item.Origin</td>
                             <td>

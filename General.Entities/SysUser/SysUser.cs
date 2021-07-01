@@ -53,7 +53,8 @@ namespace General.Entities
         /// </summary>
         [StringLength(2)]
         public string Sex { get; set; }
-
+        public string RoleName { get; set; }
+       
         public bool Enabled { get; set; }
 
         public bool IsAdmin { get; set; }

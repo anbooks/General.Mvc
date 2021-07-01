@@ -8,7 +8,7 @@ namespace General.Services.Inspection
 {
     public interface IInspectionService
     {
-        IPagedList<Entities.Inspection> searchInspection(SysCustomizedListSearchArg arg, int page, int size);
+        IPagedList<Entities.Inspection> searchInspection(SysCustomizedListSearchArg arg, int page, int size,int id);
 
         Entities.Inspection getByAccount(string account);
         /// <summary>
@@ -17,7 +17,8 @@ namespace General.Services.Inspection
         /// <param name="id"></param>
         /// <returns></returns>
         Entities.Inspection getById(int id);
-
+        List<Entities.Inspection> getByDate(string account);
+        List<Entities.Inspection> getByMain(int id);
         /// <summary>
         /// 验证账号是否已经存在
         /// </summary>

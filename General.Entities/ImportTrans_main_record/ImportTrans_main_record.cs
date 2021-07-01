@@ -23,6 +23,7 @@ namespace General.Entities
          public string Invcurr { get; set; }//发票币种
          public string Pcs { get; set; }//件数(箱数)
          public string Gw { get; set; }//毛重
+        public string Kind { get; set; }//类别
         public DateTime? RealReceivingDate { get; set; }//实际提货/收货日期
         public string Transportation { get; set; }
         public Guid Creator { get; set; }
@@ -70,7 +71,7 @@ namespace General.Entities
         
         public string ReceiptForm { get; set; }//
         public string Note { get; set; }//
-       
+        public DateTime? CheckPassTime { get; set; }
         public bool? SecondCheck { get; set; }
        
         public bool? Declaration { get; set; }

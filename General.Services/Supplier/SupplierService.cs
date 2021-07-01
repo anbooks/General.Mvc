@@ -35,8 +35,8 @@ namespace General.Services.Supplier
             var query = _sysSupplierRepository.Table;
             if (arg != null)
             {
-                if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.SupplierCode.Contains(arg.pono));
+                if (!String.IsNullOrEmpty(arg.keyword))
+                    query = query.Where(o => o.SupplierCode.Contains(arg.keyword));
             }
             query = query.OrderBy(o => o.SupplierCode);
             return new PagedList<Entities.Supplier>(query, page, size);
@@ -50,6 +50,18 @@ namespace General.Services.Supplier
         public bool existAccount(string account)
         {
             return _sysSupplierRepository.Table.Any(o => o.SupplierCode == account );
+        }
+        public List<Entities.Supplier> getCount(string co,int id)
+        {
+            List<Entities.Supplier> list = null;
+
+            if (list != null)
+                return list;
+           
+                list = _sysSupplierRepository.Table.Where(o => o.SupplierCode == co&&o.Id!=id).ToList();
+            
+
+            return list;
         }
         /// <summary>
         /// 获取用户详情

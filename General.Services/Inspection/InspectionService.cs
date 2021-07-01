@@ -19,7 +19,15 @@ namespace General.Services.Inspection
         {
             this._sysInspectionRepository = sysInspectionRepository;
         }
+        public List<Entities.Inspection> getByDate(string account)
+        {
+            List<Entities.Inspection> list = null;
 
+            if (list != null)
+                return list;
+            list = _sysInspectionRepository.Table.Include(p => p.Main).Where(o => o.DateId == account && o.IsDeleted != true).ToList();
+            return list;
+        }
         /// <summary>
         /// 搜索数据
         /// </summary>
@@ -27,9 +35,9 @@ namespace General.Services.Inspection
         /// <param name="page"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        public IPagedList<Entities.Inspection> searchInspection(SysCustomizedListSearchArg arg, int page, int size)
+        public IPagedList<Entities.Inspection> searchInspection(SysCustomizedListSearchArg arg, int page, int size,int id)
         {
-            var query = _sysInspectionRepository.Table.Where(o=>o.UnPlaceQty!=0);
+            var query = _sysInspectionRepository.Table.Include(p => p.Main).Where(o=>o.UnPlaceQty!=0&& o.Main.IsDeleted != true && o.Main.Id ==id);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -46,7 +54,15 @@ namespace General.Services.Inspection
         {
             return _sysInspectionRepository.Table.FirstOrDefault(o => o.ContractNo == account);
         }
+        public List<Entities.Inspection> getByMain(int id)
+        {
+            List<Entities.Inspection> list = null;
 
+            if (list != null)
+                return list;
+            list = _sysInspectionRepository.Table.Include(p => p.Main).Where(o => o.MainId == id && o.IsDeleted != true).ToList();
+            return list;
+        }
         /// <summary>
         /// 验证账号是否已经存在
         /// </summary>

@@ -44,7 +44,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itLogistics")]
-        [Function("物流员（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 3)]
+        [Function("待办/在途（物流）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 3)]
         [HttpGet]
         public IActionResult ITLogisticsIndex(List<int> sysResource,SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -55,6 +55,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewData["DeliveryRequiredDate"] = new SelectList(customizedList3, "CustomizedValue", "CustomizedValue");
             var customizedList2 = _sysUserService.getPorkCustoms();
             ViewData["PorkCustoms"] = new SelectList(customizedList2, "Port", "Port");
+            var customizedList4= _sysUserService.getBuyer();
+            ViewData["Buyer"] = new SelectList(customizedList4, "Name", "Name");
             ViewBag.QX = WorkContext.CurrentUser.Co;
             var pageList = _importTrans_main_recordService.searchListLogistics(arg, page, size);
             ViewBag.Arg = arg;//传参数
@@ -423,50 +425,9 @@ namespace General.Mvc.Areas.Admin.Controllers
 
                     if (u.DeliveryRequiredDate != "") { model.DeliveryRequiredDate = u.DeliveryRequiredDate; }
                     if (u.ShippingMode != "") { model.ShippingMode = u.ShippingMode; }
-                
-                if (WorkContext.CurrentUser.Co == "北京捷诚" || WorkContext.CurrentUser.Co == "辽宁北方")
-                {
-                    if (model.Dest == "PEK")
-                    {
-                        model.Forwarder = "北京捷诚";
-                    }
-                    else if (model.Dest == "SHE")
-                    {
-                        model.Forwarder = "辽宁北方";
-                    }
-                    else if (model.Dest == "DLC")
-                    {
-                        model.Forwarder = "大连环球";
-                    }
-                    else
-                    {
-                        model.Forwarder = "辽宁北方";
-                    }
-                }
-                else if (WorkContext.CurrentUser.Co == "北京和合" || WorkContext.CurrentUser.Co == "大连环球")
-                {
-                    if (model.Dest == "PEK")
-                    {
-                        model.Forwarder = "北京捷诚";
-                    }
-                    else if (model.Dest == "SHE")
-                    {
-                        model.Forwarder = "辽宁北方";
-                    }
-                    else if (model.Dest == "DLG")
-                    {
-                        model.Forwarder = "大连环球";
-                    }
-                    else
-                    {
-                        model.Forwarder = "辽宁北方";
-                    }
-                }
-                else
-                {
-                    model.Forwarder = u.Forwarder;
-                }
-                _importTrans_main_recordService.updateImportTransmain(model);
+                    if (u.Forwarder != "") { model.Forwarder = u.Forwarder; }
+                    if (u.Buyer != "") { model.Buyer = u.Buyer; }
+                    _importTrans_main_recordService.updateImportTransmain(model);
             }
             AjaxData.Status = true;
             AjaxData.Message = "OK";

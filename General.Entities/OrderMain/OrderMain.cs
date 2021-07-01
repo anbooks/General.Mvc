@@ -28,7 +28,8 @@ namespace General.Entities
         public string Project { get; set; }//项目
         public string Buyer { get; set; }//项目
         public string MaterialCategory { get; set; }//物料类别
-        public string Payment { get; set; }//付款方式
+        public string Payment { get; set; }//付款方式Transportion
+        public string Transportion { get; set; }
         public bool IsDeleted { get; set; }
         public Guid? Creator { get; set; }//
         public DateTime? CreationTime { get; set; }//

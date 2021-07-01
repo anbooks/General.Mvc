@@ -15,6 +15,7 @@ namespace General.Services.ImportTrans_main_recordService
       
        IPagedList<Entities.ImportTrans_main_record> searchListPortCustomerBroker(SysCustomizedListSearchArg arg, int page, int size, string forwarder);
         IPagedList<Entities.ImportTrans_main_record> searchListTransport(SysCustomizedListSearchArg arg, int page, int size, string transport);
+        IPagedList<Entities.ImportTrans_main_record> searchListTransportW(SysCustomizedListSearchArg arg, int page, int size, string transport);
         IPagedList<Entities.ImportTrans_main_record> searchList(SysCustomizedListSearchArg arg, int page, int size);
         IPagedList<Entities.ImportTrans_main_record> searchListYd(SysCustomizedListSearchArg arg, int page, int size, string port, string tran);
         IPagedList<Entities.ImportTrans_main_record> searchListBuyer(SysCustomizedListSearchArg arg, int page, int size,string buyer);

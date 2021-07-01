@@ -48,19 +48,20 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("itShipmentCreate", Name = "itShipmentCreate")]
-        [Function("创建发运条目", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
+        [Function("创建/查询运输条目", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
         [HttpGet]
         public IActionResult ITShipmentCreateIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
             RolePermissionViewModel model = new RolePermissionViewModel();
             var pageList = _importTrans_main_recordService.searchList(arg, page, size);
-            ViewBag.Arg = arg;//传参数
+            ViewBag.Arg = arg;//传参数   
+            ViewBag.QX = WorkContext.CurrentUser.RoleName;
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreate", arg);
             return View(dataSource);//sysImport
         }
 
         [Route("itShipmentCreatetran", Name = "itShipmentCreatetran")]
-        [Function("创建发运条目(运代)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
+        [Function("创建/查询运输条目(运代)", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 0)]
         [HttpGet]
         public IActionResult ITShipmentCreateTranIndex(SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -69,6 +70,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             string tran = WorkContext.CurrentUser.Transport;
             var pageList = _importTrans_main_recordService.searchListYd(arg, page, size, port, tran);
             ViewBag.Arg = arg;//传参数
+         
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("itShipmentCreatetran", arg);
             return View(dataSource);//sysImport
         }
@@ -91,7 +93,17 @@ namespace General.Mvc.Areas.Admin.Controllers
 
             return View();
         }
+        [Route("itShipmentDelete", Name = "itShipmentDelete")]
+        [Function("发运条目删除", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITShipmentCreateController.ITShipmentCreateIndex")]
+        public IActionResult ItShipmentDelete(int id)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("itShipmentCreate");
+            var model = _importTrans_main_recordService.getById(id);
+            model.IsDeleted = true;
+            _importTrans_main_recordService.updateImportTransmain(model);
+            return Redirect(ViewBag.ReturnUrl);
 
+        }
         [HttpPost]
         [Route("editTran")]
         public ActionResult EditITShipmentTranCreate(Entities.ImportTrans_main_record model, IFormFile excelfile, string returnUrl = null)
@@ -117,12 +129,18 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
-               // var buy = _sysUserService.getByAccount(inc.SignerCard);
-                model.Buyer = inc.SignerCard;
-                if (inc == null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312")); }
+                if (inc == null) {
+                    //Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312")); 
+                }
+                else
+                {
+                    model.CargoType = inc.MaterialCategory;
+                    model.Buyer = inc.OrderSigner;
+
+                    model.Incoterms = inc.TradeTerms;
+                    model.Shipper = inc.SupplierName;
+                }
                
-                model.Incoterms = inc.TradeTerms;
-                model.Shipper = inc.SupplierName;
                 if (model.Transportation == null|| model.Transportation == "")
                 {
                     Response.WriteAsync("<script>alert('未填写运输代理!');window.location.href ='editTran'</script>", Encoding.GetEncoding("GB2312"));
@@ -178,9 +196,20 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.ModifiedTime = null;
                 model.Creator = WorkContext.CurrentUser.Id;
                 var inc = _orderMainService.getByAccount(model.PoNo);
-                model.Buyer = inc.SignerCard;
-                if (inc == null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312")); }
-                model.Incoterms = inc.TradeTerms;
+               if (inc == null)
+                {
+                    // if (inc == null) { Response.WriteAsync("<script>alert('未创建采购订单!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312")); }
+                }
+                else
+                {
+                    model.CargoType = inc.MaterialCategory;
+                    model.Buyer = inc.OrderSigner;
+
+                    model.Incoterms = inc.TradeTerms;
+                    model.Shipper = inc.SupplierName;
+                }
+               
+             
                 if (model.Transportation == null || model.Transportation == "")
                 {
                     Response.WriteAsync("<script>alert('未填写运输代理!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));

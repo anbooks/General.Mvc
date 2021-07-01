@@ -73,18 +73,22 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 SysUserRole modela = new SysUserRole();
                 var item = _sysRoleService.getRole(sysResource);
-
+                var user = _sysUserService.getById(id);
                 modela.UserId =id;
                 modela.RoleId = sysResource;
                 modela.RoleName = item.Name;
+                user.RoleName= item.Name;
                 _sysUserRoleService.insertSysUserRole(modela);
+                _sysUserService.updateSysUser(user);
             }
             else
             {
                 var item = _sysRoleService.getRole(sysResource);
                 model.RoleName = item.Name;
                 model.RoleId = sysResource;
-
+                var user = _sysUserService.getById(id);
+                user.RoleName = item.Name;
+                _sysUserService.updateSysUser(user);
                 _sysUserRoleService.updateSysUserRole(model);
             }
             return Redirect(ViewBag.ReturnUrl);
@@ -222,9 +226,21 @@ namespace General.Mvc.Areas.Admin.Controllers
 
             if (model.Password == EncryptorHelper.GetMD5(modela.OriginalPassword.Trim() + model.Salt))
             {
-                model.Password = EncryptorHelper.GetMD5(modela.ConfirmedPassword.Trim() + model.Salt); //model.Name.Trim();;
-                //model.Modifier = WorkContext.CurrentUser.Id;
-                _sysUserService.updatePassword(model);
+                if (modela.ConfirmedPassword==modela.ModifiedPassword)
+                {
+                    model.Password = EncryptorHelper.GetMD5(modela.ConfirmedPassword.Trim() + model.Salt); //model.Name.Trim();;
+                                                                                                           //model.Modifier = WorkContext.CurrentUser.Id;
+                    _sysUserService.updatePassword(model);
+                }
+                else
+                {
+                    return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("password"));
+                }
+
+            }
+            else
+            {
+                return Redirect(Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("password"));
             }
             return Redirect(ViewBag.ReturnUrl);
         }

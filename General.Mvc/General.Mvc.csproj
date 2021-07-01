@@ -82,6 +82,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\Admin\Views\Inspection\InspectionbgyIndex.cshtml" />
+    <Content Remove="Areas\Admin\Views\Inspection\InspectionjyyIndex.cshtml" />
+    <Content Remove="Areas\Admin\Views\Inspection\InspectionzgIndex.cshtml" />
     <Content Remove="Areas\Admin\Views\ITBuyer\EditBuyerce.cshtml" />
     <Content Remove="Areas\Admin\Views\ITBuyer\EditBuyerSchedule.cshtml" />
     <Content Remove="Areas\Admin\Views\ITConfirmedCustoms\EditConfirmedCustomsSchedule.cshtml" />
@@ -126,6 +129,7 @@
     <Folder Include="wwwroot\Files\notefile\" />
     <Folder Include="wwwroot\Files\fp\" />
     <Folder Include="wwwroot\Files\mbl\" />
+    <Folder Include="wwwroot\Files\zbd\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -336,6 +340,60 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Areas\Admin\Views\CCPaymentInvoice\InvoiceSchIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionJyy\EditInspectionjyy.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionJyy\InspectionjyyAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionJyy\InspectionjyyIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionJyy\InspectionjyySchIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionJyy\InspectionSchIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Inspection\EditInspection.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Inspection\InspectionBuyerSchIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Inspection\InspectionBuyerIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Inspection\InspectionBuyerScheduleIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Inspection\InspectionAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITBuyer\ITBuyerAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITTransport\EditITTransportW.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITTransport\ITTransportWIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ForwardChoose\EditForwardChoose.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ForwardChoose\ForwardChooseIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Supplier\SupplierIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Supplier\EditSupplier.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\CustomizedList\CustomizedListIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -351,19 +409,22 @@
     <Content Update="Areas\Admin\Views\ETShippingListCreate\EditETShippingListCreate.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Areas\Admin\Views\Inspection\InspectionzgIndex.cshtml">
+    <Content Update="Areas\Admin\Views\Inspection\InspectionjhySchIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Areas\Admin\Views\Inspection\InspectionbgyIndex.cshtml">
+    <Content Update="Areas\Admin\Views\Inspection\InspectionSchAIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Areas\Admin\Views\Inspection\InspectionjyyIndex.cshtml">
+    <Content Update="Areas\Admin\Views\Inspection\InspectionSchIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\Inspection\InspectionjhyIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\Inspection\InspectionRecordIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\ITBuyer\InspectionBuyerSchIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITBuyer\ITOrderBuyerIndex.cshtml">
@@ -397,6 +458,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITPorkCustoms\ITPorkCustomsAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\GFProcurementPlan\GFProcurementPlanMainIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITProcurementPlan\EditITProcurementPlanMain.cshtml">
@@ -464,6 +528,6 @@
     </Content>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JSONSchema="" appsettings_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.9" /></VisualStudio></ProjectExtensions>
 
 </Project>

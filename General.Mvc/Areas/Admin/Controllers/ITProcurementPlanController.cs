@@ -124,6 +124,53 @@ namespace General.Mvc.Areas.Admin.Controllers
         //    string sFileName = $"{DateTime.Now}.xlsx";
         //    return File(ms, "application/vnd.ms-excel", sFileName);
         //}
+        [Route("excelinsertplan", Name = "excelinsertplan")]
+        [Function("采购计划导入模板", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
+        public IActionResult Export3()
+        {
+            string sWebRootFolder = _hostingEnvironment.WebRootPath;
+            string sFileName = "采购计划导入模板" + $"{DateTime.Now.ToString("yyMMdd")}.xlsx";
+            FileInfo file = new FileInfo(Path.Combine(sWebRootFolder + "\\Files\\importfile\\", sFileName));
+            file.Delete();
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                // 添加worksheet
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add("sheet1");
+                //添加头 
+                worksheet.Cells[1, 1].Value = "序号";
+                worksheet.Cells[1, 2].Value = "物料编码";
+                worksheet.Cells[1, 3].Value = "名称";
+                worksheet.Cells[1, 4].Value = "牌号";
+                worksheet.Cells[1, 5].Value = "技术规范";
+                worksheet.Cells[1, 6].Value = "规格";
+                worksheet.Cells[1, 7].Value = "宽";
+                worksheet.Cells[1, 8].Value = "长";
+                worksheet.Cells[1, 9].Value = "计划数量";
+                worksheet.Cells[1, 10].Value = "计划单位";
+                worksheet.Cells[1, 11].Value = "采购订单数量";
+                worksheet.Cells[1, 12].Value = "采购订单单位";
+                worksheet.Cells[1, 13].Value = "要求到货时间";
+                worksheet.Cells[1, 14].Value = "采购起止架份";
+                worksheet.Cells[1, 15].Value = "采购依据及批准人";
+                worksheet.Cells[1, 16].Value = "申请号";
+                worksheet.Cells[1, 17].Value = "包装规格";
+                worksheet.Cells[1, 18].Value = "单机定额";
+                worksheet.Cells[1, 19].Value = "备注1";
+                worksheet.Cells[1, 20].Value = "备注2";
+
+
+                // xlSheet1.Range("A2:E2").Borders.LineStyle = 1
+                for (int a = 1; a <= 20; a++)
+                {
+                    worksheet.Cells[1, a].Style.Font.Bold = true;
+                }
+                //添加值
+
+
+                package.Save();
+            }
+            return File("\\Files\\importfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
+        }
         [HttpPost]
         [Route("importexcelPlan", Name = "importexcelPlan")]
         [Function("Excel导入采购计划", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITProcurementPlanController.ITProcurementPlanMainIndex")]
@@ -132,7 +179,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itProcurementPlanMainIndex");
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
-            string sFileName = excelfile.FileName;
+            string sFileName = Guid.NewGuid().ToString() + excelfile.FileName;
             FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
             using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
             {
@@ -152,26 +199,29 @@ namespace General.Mvc.Areas.Admin.Controllers
                 for (int columns = 1; columns <= ColCount; columns++)
                 {
                     //Entities.Order model = new Entities.Order();
-                    if (worksheet.Cells[1, columns].Value.ToString() == "序号") { item = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "物料编码") { materialno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "名称") { name = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "牌号") { partno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "技术规范") { technical = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "规格") { size = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "宽") { width = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "长") { length = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "计划数量") { planno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "计划单位") { planunit = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "采购订单数量") { planorderno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "采购订单单位") { planorderunit = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "要求到货时间") { requireddockdate = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "采购起止架份") { accovers = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "采购依据及批准人") { purchasing = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "申请号") { application = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { packagea = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "单机定额") { single = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "备注1") { remark1 = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "备注2") { remark2 = columns; }
+                    if (worksheet.Cells[1, columns].Value != null)
+                    {
+                        if (worksheet.Cells[1, columns].Value.ToString() == "序号") { item = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "物料编码") { materialno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "名称") { name = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "牌号") { partno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "技术规范") { technical = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "规格") { size = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "宽") { width = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "长") { length = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "计划数量") { planno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "计划单位") { planunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "采购订单数量") { planorderno = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "采购订单单位") { planorderunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "要求到货时间") { requireddockdate = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "采购起止架份") { accovers = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "采购依据及批准人") { purchasing = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "申请号") { application = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { packagea = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "单机定额") { single = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "备注1") { remark1 = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "备注2") { remark2 = columns; }
+                    }
                 }
                 Entities.ProcurementPlanMain modelmain = new Entities.ProcurementPlanMain();
                 var listmain = _sysProcurementPlanMainService.existAccount(modelplan.PlanItem);
@@ -189,6 +239,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 {
                     try
                     {
+                        int a = 0;
                         Entities.ProcurementPlan model = new Entities.ProcurementPlan();
                         model.PlanItem = modelplan.PlanItem;
                         model.Prepare = modelplan.Prepare;
@@ -199,85 +250,169 @@ namespace General.Mvc.Areas.Admin.Controllers
                         {
                             model.Item = worksheet.Cells[row, item].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, materialno].Value != null)
                         {
                             model.Materialno = worksheet.Cells[row, materialno].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, name].Value != null)
                         {
                             model.Name = worksheet.Cells[row, name].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, partno].Value != null)
                         {
                             model.PartNo = worksheet.Cells[row, partno].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, technical].Value != null)
                         {
                             model.Technical = worksheet.Cells[row, technical].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, width].Value != null)
                         {
                             model.Width = worksheet.Cells[row, width].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, size].Value != null)
                         {
                             model.Size = worksheet.Cells[row, size].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, length].Value != null)
                         {
                             model.Length = worksheet.Cells[row, length].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, planno].Value != null)
                         {
                             model.PlanNo = worksheet.Cells[row, planno].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, planunit].Value != null)
                         {
                             model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, planorderno].Value != null)
                         {
                             model.PlanOrderNo = worksheet.Cells[row, planorderno].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, planorderunit].Value != null)
                         {
                             model.PlanOrderUnit = worksheet.Cells[row, planorderunit].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, requireddockdate].Value != null)
                         {
                             model.RequiredDockDate = Convert.ToDateTime(worksheet.Cells[row, requireddockdate].Value.ToString());
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, accovers].Value != null)
                         {
                             model.ACCovers = worksheet.Cells[row, accovers].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, purchasing].Value != null)
                         {
                             model.Purchasing = worksheet.Cells[row, purchasing].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, application].Value != null)
                         {
                             model.Application = worksheet.Cells[row, application].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, single].Value != null)
                         {
                             model.SingleQuota = worksheet.Cells[row, single].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, packagea].Value != null)
                         {
                             model.Package = worksheet.Cells[row, packagea].Value.ToString();
+                        }
+                        else
+                        {
+                            a = a + 1;
                         }
                         if (worksheet.Cells[row, remark1].Value != null)
                         {
                             model.Remark1 = worksheet.Cells[row, remark1].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         if (worksheet.Cells[row, remark2].Value != null)
                         {
                             model.Remark2 = worksheet.Cells[row, remark2].Value.ToString();
                         }
+                        else
+                        {
+                            a = a + 1;
+                        }
                         //  model.CreationTime = DateTime.Now;
                         //  model.Creator = WorkContext.CurrentUser.Id;
-                        _sysProcurementPlanService.insertProcurementPlan(model);
+                        if (a!=20)
+                        {
+                            _sysProcurementPlanService.insertProcurementPlan(model);
+                        }
+                       
                     }
                     catch (Exception e)
                     {
@@ -376,10 +511,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                         modelmain.Project = modelplan.Project;
                         modelmain.CreationTime = modelplan.CreationTime;
                         modelmain.Creator = modelplan.Creator;
-                      
+
                         var pre = _sysUserService.existName(modelplan.Prepare);
                         var cre = _sysUserService.existName(modelplan.Creator);
-                        if (pre == false && modelplan.Prepare!=null)
+                        if (pre == false && modelplan.Prepare != null)
                         {
                             Response.WriteAsync("<script>alert('采购计划编制人不存在!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
                             return Redirect(ViewBag.ReturnUrl);
@@ -499,13 +634,14 @@ namespace General.Mvc.Areas.Admin.Controllers
                 {
                     Response.WriteAsync("<script>alert('请将文件名中的空格或特殊字符去掉!');window.location.href ='editMain'</script>", Encoding.GetEncoding("GB2312"));
                 }
-                }
+            }
             else
             {
                 var modelmain = _sysProcurementPlanMainService.getById(modelplan.Id);
                 modelmain.PlanItem = modelplan.PlanItem;
                 modelmain.Prepare = modelplan.Prepare;
                 modelmain.Project = modelplan.Project;
+                modelmain.CreationTime = modelplan.CreationTime;
                 modelmain.Modifier = WorkContext.CurrentUser.Id;
                 modelmain.ModifiedTime = DateTime.Now;
                 _sysProcurementPlanMainService.updateProcurementPlanMain(modelplan);

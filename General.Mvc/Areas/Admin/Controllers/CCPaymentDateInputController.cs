@@ -12,7 +12,7 @@ namespace General.Mvc.Areas.Admin.Controllers
     public class CCPaymentDateInputController : AdminPermissionController
     {
         [Route("", Name = "ccPaymentDateInput")]
-        [Function("填写付款日期", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.CashingController", Sort = 1)]
+        [Function("当月汇率维护", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.CashingController", Sort = 1)]
 
         public IActionResult CCPaymentDateInputIndex()
         {

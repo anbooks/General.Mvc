@@ -75,7 +75,7 @@
                         <th width="100px">姓名</th>
                         <th width="110px">手机号</th>
                         <th width="60px">性别</th>
-                        <th width="150px">活动时间</th>
+                        <th width="150px">角色</th>
                         <th width="50px;">密码</th>
                         <th>操作</th>
                     </tr>
@@ -88,7 +88,7 @@
                             <td>@item.Name</td>
                             <td>@item.MobilePhone</td>
                             <td>@item.Sex</td>
-                            <td>@(item.LastActivityTime?.ToString("yyyy-MM-dd HH;mm"))</td>
+                            <td>@item.RoleName</td>
                             <!--<td>
                                 @if (!item.IsAdmin)
                                 {

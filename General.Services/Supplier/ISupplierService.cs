@@ -29,7 +29,7 @@ namespace General.Services.Supplier
         /// </summary>
         /// <param name="model"></param>
         void insertSupplier(Entities.Supplier model);
-
+        List<Entities.Supplier> getCount(string co,int id);
         /// <summary>
         /// 更新修改
         /// </summary>

@@ -1,0 +1,174 @@
+﻿@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<ProcurementPlanMain, SysCustomizedListSearchArg>
+@{
+    ViewData["Title"] = "采购计划";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+            <a href="">数据导入</a>
+        </li>
+        <li class="active">采购计划</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div>
+        <div class="space-2"></div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <form asp-route="gfProcurementPlanMainIndex" method="get" class="form-inline">
+                            <label>关键字</label>
+                            <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="采购计划编号" />
+                            <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="采购计划编制人" />
+                            <input type="text" class="form-control" name="invcurr" style="width:180px;" value="@Model.Paging.RouteArg.invcurr" placeholder="采购计划接收人" />
+                            <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="项目" /> 
+                            @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
+                            {
+                            <label>采购计划下达日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
+                                <label>----</label> <input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdateend.ToString("yyyy-MM-dd")" placeholder="" />
+                            }
+                            else
+                            { <label>采购计划下达日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
+                                <label>----</label><input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" placeholder="" />
+                            }
+                            <button type="submit" class="btn btn-purple btn-sm">
+                                查询
+                                <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div><div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form asp-route="GfPlanText" method="get" class="form-inline">
+                    <label>关键字</label>
+                    <input type="text" class="form-control" name="item" style="width:180px;"  placeholder="采购计划索引号" />
+                    <button type="submit" class="btn btn-purple btn-sm">
+                        采购计划执行状态
+                        <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+              <form asp-route="gfProcurementPlanMainIndex" method="post" id="formitInventoryInput" class="form-horizontal">
+                  <div class="panel panel-default">
+                      <div class="form-inline">
+                          <button class="btn btn-info btn-sm" type="submit">
+                              <i class="ace-icon fa fa-check bigger-110"></i>
+                              生成采购计划执行跟踪表
+                          </button>
+                           <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      @if (Model != null)
+                      {
+                          <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer">
+                              <thead>
+                                  <tr>
+                                      <th width="30px"></th>
+                                      <th width="130px">采购计划编号</th>
+                                      <th width="100px">采购计划编制人</th>
+                                      <th width="100px">采购计划接收人</th>
+                                      <th width="100px">采购计划下达日期</th>
+                                      <th width="100px">项目</th>
+                                      <th>操作</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @foreach (var item in Model.Data)
+                                  {
+                                  <tr>
+                                      <td>
+                                          <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                      </td>
+                                      <td>@item.PlanItem</td>
+                                      <td>@item.Prepare</td>
+                                      <td>@item.Creator</td>
+                                      @if (item.CreationTime != null)
+                                      {
+                                          <td>@item.CreationTime.Value.ToString("yyyy-MM-dd")</td>
+                                      }
+                                      else
+                                      {
+                                          <td>@item.CreationTime</td>
+                                      }
+
+
+                                      <td>@item.Project</td>
+                                      <td>
+                                          <a href="@Url.RouteUrl("gfProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>计划数据</a>
+                                          <a href="@Url.RouteUrl("excelimportgf", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>采购计划执行状态</a>
+                                          <a href="@Url.RouteUrl("GfOrderText", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>采购订单执行状态</a>
+                                      </td>
+                                  </tr>
+                                  }
+                              </tbody>
+                          </table>
+                          <pager page-value="Model.Paging"></pager>
+                      }
+                  </div>
+
+              </form>
+       <script>
+           function quanxuan() {
+               var obj = document.getElementById("btnSelectAll");
+               if (obj.value == "全选") {
+                   $("input:checkbox").prop("checked", true);//全部设置为选中
+                   obj.value = "取消全选"
+               }
+               else {
+                   $("input:checkbox").prop("checked", false);//全部设置为未选中
+                   obj.value = "全选"
+               }
+           } function jieshou() {
+               $('#formitBuyer').submit(function () {
+                   var form = $(this);
+                   var subArray = [];
+                   $("input[name='checkboxId']:checked").each(function () {
+                       var test = $(this).next();
+                       var i = 0;
+                       var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                       var mSub = {
+                           id: id.val(),
+                          
+                       };
+                       subArray.push(mSub);
+                   });
+                  
+                   var _url = "/admin/gfProcurementPlan/GfPlanList"
+                   form.ajaxSubmit({
+                       type: 'post', // 提交方式 get/post
+                       url: _url, // 需要提交的 url
+                       dataType: "json", //数据类型 注意这里！！！！！
+                       data: { "kevin": JSON.stringify(subArray) },
+                       success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                           // 此处可对 data 作相关处理
+                           
+                       }
+                   });
+                   return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+               });
+           } 
+       </script>
+    </div>
+
+</div>

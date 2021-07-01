@@ -39,20 +39,36 @@
                                     <i class="glyphicon glyphicon-plus"></i>
                                     导入订单信息
                                 </button> <!--<a asp-route="excelimportasj" class="btn btn-sm btn-pink">生成送检单</a>-->
-                                <a asp-route="excelimportBuyer" class="btn btn-sm btn-pink">明细表导出</a>
+                                <a asp-route="excelimportinsertBuyer" class="btn btn-sm btn-pink">明细表导入模板</a>
+                                <a asp-route="excelimportBuyer" class="btn btn-sm btn-pink">明细表修改模板</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form enctype="multipart/form-data" method="post" asp-route="importexcelschedule" class="form-inline">
+
+                                <input type="file" name="excelfile" class="form-control" />
+
+                                <input type="submit" value="明细表插入" class="btn btn-sm btn-pink" /> 
+
+                            </form>
+                            <form enctype="multipart/form-data" method="post" asp-route="importexcelupdateschedule" class="form-inline">
+
+                                <input type="file" name="excelfile" class="form-control" />
+
+                                 <input type="submit" value="明细表修改" class="btn btn-sm btn-pink" />
+
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
-            <form enctype="multipart/form-data" method="post" asp-route="importexcelschedule">
-                <div align="left" style="float:left">
-                    <input type="file" name="excelfile" />
-                </div>
-                <div>
-                    <input type="submit" value="明细表导入" />
-                </div>
-            </form>
+          
         </div>
     </div>
     <div class="space-2"></div>
@@ -74,11 +90,14 @@
             </div>
         </div>
     </div>
-    <form asp-route="itBuyerSchedule" method="post" id="formitBuyer" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="itBuyerSchedule" method="post" id="formitBuyer" class="form-horizontal" >
+
         <div class="panel panel-default">
             <div class="form-inline">
                 <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="jieshou()" value="保存" />
-
+                <button class="btn btn-info btn-sm" type="submit"> 
+                    生成送检单
+                </button>
                 <input class="btn btn-info btn-sm" type="submit" name="sumbit" onclick="tuihui()" value="删除" />  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
             </div>
         </div>
@@ -91,6 +110,7 @@
                     <thead>
                         <tr>
                             <th width="40px"></th>
+                            <th width="0px"></th>
                             <th width="100px">供应商</th>
                             <th width="100px">订单号</th>
                             <th width="100px">打码号</th>
@@ -134,6 +154,9 @@
                                 <input type="checkbox" name="checkboxId" value="@item.Id" />
                             </td>
                             <td>
+                                <!--<a href="@Url.RouteUrl("itBuyercopy", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>复制本行</a>-->
+                            </td>
+                            <td>
                                 @item.Consignor
                             </td>
                             <td>@item.OrderNo</td>
@@ -141,7 +164,7 @@
                             <td>@item.OrderLine</td>
                             <td>@item.ReferenceNo</td>
                             <td>@item.MaterialCode</td>
-                            <td>@item.MaterialCode</td>
+                            <td> </td>
                             <td>@item.Description</td>
                             <td>@item.Type</td>
                             <td>@item.Specification</td>
@@ -223,7 +246,7 @@
                             <td>
                                 <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
                             </td>
-                            
+
                         </tr>
                         }
                     </tbody>
@@ -251,24 +274,24 @@
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
-                    var batchno = $(this).closest("tr").find("td").eq(14).find("input:text");
-                    var package = $(this).closest("tr").find("td").eq(15).find("input:text");
-                    var purchasequantity = $(this).closest("tr").find("td").eq(16).find("input:text");
-                    var purchaseunit = $(this).closest("tr").find("td").eq(17).find("input:text");
-                    var unitprice = $(this).closest("tr").find("td").eq(18).find("input:text");
-                    var totalprice = $(this).closest("tr").find("td").eq(19).find("input:text");
-                    var invoiceNo = $(this).closest("tr").find("td").eq(20).find("input:text");
-                    var planNo = $(this).closest("tr").find("td").eq(21).find("input:text");
-                    var reduced = $(this).closest("tr").find("td").eq(22).find("input:text");
-                    var shipmentdate = $(this).closest("tr").find("td").eq(24).find("input:data");
-                    var manufacturers = $(this).closest("tr").find("td").eq(25).find("input:text");
-                    var origincountry = $(this).closest("tr").find("td").eq(26).find("input:text");
-                    var waybill = $(this).closest("tr").find("td").eq(27).find("input:text");
-                    var books = $(this).closest("tr").find("td").eq(28).find("input:text");
-                    var booksitem = $(this).closest("tr").find("td").eq(29).find("input:text");
-                    var recordunit = $(this).closest("tr").find("td").eq(30).find("input:text");
-                    var recordunitreducedprice = $(this).closest("tr").find("td").eq(31).find("input:text");
-                    var legalunits = $(this).closest("tr").find("td").eq(32).find("input:text");
+                    var batchno = $(this).closest("tr").find("td").eq(15).find("input:text");
+                    var package = $(this).closest("tr").find("td").eq(16).find("input:text");
+                    var purchasequantity = $(this).closest("tr").find("td").eq(17).find("input:text");
+                    var purchaseunit = $(this).closest("tr").find("td").eq(18).find("input:text");
+                    var unitprice = $(this).closest("tr").find("td").eq(19).find("input:text");
+                    var totalprice = $(this).closest("tr").find("td").eq(20).find("input:text");
+                    var invoiceNo = $(this).closest("tr").find("td").eq(21).find("input:text");
+                    var planNo = $(this).closest("tr").find("td").eq(22).find("input:text");
+                    var reduced = $(this).closest("tr").find("td").eq(23).find("input:text");
+                    var shipmentdate = $(this).closest("tr").find("td").eq(25).find("input:data");
+                    var manufacturers = $(this).closest("tr").find("td").eq(26).find("input:text");
+                    var origincountry = $(this).closest("tr").find("td").eq(27).find("input:text");
+                    var waybill = $(this).closest("tr").find("td").eq(28).find("input:text");
+                    var books = $(this).closest("tr").find("td").eq(29).find("input:text");
+                    var booksitem = $(this).closest("tr").find("td").eq(30).find("input:text");
+                    var recordunit = $(this).closest("tr").find("td").eq(31).find("input:text");
+                    var recordunitreducedprice = $(this).closest("tr").find("td").eq(32).find("input:text");
+                    var legalunits = $(this).closest("tr").find("td").eq(33).find("input:text");
 
                     var mSub = {
                         id: id.val(),
@@ -293,7 +316,7 @@
                     };
                     subArray.push(mSub);
                 });
-                alert(JSON.stringify(subArray));
+               // alert(JSON.stringify(subArray));
                 var _url = "/admin/itBuyer/itBuyerScheduleList"
                 form.ajaxSubmit({
                     type: 'post', // 提交方式 get/post
@@ -327,8 +350,45 @@
                     };
                     subArray.push(mSub);
                 });
-                alert(JSON.stringify(subArray));
+              //  alert(JSON.stringify(subArray));
                 var _url = "/admin/itBuyer/itBuyerScheduleDeleteList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                            var _url2 = "/admin/itBuyer/schedule"
+                            location.replace(_url2);
+                            _url2
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+            });
+        } function songjian() {
+            $('#formitBuyer').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {
+                    var test = $(this).next();
+                    var i = 0;
+                    var id = $(this).closest("tr").find("td").eq(0).find("input[name='checkboxId']");
+                    var mSub = {
+                        id: id.val(),
+
+                    };
+                    subArray.push(mSub);
+                });
+              //  alert(JSON.stringify(subArray));
+                var _url = "/admin/itBuyer/excelimportasja"
                 form.ajaxSubmit({
                     type: 'post', // 提交方式 get/post
                     url: _url, // 需要提交的 url

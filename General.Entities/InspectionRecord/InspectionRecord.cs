@@ -21,10 +21,10 @@ namespace General.Entities
         public string Batch { get; set; }//附件
         public DateTime? ReceivedDate { get; set; }//附件
         public string Specification { get; set; }//附件
-        public int? Qty { get; set; }//附件
-        public int? PlaceQty { get; set; }//下达数量
-        public int? UnPlaceQty { get; set; }//可下达数量
-        public int? AcceptQty { get; set; }//接收数量 
+        public double? Qty { get; set; }//附件
+        public double? PlaceQty { get; set; }//下达数量
+        public double? UnPlaceQty { get; set; }//可下达数量
+        public double? AcceptQty { get; set; }//接收数量 
         public string Status { get; set; }
         public string Creator { get; set; }//
         public DateTime? CreationTime { get; set; }//

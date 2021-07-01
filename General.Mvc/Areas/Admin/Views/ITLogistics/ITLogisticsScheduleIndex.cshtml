@@ -114,119 +114,119 @@
                     <tbody>
                         @foreach (var item in Model.Data)
                         {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
-                                </td>
-                                <td>
-                                    @item.Buyer
-                                </td>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
+                            </td>
+                            <td>
+                                @item.Buyer
+                            </td>
 
-                                <td>
-                                    @item.OrderNo
-                                </td>
+                            <td>
+                                @item.OrderNo
+                            </td>
 
-                                <td>
-                                    @item.OrderLine
-                                </td>
+                            <td>
+                                @item.OrderLine
+                            </td>
 
-                                <td>
-                                    @item.ReferenceNo
-                                </td>
-                                <td>
-                                    @item.MaterialCode
-                                </td>
-                                <td>
-                                    @item.Description
-                                </td>
-                                <td>
-                                    @item.Type
-                                </td>
-                                <td>
-                                    @item.Specification
-                                </td>
-                                <td>
-                                    @item.Thickness
-                                </td>
-                                <td>
-                                    @item.Length
-                                </td>
-                                <td>
-                                    @item.Width
-                                </td>
-                                <td>
-                                    <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
-                                </td>
+                            <td>
+                                @item.ReferenceNo
+                            </td>
+                            <td>
+                                @item.MaterialCode
+                            </td>
+                            <td>
+                                @item.Description
+                            </td>
+                            <td>
+                                @item.Type
+                            </td>
+                            <td>
+                                @item.Specification
+                            </td>
+                            <td>
+                                @item.Thickness
+                            </td>
+                            <td>
+                                @item.Length
+                            </td>
+                            <td>
+                                @item.Width
+                            </td>
+                            <td>
+                                <input type="text" name="PurchaseQuantity" value="@item.PurchaseQuantity" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="PurchaseUnit" value="@item.PurchaseUnit" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="UnitPrice" value="@item.UnitPrice" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="TotalPrice" value="@item.TotalPrice" style="width:80px" />
+                            </td>
 
-                                @if (@item.ShipmentDate == null)
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate" />
-                                    </td>}
-                                else
-                                {
-                                    <td>
-                                        <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
-                                    </td>}
+                            @if (@item.ShipmentDate == null)
+                            {
+                                <td>
+                                    <input type="date" name="ShipmentDate" value="@item.ShipmentDate" />
+                                </td>}
+                            else
+                            {
+                                <td>
+                                    <input type="date" name="ShipmentDate" value="@item.ShipmentDate.Value.ToString("yyyy-MM-dd")" />
+                                </td>}
 
-                                <td>
-                                    <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Consignor" value="@item.Consignor" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Manufacturers" value="@item.Manufacturers" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="OriginCountry" value="@item.OriginCountry" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
-                                </td>
 
-                                <td>
-                                    <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
-                                </td>
 
-                                <td>
-                                    <input type="text" name="Books" value="@item.Books" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="Waybill" value="@item.Waybill" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="BatchNo" value="@item.BatchNo" style="width:80px" />
+                            </td>
+                            <td>
+                                <input type="text" name="Books" value="@item.Books" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="BooksItem" value="@item.BooksItem" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="RecordUnit" value="@item.RecordUnit" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="RecordUnitReducedPrice" value="@item.RecordUnitReducedPrice" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
+                            <td>
+                                <input type="text" name="LegalUnits" value="@item.LegalUnits" style="width:80px" />
 
-                                <td>
-                                    <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:80px" />
-                                </td>
+                            <td>
+                                <input type="text" name="LegalUniteReducedPrice" value="@item.LegalUniteReducedPrice" style="width:80px" />
+                            </td>
 
-                                <td>
-                                    <input type="text" name="Qualification" value="@item.Qualification" style="width:80px" />
-                                </td>
-                            </tr>
+                            <td>
+                                <input type="text" name="Qualification" value="@item.Qualification" style="width:80px" />
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -252,8 +252,8 @@
                     var consignor = $(this).closest("tr").find("td").eq(17).find("input:text");
                     var manufacturers = $(this).closest("tr").find("td").eq(18).find("input:text");
                     var origincountry = $(this).closest("tr").find("td").eq(19).find("input:text");
-                    var batchno = $(this).closest("tr").find("td").eq(20).find("input:text");
-                    var waybill = $(this).closest("tr").find("td").eq(21).find("input:text");
+                    var batchno = $(this).closest("tr").find("td").eq(21).find("input:text");
+                    var waybill = $(this).closest("tr").find("td").eq(20).find("input:text");
                     var books = $(this).closest("tr").find("td").eq(22).find("input:text");
                     var booksitem = $(this).closest("tr").find("td").eq(23).find("input:text");
                     var recordunit = $(this).closest("tr").find("td").eq(24).find("input:text");

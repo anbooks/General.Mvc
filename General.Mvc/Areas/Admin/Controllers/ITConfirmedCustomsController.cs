@@ -40,7 +40,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             this._sysCustomizedListService = sysCustomizedListService;
         }
         [Route("", Name = "itConfirmedCustoms")]
-        [Function("综保报关行（新）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 5)]
+        [Function("待办/在途（综保）", true, "menu-icon fa fa-caret-right", FatherResource = "General.Mvc.Areas.Admin.Controllers.ImportTransportationController", Sort = 5)]
         [HttpGet]
         public IActionResult ITConfirmedCustomsIndex(List<int> sysResource, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -417,6 +417,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     var model = _importTrans_main_recordService.getById(u.Id);
                     model.InventoryNo = u.InventoryNo;
                     if (u.CheckAndPass != "") { model.CheckAndPass = u.CheckAndPass; }
+                    if (u.CheckPassTime != null) { model.CheckPassTime = u.CheckPassTime; }
                     _importTrans_main_recordService.updateImportTransmain(model);
                 }
                 AjaxData.Status = true;

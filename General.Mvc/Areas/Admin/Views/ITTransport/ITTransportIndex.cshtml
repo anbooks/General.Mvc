@@ -63,36 +63,40 @@
                 @if (Model != null)
                 {
 
-                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="margin-left:20px;">
+                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="table-layout:fixed;margin-left:20px;">
                         <thead>
                             <tr>
 
                                 <th width="50px">
 
                                 </th>
-                                <th width="150px">编号</th>
+                                <th width="60px">操作</th>
+                                <th width="50px">编号</th>
+                                <th width="150px">运输代理</th>
                                 <th width="150px">供应商名称</th>
                                 <th width="150px">订单号</th>
-                                <th width="150px">贸易条款</th>
-                                <th width="150px">货物类型</th>
-                                <th width="150px">发票金额</th>
-                                <th width="150px">发票币种</th>
-                                <th width="150px">实际收/提货日期</th>
-                                <th width="150px">件数(箱数)</th>
-                                <th width="150px">毛重</th>
-                                <th width="150px">箱单发票</th>
+                                <th width="100px">贸易条款</th>
+                                <th width="120px">货物类型</th>
+                                <th width="120px">发票金额</th>
+                                <th width="120px">发票币种</th>
+                                <th width="170px">实际收/提货日期</th>
+                                <th width="100px">件数(箱数)</th>
+                                <th width="100px">毛重</th>
+                                <th width="100px">类别</th>
+                                <th width="110px">运输方式</th>
+                                <th width="110px">箱单发票</th>
                                 <th width="150px">运输状态</th>
-                                <th width="150px">航班号/船名</th>
-                                <th width="150px">起运港</th>
-                                <th width="150px">目的港</th>
-                                <th width="150px">主单号</th>
-                                <th width="150px">分单号</th>
-                                <th width="150px">运单附件上传</th>
-                                <th width="150px">计费重量</th>
-                                <th width="150px">计费重量单位</th>
-                                <th width="150px">实际发运日期</th>
-                                <th width="150px">实际到港日期</th>
-                                <th>操作</th>
+                                <th width="100px">航班号/船名</th>
+                                <th width="100px">起运港</th>
+                                <th width="100px">目的港</th>
+                                <th width="120px">主单号</th>
+                                <th width="120px">分单号</th>
+                                <th width="110px">运单</th>
+                                <th width="100px">计费重量</th>
+                                <th width="100px">计费重量单位</th>
+                                <th width="170px">实际发运日期</th>
+                                <th width="170px">实际到港日期</th>
+                                <th width="80px">采购员</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -102,30 +106,77 @@
                             <tr>
 
                                 <td>
-                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled/>
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" checked disabled />
                                 </td>
+                                @if (@item.F_ShippingModeGiven != true)
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete">明细</a>
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-purple">明细</a>
+                                    </td>
+                                }
                                 <td>
                                     @item.Id
                                 </td>
                                 <td>
-                                    @item.Shipper
+                                    @item.Transportation
                                 </td>
+                                @if (@item.Shipper == "" || @item.Shipper == null)
+                                {
+                                    <td> <input type="text" name="Shipper" value="@item.Shipper" style="width:100px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td> <input type="text" name="Shipper" value="@item.Shipper" style="width:100px" /></td>
+                                }
+
+
                                 <td>
                                     @item.PoNo
-                                </td>
-                                <td>
-                                    @item.Incoterms
-                                </td>
-                                <td>
-                                    <input type="text" name="CargoType" value="@item.CargoType" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="number" name="Invamou" value="@item.Invamou" step="0.00000000000001" style="width:80px" />
-                                </td>
+                                </td> @if (@item.Incoterms == "" || @item.Incoterms == null)
+                                {
+                                    <td> <input type="text" name="Incoterms" value="@item.Incoterms" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="Incoterms" value="@item.Incoterms" style="width:80px" />
+                                    </td>
+                                }
+
+
+                                @if (@item.CargoType == null || @item.CargoType == "")
+                                {
+                                    <td>
+                                        @Html.DropDownList("CargoType", ViewData["CargoType"] as SelectList, "-请选择-", new { @class = "form-control  input-small", @style = "background-color:lightpink" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("CargoType", ViewData["CargoType"] as SelectList, @item.CargoType, new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+                                @if (@item.Invamou == "" || @item.Invamou == null)
+                                {
+                                    <td> <input type="number" name="Invamou" value="@item.Invamou" step="0.00000000000001" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="number" name="Invamou" value="@item.Invamou" step="0.00000000000001" style="width:80px" />
+                                    </td>
+                                }
+
                                 @if (@item.Invcurr == null)
                                 {
                                     <td>
-                                        @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                        @Html.DropDownList("Invcurr", ViewData["Invcurr"] as SelectList, "-请选择-", new { @class = "form-control  input-small", @style = "background-color:lightpink" })
                                     </td>
                                 }
                                 else
@@ -138,35 +189,76 @@
                                 @if (@item.RealReceivingDate == null)
                                 {
                                     <td>
-                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate" />
+                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate" style="height:36px;background-color:lightpink" />
                                     </td>}
                                 else
                                 {
                                     <td>
-                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")" />
+                                        <input type="date" name="RealReceivingDate" value="@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")" style="height:36px" />
                                     </td>}
-                                <td>
-                                    <input type="number" name="Pcs" value="@item.Pcs" step="0.00000000000001" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="number" name="Gw" value="@item.Gw" step="0.00000000000001" style="width:80px" />
-                                </td>
+                                @if (@item.Pcs == "" || @item.Pcs == null)
+                                {
+                                    <td>
+                                        <input type="number" name="Pcs" value="@item.Pcs" step="0.00000000000001" style="width:80px;background-color:lightpink" />
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="number" name="Pcs" value="@item.Pcs" step="0.00000000000001" style="width:80px" />
+                                    </td>
+                                }
+                                @if (@item.Gw == "" || @item.Gw == null)
+                                {
+                                    <td>   <input type="number" name="Gw" value="@item.Gw" step="0.00000000000001" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="number" name="Gw" value="@item.Gw" step="0.00000000000001" style="width:80px" />
+                                    </td>
+                                }
+                                @if (@item.Kind == null)
+                                {
+                                    <td>
+                                        @Html.DropDownList("Kind", ViewData["Kind"] as SelectList, "-请选择-", new { @class = "form-control  input-small", @style = "background-color:lightpink" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("Kind", ViewData["Kind"] as SelectList, @item.Kind, new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+                                @if (@item.ShippingMode == null)
+                                {
+                                    <td>
+                                        @Html.DropDownList("ShippingMode", ViewData["ShippingMode"] as SelectList, "-请选择-", new { @class = "form-control  input-small", @style = "background-color:lightpink" })
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        @Html.DropDownList("ShippingMode", ViewData["ShippingMode"] as SelectList, @item.ShippingMode, new { @class = "form-control  input-small" })
+                                    </td>
+                                }
+
                                 <td>
                                     @if (@item.InventoryAttachment != null)
                                     {
-                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                        <a href="@Url.RouteUrl("TransportAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete">上传</a>
+                                        <a href="@Url.RouteUrl("TransportAttachment", new { id = item.Id })" class="btn btn-xs btn-info">单据</a>
                                     }
                                     else
                                     {
-                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                       
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete">上传</a>
+
                                     }
                                 </td>
                                 @if (@item.Status == null)
                                 {
                                     <td>
-                                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, "-请选择-", new { @class = "form-control  input-small" })
+                                        @Html.DropDownList("Status", ViewData["Status"] as SelectList, "-请选择-", new { @class = "form-control  input-small", @style = "background-color:lightpink" })
                                     </td>
                                 }
                                 else
@@ -175,70 +267,111 @@
                                         @Html.DropDownList("Status", ViewData["Status"] as SelectList, @item.Status, new { @class = "form-control  input-small" })
                                     </td>
                                 }
-                                <td>
-                                    <input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="Origin" value="@item.Origin" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="Dest" value="@item.Dest" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="Mbl" value="@item.Mbl" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="Hbl" value="@item.Hbl" style="width:80px" />
-                                </td>
+                                @if (@item.FlighVessel == "" || @item.FlighVessel == null)
+                                {
+                                    <td><input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="FlighVessel" value="@item.FlighVessel" style="width:80px" />
+                                    </td>
+                                }
+                                @if (@item.Origin == "" || @item.Origin == null)
+                                {
+                                    <td> <input type="text" name="Origin" value="@item.Origin" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="Origin" value="@item.Origin" style="width:80px" />
+                                    </td>
+                                }
+                                @if (@item.Dest == "" || @item.Dest == null)
+                                {
+                                    <td> <input type="text" name="Dest" value="@item.Dest" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="Dest" value="@item.Dest" style="width:80px" />
+                                    </td>
+                                }
+                                @if (@item.Mbl == "" || @item.Mbl == null)
+                                {
+                                    <td> <input type="text" name="Mbl" value="@item.Mbl" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="Mbl" value="@item.Mbl" style="width:80px" />
+                                    </td>
+                                }
+                                @if (@item.Hbl == "" || @item.Hbl == null)
+                                {
+                                    <td> <input type="text" name="Hbl" value="@item.Hbl" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="Hbl" value="@item.Hbl" style="width:80px" />
+                                    </td>
+                                }
+
                                 <td>
                                     @if (@item.HblAttachment != null && @item.HblAttachment != "" && @item.MblAttachment != null && @item.MblAttachment != "")
                                     {
-                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete">上传</a>
                                     }
                                     else
                                     {
-                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>上传附件</a>
-                                        <a href="@Url.RouteUrl("TransportAttachment", new { id = item.Id })" class="btn btn-xs btn-info"><i class="fa fa-bolt"></i>下载附件</a>
+                                        <a href="@Url.RouteUrl("editITTransport", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete">上传</a>
+                                        <a href="@Url.RouteUrl("TransportAttachment", new { id = item.Id })" class="btn btn-xs btn-info">单据</a>
                                     }
                                 </td>
-                                <td>
-                                    <input type="number" name="Measurement" value="@item.Measurement" step="0.00000000000001" style="width:80px" />
-                                </td>
-                                <td>
-                                    <input type="text" name="MeasurementUnit" value="@item.MeasurementUnit" style="width:80px" />
-                                </td>
+                                @if (@item.Measurement == "" || @item.Measurement == null)
+                                {
+                                    <td><input type="number" name="Measurement" value="@item.Measurement" step="0.00000000000001" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="number" name="Measurement" value="@item.Measurement" step="0.00000000000001" style="width:80px" />
+                                    </td>
+                                } @if (@item.MeasurementUnit == "" || @item.MeasurementUnit == null)
+                                {
+                                    <td> <input type="text" name="MeasurementUnit" value="@item.MeasurementUnit" style="width:80px;background-color:lightpink" /></td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <input type="text" name="MeasurementUnit" value="@item.MeasurementUnit" style="width:80px" />
+                                    </td>
+                                }
+
+
                                 @if (@item.Atd == null)
                                 {
                                     <td>
-                                        <input type="date" name="Atd" value="@item.Atd" />
+                                        <input type="date" name="Atd" value="@item.Atd" style="height:36px;background-color:lightpink" />
                                     </td>}
                                 else
                                 {
                                     <td>
-                                        <input type="date" name="Atd" value="@item.Atd.Value.ToString("yyyy-MM-dd")" />
+                                        <input type="date" name="Atd" value="@item.Atd.Value.ToString("yyyy-MM-dd")" style="height:36px" />
                                     </td>}
                                 @if (@item.Ata == null)
                                 {
                                     <td>
-                                        <input type="date" name="Ata" value="@item.Atd" />
+                                        <input type="date" name="Ata" value="@item.Atd" style="height:36px;background-color:lightpink" />
                                     </td>}
                                 else
                                 {
                                     <td>
-                                        <input type="date" name="Ata" value="@item.Ata.Value.ToString("yyyy-MM-dd")" />
+                                        <input type="date" name="Ata" value="@item.Ata.Value.ToString("yyyy-MM-dd")" style="height:36px" />
                                     </td>}
-                                @if (@item.F_ShippingModeGiven != true)
-                                {
-                                    <td>
-                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>查看明细表</a>
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <a href="@Url.RouteUrl("itTransportSchedule", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>查看明细表</a>
-                                    </td>
-                                }
+
+                                    <td>@item.Buyer</td>
 
                             </tr>
                             }
@@ -283,30 +416,39 @@
                     var test = $(this).next();
                     var i = 0;
                     var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
-                    var cargotype = $(this).closest("tr").find("td").eq(5).find("input:text");
-                    var invamou = $(this).closest("tr").find("td").eq(6).find("input:data");
-                    var invcurr = $(this).closest("tr").find("td").eq(7).find("select[name='Invcurr']");
-                    var realreceivingdate = $(this).closest("tr").find("td").eq(8).find("input:data");
-                    var pcs = $(this).closest("tr").find("td").eq(9).find("input:data");
-                    var gw = $(this).closest("tr").find("td").eq(10).find("input:data");
-                    var status = $(this).closest("tr").find("td").eq(12).find("select[name='Status']");
-                    var flighvessel = $(this).closest("tr").find("td").eq(13).find("input:text");
-                    var origin = $(this).closest("tr").find("td").eq(14).find("input:text");
-                    var dest = $(this).closest("tr").find("td").eq(15).find("input:text");
-                    var mbl = $(this).closest("tr").find("td").eq(16).find("input:text");
-                    var hbl = $(this).closest("tr").find("td").eq(17).find("input:text");
-                    var measurement = $(this).closest("tr").find("td").eq(19).find("input:data");
-                    var measurementunit = $(this).closest("tr").find("td").eq(20).find("input:text");
-                    var atd = $(this).closest("tr").find("td").eq(21).find("input:data");
-                    var ata = $(this).closest("tr").find("td").eq(22).find("input:data");
+                    var shipper = $(this).closest("tr").find("td").eq(4).find("input:text");
+                    var incoterms = $(this).closest("tr").find("td").eq(6).find("input:text");
+                    var cargotype = $(this).closest("tr").find("td").eq(7).find("select[name='CargoType']"); 
+                    var invamou = $(this).closest("tr").find("td").eq(8).find("input:data");
+                    var invcurr = $(this).closest("tr").find("td").eq(9).find("select[name='Invcurr']");
+                    var realreceivingdate = $(this).closest("tr").find("td").eq(10).find("input:data");
+                    var pcs = $(this).closest("tr").find("td").eq(11).find("input:data");
+                    var gw = $(this).closest("tr").find("td").eq(12).find("input:data");
+                    var kind = $(this).closest("tr").find("td").eq(13).find("select[name='Kind']");
+                    var shippingMode = $(this).closest("tr").find("td").eq(14).find("select[name='ShippingMode']");
+                    var status = $(this).closest("tr").find("td").eq(16).find("select[name='Status']");
+                    var flighvessel = $(this).closest("tr").find("td").eq(17).find("input:text");
+                    var origin = $(this).closest("tr").find("td").eq(18).find("input:text");
+                    var dest = $(this).closest("tr").find("td").eq(19).find("input:text");
+                    var mbl = $(this).closest("tr").find("td").eq(20).find("input:text");
+                    var hbl = $(this).closest("tr").find("td").eq(21).find("input:text");
+                    var measurement = $(this).closest("tr").find("td").eq(23).find("input:data");
+                    var measurementunit = $(this).closest("tr").find("td").eq(24).find("input:text");
+                    var atd = $(this).closest("tr").find("td").eq(25).find("input:data");
+                    var ata = $(this).closest("tr").find("td").eq(26).find("input:data");
                     var mSub = {
+                        
                         id: id.val(),
+                        shipper: shipper.val(),
+                        kind: kind.val(),
+                        incoterms: incoterms.val(),
                         cargotype: cargotype.val(),
                         invamou: invamou.val(),
                         invcurr: invcurr.val(),
                         realreceivingdate: realreceivingdate.val(),
                         pcs: pcs.val(),
                         gw: gw.val(),
+                        shippingMode: shippingMode.val(),
                         status: status.val(),
                         flighvessel: flighvessel.val(),
                         origin: origin.val(),
@@ -320,7 +462,7 @@
                     };
                     subArray.push(mSub);
                 });
-                alert(JSON.stringify(subArray));
+               // alert(JSON.stringify(subArray));
                 var _url = "/admin/itTransport/itTransportList"
                 form.ajaxSubmit({
                     type: 'post', // 提交方式 get/post

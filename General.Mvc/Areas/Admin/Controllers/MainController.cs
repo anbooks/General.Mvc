@@ -61,10 +61,10 @@ namespace General.Mvc.Areas.Admin.Controllers
         {
             var userrole = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
             if (userrole!=null) {
-                var list = _importTrans_main_recordService.getCount(WorkContext.CurrentUser.Co, userrole.RoleName);
+                var list = _importTrans_main_recordService.getCount(WorkContext.CurrentUser.Name, userrole.RoleName);
                 if (list != null)
                 {
-                    ViewBag.Count = "当前有" + list.Count + "个任务";
+                    ViewBag.Count = "当前有" + list.Count + "个在途进口条目";
                 }
             }
             return View();

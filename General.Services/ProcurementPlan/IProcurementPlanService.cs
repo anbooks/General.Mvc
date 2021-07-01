@@ -10,7 +10,8 @@ namespace General.Services.ProcurementPlan
     {
         IPagedList<Entities.ProcurementPlan> searchProcurementPlan(SysCustomizedListSearchArg arg, int page, int size,int id);
 
-       
+        List<Entities.ProcurementPlan> getAll(int id);
+        List<Entities.ProcurementPlan> getItem(string item);
         /// <summary>
         /// 获取详情
         /// </summary>
