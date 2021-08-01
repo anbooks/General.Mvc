@@ -82,9 +82,8 @@ namespace General.Mvc.Areas.Admin.Controllers
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
             // var USER = _sysUserRoleService.getById(WorkContext.CurrentUser.Id);
             ViewBag.QX = WorkContext.CurrentUser.Name;
-            var pageList = _importTrans_main_recordService.searchListBuyer(arg, page, size, WorkContext.CurrentUser.Name);
-            string date = DateTime.Now.ToString("yyMMdd");
-            var serial = _sysInspectionMainService.getByDate(date);
+            var pageList = _importTrans_main_recordService.searchListBuyerSj(arg, page, size, WorkContext.CurrentUser.Name);
+ 
             ViewBag.Arg = arg;//传参数
             var dataSource = pageList.toDataSourceResult<Entities.ImportTrans_main_record, SysCustomizedListSearchArg>("inspectionBuyer", arg);
             return View(dataSource);//sysImport
@@ -111,15 +110,13 @@ namespace General.Mvc.Areas.Admin.Controllers
                 var serial = _sysInspectionMainService.getByDate(date);
                 int ser = serial.Count + 1;
                 string inmain = "";
-                //  Entities.ImportTrans_main_record model = new Entities.ImportTrans_main_record();
-
                 if (ser < 10)
                 {
-                    inmain = date + "0" + Convert.ToString(ser) + WorkContext.CurrentUser.Account;
+                    inmain = WorkContext.CurrentUser.Account + date + "0" + Convert.ToString(ser);
                 }
                 else
                 {
-                    inmain = date + Convert.ToString(ser) + WorkContext.CurrentUser.Account;
+                    inmain = WorkContext.CurrentUser.Account + date + Convert.ToString(ser);
                 }
 
                 InspecationMain modelm = new InspecationMain();
@@ -127,8 +124,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                 modelm.Serial = ser;
                 modelm.flag = 0;
                 modelm.DateId = date;
+                modelm.IsDeleted = false;
                 modelm.Creator = WorkContext.CurrentUser.Name;
-                // modelm.CreationTime = DateTime.Now;
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+                int importid = ViewBag.Import;
+                modelm.FytmId = importid;
                 _sysInspectionMainService.insertInspecationMain(modelm);
                 var main = _sysInspectionMainService.getByAccount(inmain);
                 string yundan = "";
@@ -243,10 +243,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                         model.Serial = sercoc;
                         model.DateId = date;
                         model.CofC = coc;
+                        model.IsDeleted = false;
                         model.Creator = WorkContext.CurrentUser.Name;
                         // model.CreationTime = DateTime.Now;
                         model.MainId = main.Id;
-
+                        
                         if (!yundan.Contains(worksheet.Cells[row, xdsl].Value.ToString()))
                         {
                             yundan = yundan + worksheet.Cells[row, xdsl].Value.ToString() + ";";
@@ -290,11 +291,11 @@ namespace General.Mvc.Areas.Admin.Controllers
             {
                 if (ser < 10)
                 {
-                    inmain = date + "0" + Convert.ToString(ser) + WorkContext.CurrentUser.Account;
+                    inmain = WorkContext.CurrentUser.Account + date + "0" + Convert.ToString(ser);
                 }
                 else
                 {
-                    inmain = date + Convert.ToString(ser) + WorkContext.CurrentUser.Account;
+                    inmain = WorkContext.CurrentUser.Account + date + Convert.ToString(ser);
                 }
 
                 InspecationMain modelm = new InspecationMain();
@@ -303,8 +304,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                 modelm.flag = 0;
                 modelm.DateId = date;
                 modelm.Creator = WorkContext.CurrentUser.Name;
-                // modelm.CreationTime = DateTime.Now;
-                _sysInspectionMainService.insertInspecationMain(modelm);
+                ViewBag.Import = HttpContext.Session.GetInt32("import");
+                modelm.IsDeleted = false;
+                int importid = ViewBag.Import;
+             modelm.FytmId = importid;
+            _sysInspectionMainService.insertInspecationMain(modelm);
                 var main = _sysInspectionMainService.getByAccount(inmain);
                 string yundan = "";
                 string dingdan = "";
@@ -315,8 +319,17 @@ namespace General.Mvc.Areas.Admin.Controllers
                     Inspection model = new Inspection();
                     model.ContractNo = models.OrderNo;
                     var supplier = _sysOrderService.getAccount(models.ReferenceNo);
-                    model.Supplier = supplier.SupplierName;
-                    model.Manufacturer = supplier.Manufacturer;
+                    if (models.Consignor==null|| models.Consignor =="")
+                    {
+                        var item = _importTrans_main_recordService.getById(models.MainId);
+                        model.Supplier = item.Shipper;
+                    }
+                    else
+                    {
+                        model.Supplier = models.Consignor;
+                    }
+                    
+                    model.Manufacturer = models.Manufacturers;
                     var serialcoc = _sysInspectionService.getByDate(date);
                     int sercoc = serialcoc.Count + 1;
                     string coc = "";
@@ -341,32 +354,50 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.CofC = coc;
                     model.Description = models.Description;
                     model.MaterialCode = models.MaterialCode;
-                    model.Type = supplier.PartNo;
+                    model.Type = models.PartNo;
                     model.Size = supplier.Size;
-                    model.Item = supplier.Item;
+                    model.Item = models.OrderLine;
                     model.Project = supplier.Main.Project;
                     model.Specification = models.Specification;
                     model.Batch = models.BatchNo;
-                    if (models.PurchaseQuantity != "" && models.PurchaseQuantity != null) { model.Qty = Convert.ToInt32(models.PurchaseQuantity); }
+                    var imp = _importTrans_main_recordService.getById(models.MainId);
+                    if (imp != null && imp.ActualDeliveryDate != null)
+                    {
+                        model.ReceivedDate = imp.ActualDeliveryDate;
+                    }
+
+                    model.IsDeleted = false;
+                    if (models.PurchaseQuantity != "" && models.PurchaseQuantity != null) { model.Qty = Convert.ToDouble(models.PurchaseQuantity); }
 
                     model.Creator = WorkContext.CurrentUser.Name;
                     //  model.CreationTime = DateTime.Now;
                     model.MainId = main.Id;
-                    if (!yundan.Contains(models.Waybill))
+                    if (models.Waybill!=null)
                     {
-                        yundan = yundan + models.Waybill + ";";
+                        if (!yundan.Contains(models.Waybill))
+                        {
+                            yundan = yundan + models.Waybill + ";";
+                        }
+
                     }
-                    if (!dingdan.Contains(models.OrderNo))
+                    if (models.OrderNo != null)
                     {
-                        dingdan = dingdan + models.OrderNo + ";";
+                        if (!dingdan.Contains(models.OrderNo))
+                        {
+                            dingdan = dingdan + models.OrderNo + ";";
+                        }
                     }
                     _sysInspectionService.insertInspection(model);
+                    models.Sjflag =true;
+                    _scheduleService.updateSchedule(models);
                     //u就是jsonlist里面的一个实体类
                 }
                 var mainyd = _sysInspectionMainService.getByAccount(inmain);
                 mainyd.Waybill = yundan;
                 mainyd.OrderNo = dingdan;
                 _sysInspectionMainService.updateInspecationMain(mainyd);
+                
+
                 Response.Cookies.Append("Inspection", Convert.ToString(main.Id));
 
             }
@@ -375,7 +406,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 var main = _sysInspectionMainService.getByAccount(inmain);
                 main.IsDeleted = true;
                 _sysInspectionMainService.updateInspecationMain(main);
-
+                Response.WriteAsync("<script>alert('送检单生成失败!');window.location.href ='inspectionBuyerschedule'</script>", Encoding.GetEncoding("GB2312"));
             }
             return Redirect(ViewBag.ReturnUrl);
 
@@ -460,6 +491,29 @@ namespace General.Mvc.Areas.Admin.Controllers
             var dataSource = pageList.toDataSourceResult<Entities.Inspection, SysCustomizedListSearchArg>("inspection", arg);
             return View(dataSource);//sysImport
         }
+        [Route("inspectionschb", Name = "inspectionschb")]
+        [Function("查看送检单", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
+        [HttpGet]
+        public IActionResult InspectionSchBIndex(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
+        {
+            string s;
+            if (id != 0)
+            {
+                Response.Cookies.Append("Inspection", Convert.ToString(id));
+                s = Convert.ToString(id);
+            }
+            else
+            {
+                Request.Cookies.TryGetValue("Inspection", out s);
+            }
+            int ida = Convert.ToInt32(s);
+            RolePermissionViewModel model = new RolePermissionViewModel();
+            ViewBag.QX = WorkContext.CurrentUser.Co;
+            var pageList = _sysInspectionService.searchInspection(arg, page, size, ida);
+            ViewBag.Arg = arg;//传参数
+            var dataSource = pageList.toDataSourceResult<Entities.Inspection, SysCustomizedListSearchArg>("inspection", arg);
+            return View(dataSource);//sysImport
+        }
         [HttpPost]
         [Route("InspectionxgList", Name = "InspectionxgList")]
         [Function("送检单修改", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionIndex")]
@@ -472,24 +526,21 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.Inspection u in jsonlist)
                 {
                     var model = _sysInspectionService.getById(u.Id);
-                    model.ContractNo = u.ContractNo;
                     model.Supplier = u.Supplier;
                     model.Manufacturer = u.Manufacturer;
-
                     model.Description = u.Description;
                     model.MaterialCode = u.MaterialCode;
                     model.Type = u.Type;
                     model.Size = u.Size;
                     model.Batch = u.Batch;
-
                     model.ReceivedDate = u.ReceivedDate;
                     model.Specification = u.Specification;
                     model.Remark = u.Remark;
                     model.UnPlaceQty = u.UnPlaceQty;
                     model.Qty = u.Qty;
-
                     _sysInspectionService.updateInspection(model);
                 }
+
                 AjaxData.Status = true;
                 AjaxData.Message = "OK";
             }
@@ -518,7 +569,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Batch = u.Batch;
 
                     model.Remark = u.Remark;
-
+                    model.Qty = u.Qty;
 
                     //model.Status = "计划员审批";
 
@@ -546,6 +597,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             record.Manufacturer = model.Manufacturer;
             record.MaterialCode = model.MaterialCode;
             record.Remark = model.Remark;
+
             record.Qty = model.Qty;
             record.ReceivedDate = model.ReceivedDate;
             record.Size = model.Size;
@@ -578,6 +630,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             record.Serial = sercoc;
             record.DateId = date;
             record.CofC = coc;
+            record.IsDeleted = false;
             record.ContractNo = model.ContractNo;
             record.Item = model.Item;
             record.Project = model.Project;
@@ -588,7 +641,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             return Redirect(ViewBag.ReturnUrl);
         }
         [Route("inspectionjhyschupdate", Name = "inspectionjhyschupdate")]
-        [Function("计划员审批复制", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhySchIndex")]
+        [Function("计划员审批复制", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
         [HttpGet]
         public IActionResult InspectionJhySchupdate(int id, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
@@ -633,6 +686,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             record.CofC = coc;
             record.ContractNo = model.ContractNo;
             record.Item = model.Item;
+            record.IsDeleted = false;
             record.Project = model.Project;
             record.Description = model.Description;
             record.Creator = WorkContext.CurrentUser.Name;
@@ -642,12 +696,18 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [Route("InspectionspList", Name = "InspectionspList")]
         [Function("送检单提交", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionIndex")]
-        public IActionResult InspectionTList(string Jhy)
+        public IActionResult InspectionTList(string Jhy, string kevin)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("inspection");
+            InspectionList(kevin);
             string s;
             Request.Cookies.TryGetValue("Inspection", out s);
             int ida = Convert.ToInt32(s);
+
+            if (Jhy == null)
+            {
+                Response.WriteAsync("<script>alert('计划员不能为空!');window.location.href ='inspectionsch'</script>", Encoding.GetEncoding("GB2312"));
+            }
             try
             {
                 var model = _sysInspectionMainService.getById(ida);
@@ -656,12 +716,15 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.CreationTime = DateTime.Now;
                 model.JhyName = Jhy;
                 _sysInspectionMainService.updateInspecationMain(model);
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
             }
             catch
             {
-                return Redirect(ViewBag.ReturnUrl);
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
             }
-            return Redirect(ViewBag.ReturnUrl);
+            return Json(AjaxData);
         }
         [Route("inspectiondelet", Name = "inspectiondelet")]
         [Function("送检单删除", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionIndex")]
@@ -676,6 +739,16 @@ namespace General.Mvc.Areas.Admin.Controllers
                 model.IsDeleted = true;
                 //model.JhyName = Jhy;
                 _sysInspectionMainService.deleteInspecationMain(model);
+                //var models = _sysInspectionService.getByMain(id);
+                //if (model.FytmId != 0)
+                //{
+
+                //}
+                //var modela = _scheduleService.getAll(model.FytmId);
+                //foreach (var u in models)
+                //{
+                //    u.IsDeleted = true;
+                //}
             }
             catch
             {
@@ -721,68 +794,61 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         [Route("InspectionjhyList", Name = "InspectionjhyList")]
         [Function("接收审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
-        public IActionResult InspectionjhyList(int id)
+        public IActionResult InspectionjhyList(string kevin)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("inspectionjhy");
             string s;
             int ida;
-            if (id != 0)
-            {
-                ida = id;
-            }
-            else
-            {
-                Request.Cookies.TryGetValue("Inspection", out s);
-                 ida = Convert.ToInt32(s);
-            }
+            InspectionJhList(kevin);
+            Request.Cookies.TryGetValue("Inspection", out s);
+            ida = Convert.ToInt32(s);
+
             try
             {
-                    var record = _sysInspectionMainService.getById(ida);
-                    record.flag = 4;
-                    record.JhTime = DateTime.Now;
-                    _sysInspectionMainService.updateInspecationMain(record);
+                var record = _sysInspectionMainService.getById(ida);
+                record.flag = 4;
+                record.JhTime = DateTime.Now;
+                _sysInspectionMainService.updateInspecationMain(record);
+
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
             }
             catch
             {
-              
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
             }
-            return Redirect(ViewBag.ReturnUrl);
+            return Json(AjaxData);
         }
-        [HttpGet]
+        [HttpPost]
         [Route("InspectionjhythList", Name = "InspectionjhythList")]
         [Function("退回审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
-        public IActionResult InspectionjhythList(int id)
+        public IActionResult InspectionjhythList(string remark)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(null) ? null : Url.RouteUrl("inspectionjhy");
             string s;
-            int ida;
-            if (id != 0)
-            {
-                ida = id;
-            }
-            else
-            {
-                Request.Cookies.TryGetValue("Inspection", out s);
-                ida = Convert.ToInt32(s);
-            }
+
+            Request.Cookies.TryGetValue("Inspection", out s);
+
+            int ida = Convert.ToInt32(s);
+
             try
             {
-               
-                    var record = _sysInspectionMainService.getById(ida);
-                  
-                    record.flag = 1;
-                   
-                    _sysInspectionMainService.updateInspecationMain(record);
-              
-              
+                var record = _sysInspectionMainService.getById(ida);
+                record.flag = 1;
+                record.Remark = remark;
+                _sysInspectionMainService.updateInspecationMain(record);
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
             }
             catch
             {
-                
+                AjaxData.Status = false;
+                AjaxData.Message = "OK";
             }
-            return Redirect(ViewBag.ReturnUrl);
+            return Json(AjaxData);
         }
-        
+
         [HttpGet]
         [Route("InspectionSjdList", Name = "InspectionSjdList")]
         [Function("送检单导出", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionIndex")]
@@ -811,7 +877,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 11].Value = "质量编号";
                 worksheet.Cells[1, 12].Value = "入厂日期";
                 worksheet.Cells[1, 13].Value = "材料规范";
-                worksheet.Cells[1, 14].Value = "接收数量";
+                worksheet.Cells[1, 14].Value = "采购数量";
+                worksheet.Cells[1, 15].Value = "实收数量";
+                worksheet.Cells[1, 16].Value = "实收时间";
+                worksheet.Cells[1, 17].Value = "保管员";
                 int a = 0;
                 var list = _sysInspectionService.getByMain(id);
                 for (int i = 0; i <= list.Count - 1; i++)
@@ -868,9 +937,21 @@ namespace General.Mvc.Areas.Admin.Controllers
                     {
                         worksheet.Cells[a + 2, 13].Value = list[i].Specification.ToString();
                     }
+                    if (list[i].Qty != null)
+                    {
+                        worksheet.Cells[a + 2, 14].Value = list[i].Qty;
+                    }
                     if (list[i].AcceptQty != null)
                     {
                         worksheet.Cells[a + 2, 14].Value = list[i].AcceptQty;
+                    }
+                    if (list[i].AcceptTime != null)
+                    {
+                        worksheet.Cells[a + 2, 14].Value = list[i].AcceptTime.Value.ToString("yyyy-MM-dd");
+                    }
+                    if (list[i].Keeper != null)
+                    {
+                        worksheet.Cells[a + 2, 14].Value = list[i].Keeper;
                     }
                     a++;
                 }
@@ -925,21 +1006,10 @@ namespace General.Mvc.Areas.Admin.Controllers
         [HttpGet]
         [Route("edit", Name = "editInspectionAttachment")]
         [Function("质保单编辑", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionIndex")]
-        public IActionResult EditInspection(int id, string returnUrl = null)
+        public IActionResult EditInspection(string kevin)
         {
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("inspection");
-            string s = "";
-            int ida = 0;
-            if (id != 0)
-            {
-                ida = id;
-            }
-            else
-            {
-                Request.Cookies.TryGetValue("Inspection", out s);
-                ida = Convert.ToInt32(s);
-            }
 
+           // InspectionList(kevin);
             return View();
         }
         [HttpPost]
@@ -952,7 +1022,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             Request.Cookies.TryGetValue("Inspection", out s);
             ida = Convert.ToInt32(s);
 
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("inspection");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("inspectionsch");
 
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             foreach (var fpfile in files)
@@ -981,6 +1051,6 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Redirect(ViewBag.ReturnUrl);
         }
-       
+
     }
 }

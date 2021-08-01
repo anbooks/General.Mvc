@@ -25,7 +25,8 @@
         <h1>
             @ViewData["Title"]
         </h1>
-    </div> <div class="row">
+    </div> 
+    <div class="row">
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -84,39 +85,50 @@
                         <tbody>
                             @foreach (var item in Model.Data)
                             {
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" name="checkboxId" style="left:100px" value="@item.Id" checked disabled />
-                                    </td>
-                                    <td>
-                                        <a href="@Url.RouteUrl("inspectionBuyerschedule", new { id = item.Id })" class="btn btn-xs btn-pink"><i class="fa fa-bolt"></i>查看明细表</a>
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="checkboxId" style="left:100px" value="@item.Id" checked disabled />
+                                </td>
+                                <td>
+                                    <a href="@Url.RouteUrl("inspectionBuyerschedule", new { id = item.Id })" class="btn btn-xs btn-pink"><i class="fa fa-bolt"></i>查看明细表</a>
 
-                                    </td>
+                                </td>
 
-                                    <td>@item.Id</td>
-                                    <td>@item.Transportation</td>
-                                    <td>@item.Shipper</td>
-                                    <td>@item.PoNo</td>
+                                <td>@item.Id</td>
+                                <td>@item.Transportation</td>
+                                <td>@item.Shipper</td>
+                                <td>@item.PoNo</td>
 
-                                    <td>
-                                        @item.Incoterms
-                                    </td>
+                                <td>
+                                    @item.Incoterms
+                                </td>
 
 
-                                    <td>@item.CargoType</td>
-                                    <td>@item.Invamou</td>
-                                    <td>@item.Invcurr</td>
+                                <td>@item.CargoType</td>
+                                <td>@item.Invamou</td>
+                                <td>@item.Invcurr</td> @if (@item.RealReceivingDate != null)
+                                {
+                                    <td>@item.RealReceivingDate.Value.ToString("yyyy-MM-dd")</td>
+                                }
+                                else
+                                {
                                     <td>@item.RealReceivingDate</td>
-                                    <td>@item.Pcs</td>
-                                    <td>@item.Gw</td>
-                                    <td>@item.Buyer</td>
+                                }
+                               
+                                <td>@item.Pcs</td>
+                                <td>@item.Gw</td>
+                                <td>@item.Buyer</td>
+                                @if (@item.RequestedArrivalTime != null)
+                                {
+                                    <td>@item.RequestedArrivalTime.Value.ToString("yyyy-MM-dd")</td>
+                                }
+                                else
+                                {
+                                    <td>@item.RequestedArrivalTime</td>
+                                }
+                              
 
-                                    <td>
-                                        @item.RequestedArrivalTime
-                                    </td>
-
-
-                                </tr>
+                            </tr>
                             }
                         </tbody>
                     </table>

@@ -146,7 +146,7 @@ namespace General.Mvc.Areas.Admin.Controllers
         }
         [HttpPost]
         [Route("InspectionjyythList", Name = "InspectionjyythList")]
-        [Function("退回审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionController.InspectionjhyIndex")]
+        [Function("退回审批", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionJyyController.InspectionjyyIndex")]
         public ActionResult InspectionjyythList(string remark)
         {
             string s;
@@ -171,7 +171,15 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return Json(AjaxData);
         }
-
+        [HttpPost]
+        [Route("InspectionjyythQx", Name = "InspectionjyythQx")]
+        [Function("退回取消", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionJyyController.InspectionjyyIndex")]
+        public ActionResult InspectionjyythQx(string remark)
+        {
+                AjaxData.Status = true;
+                AjaxData.Message = "OK";
+            return Json(AjaxData);
+        }
         [Route("JyyZbdAttachment", Name = "JyyZbdAttachment")]
         [Function("质保单查看", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.InspectionJyyController.InspectionjyyIndex")]
         [HttpGet]
@@ -246,7 +254,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             Request.Cookies.TryGetValue("Inspection", out s);
             ida = Convert.ToInt32(s);
 
-            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("inspectionjyy");
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("inspectionjyysch");
 
             string sWebRootFolder = _hostingEnvironment.WebRootPath;
             foreach (var fpfile in files)

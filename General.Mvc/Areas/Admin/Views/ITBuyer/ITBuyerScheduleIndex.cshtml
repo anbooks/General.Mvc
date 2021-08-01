@@ -95,9 +95,9 @@
         <div class="panel panel-default">
             <div class="form-inline">
                 <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="jieshou()" value="保存" />
-                <button class="btn btn-info btn-sm" type="submit"> 
-                    生成送检单
-                </button>
+                <!--<button class="btn btn-info btn-sm" type="submit">
+        生成送检单
+    </button>-+-->
                 <input class="btn btn-info btn-sm" type="submit" name="sumbit" onclick="tuihui()" value="删除" />  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
             </div>
         </div>
@@ -131,7 +131,8 @@
                             <th width="100px">单价</th>
                             <th width="100px">总价</th>
                             <th width="100px">发票号</th>
-                            <th width="100px">计划数量</th>
+                           
+                            <th width="100px">计划单位</th>
                             <th width="100px">折算关系</th>
                             <th width="100px">折合计划数量</th>
                             <th width="200px">实际提/送货日期</th>
@@ -166,7 +167,7 @@
                             <td>@item.MaterialCode</td>
                             <td> </td>
                             <td>@item.Description</td>
-                            <td>@item.Type</td>
+                            <td>@item.PartNo</td>
                             <td>@item.Specification</td>
                             <td>@item.Thickness</td>
                             <td>@item.Length</td>
@@ -196,8 +197,9 @@
                                 <input type="text" name="InvoiceNo" value="@item.InvoiceNo" style="width:80px" />
                             </td>
                             <td>
-                                <input type="text" name="PlanNo" value="@item.PlanNo" style="width:80px" />
+                                <input type="text" name="PlanUnit" value="@item.PlanUnit" style="width:80px" />
                             </td>
+                          
                             <td>
                                 <input type="text" name="Reduced" value="@item.Reduced" style="width:80px" />
                             </td>
@@ -281,7 +283,7 @@
                     var unitprice = $(this).closest("tr").find("td").eq(19).find("input:text");
                     var totalprice = $(this).closest("tr").find("td").eq(20).find("input:text");
                     var invoiceNo = $(this).closest("tr").find("td").eq(21).find("input:text");
-                    var planNo = $(this).closest("tr").find("td").eq(22).find("input:text");
+                    var planUnit = $(this).closest("tr").find("td").eq(22).find("input:text");
                     var reduced = $(this).closest("tr").find("td").eq(23).find("input:text");
                     var shipmentdate = $(this).closest("tr").find("td").eq(25).find("input:data");
                     var manufacturers = $(this).closest("tr").find("td").eq(26).find("input:text");
@@ -302,7 +304,7 @@
                         totalprice: totalprice.val(),
                         shipmentdate: shipmentdate.val(),
                         invoiceNo: invoiceNo.val(),
-                        planNo: planNo.val(),
+                        planUnit: planUnit.val(),
                         reduced: reduced.val(),
                         manufacturers: manufacturers.val(),
                         origincountry: origincountry.val(),
@@ -328,6 +330,7 @@
                         var rs = data;
                         if (rs.status == true) {
                             alert('提交成功！');
+                            window.location.href = 'schedule';
                         } else {
                             alert('提交失败！数据有误！！！');
                             window.parent.location.reload();

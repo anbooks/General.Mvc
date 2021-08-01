@@ -68,6 +68,9 @@
                                 <th width="80px">入厂日期</th>
                                 <th width="80px">材料规范</th>
                                 <th width="80px">采购数量</th>
+                                <th width="80px">实收数量</th>
+                                <th width="80px">保管员</th>
+                                <th width="80px">实收时间</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,7 +127,15 @@
                                 <td>
                                     @item.Qty
                                 </td>
-
+                                <td>
+                                    @item.AcceptQty
+                                </td>
+                                <td>
+                                    @item.Keeper
+                                </td>
+                                <td>
+                                    @item.AcceptTime
+                                </td>
                             </tr>
                             }
                         </tbody>

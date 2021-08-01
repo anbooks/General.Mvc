@@ -28,7 +28,7 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form asp-route="inspection" method="get" class="form-inline">
+                    <form asp-route="inspectionjyysch" method="get" class="form-inline">
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="订单号" />
                         <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="质量编号" />
@@ -37,17 +37,28 @@
                             查询
                             <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
                         </button>
-                        <a href="@Url.RouteUrl("editInspectionJyyAttachment", new { id = ViewBag.QX })" class="btn btn-info btn-sm bigger-">质保单上传</a>
+                        <!--<a href="@Url.RouteUrl("editInspectionJyyAttachment", new { id = ViewBag.QX })"  class="btn btn-info btn-sm bigger-">质保单上传</a>-->
                     </form>
                 </div>
             </div>
         </div>
+    </div><div class="row">
+    <div class="col-sm-12">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form asp-route="editInspectionJyyAttachment" method="post" enctype="multipart/form-data" class="form-inline">
+                    <input type="file" name="files" multiple class="form-control" />
+                    <input type="submit" value="质保单上传" class="btn btn-info btn-sm" />
+                </form>
+            </div>
+        </div>
     </div>
+</div>
     <form asp-route="InspectionjyList" method="post" id="formitConfirmedCustoms" class="form-horizontal">
         <div class="panel panel-default">
             <div class="form-inline">
                 <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="jieshou()" value="接收" />
-                <input type="text" class="form-control" name="remark" style="width:180px;" value="退回原因" placeholder="退回原因" /> <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="tuihui()" value="退回" />
+                <input type="text" class="form-control" name="remark" style="width:180px;"  placeholder="退回原因" /> <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="tuihui()" value="退回" />
             </div>
         </div>
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
@@ -57,8 +68,8 @@
                 <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="margin-left:20px;">
                     <thead>
                         <tr>
-                          
-                           
+
+
                             <th width="80px">送检单号</th>
                             <th width="80px">备注</th>
                             <th width="80px">订单号</th>
@@ -75,6 +86,9 @@
                             <th width="80px">入厂日期</th>
                             <th width="80px">材料规范</th>
                             <th width="80px">采购数量</th>
+                            <th width="80px">实收数量</th>
+                            <th width="80px">保管员</th>
+                            <th width="80px">实收时间</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -82,13 +96,13 @@
                         @foreach (var item in Model.Data)
                             {
                         <tr>
-                            
-                           
+
+
                             <td>
                                 @item.Main.InspecationMainId
                             </td>
                             <td>
-                               @item.Remark
+                                @item.Remark
                             </td>
                             <td>@item.ContractNo</td>
                             <td>
@@ -99,7 +113,7 @@
                             </td>
                             <td>@item.Supplier</td>
                             <td>
-                               @item.Manufacturer
+                                @item.Manufacturer
                             </td>
                             <td>@item.CofC</td>
                             <td>@item.Description</td>
@@ -112,7 +126,15 @@
                             <td>@item.ReceivedDate</td>
                             <td>@item.Specification</td>
                             <td>@item.Qty</td>
-
+                            <td>
+                                @item.AcceptQty
+                            </td>
+                            <td>
+                                @item.Keeper
+                            </td>
+                            <td>
+                                @item.AcceptTime
+                            </td>
 
                         </tr>
                             }
@@ -167,6 +189,7 @@
                         var rs = data;
                         if (rs.status == true) {
                             alert('提交成功！');
+                            window.location.href = 'inspectionjyy';
                         } else {
                             alert('提交失败！数据有误！！！');
                             window.parent.location.reload(_url2);
@@ -177,41 +200,79 @@
             });
         }
         function tuihui() {
-            $('#formitConfirmedCustoms').submit(function () {
-                var form = $(this);
-                var subArray = [];
-             
+            //confirm('您确定退回送检单?');
+            var r = confirm("您确定退回送检单");
+           
+            if (r == true) {
 
-                var remark = $(this).closest("div").find("div").eq(2).find("input:text");
-                   
+                $('#formitConfirmedCustoms').submit(function () {
+                    var form = $(this);
+                    var subArray = [];
+                    var remark = $(this).closest("div").find("div").eq(2).find("input:text");
                     var mSub = {
                         remark: remark.val(),
-                      
+                    };
+                    subArray.push(mSub);
+                    //alert(JSON.stringify(subArray));
+                    var _url = "/admin/inspectionjyy/InspectionjyythList"
+
+                    form.ajaxSubmit({
+                        type: 'post', // 提交方式 get/post
+                        url: _url, // 需要提交的 url
+                        dataType: "json", //数据类型 注意这里！！！！！
+                        data: { "remark": JSON.stringify(subArray) },
+                        success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                            // 此处可对 data 作相关处理
+                            var rs = data;
+                            if (rs.status == true) {
+                                alert('退回成功！');
+                                window.location.href = 'inspectionjyy';
+                            } else {
+                                alert('提交失败！数据有误！！！');
+                                window.parent.location.reload();
+                            }
+                        }
+                    });
+                    return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+                });
+            } else {
+                $('#formitConfirmedCustoms').submit(function () {
+                    var form = $(this);
+                    var subArray = [];
+
+
+                    var remark = $(this).closest("div").find("div").eq(2).find("input:text");
+
+                    var mSub = {
+                        remark: remark.val(),
+
 
                     };
                     subArray.push(mSub);
-               
-                //alert(JSON.stringify(subArray));
-                var _url = "/admin/inspectionjyy/InspectionjyythList"
 
-                form.ajaxSubmit({
-                    type: 'post', // 提交方式 get/post
-                    url: _url, // 需要提交的 url
-                    dataType: "json", //数据类型 注意这里！！！！！
-                    data: { "remark": JSON.stringify(subArray) },
-                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
-                        // 此处可对 data 作相关处理
-                        var rs = data;
-                        if (rs.status == true) {
-                            alert('提交成功！');
-                        } else {
-                            alert('提交失败！数据有误！！！');
-                            window.parent.location.reload();
+                    //alert(JSON.stringify(subArray));
+                    var _url = "/admin/inspectionjyy/InspectionjyythQx"
+
+                    form.ajaxSubmit({
+                        type: 'post', // 提交方式 get/post
+                        url: _url, // 需要提交的 url
+                        dataType: "json", //数据类型 注意这里！！！！！
+                        data: { "remark": JSON.stringify(subArray) },
+                        success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                            // 此处可对 data 作相关处理
+                            var rs = data;
+                            if (rs.status == true) {
+                                alert('退回取消！');
+                            } else {
+                                alert('提交失败！数据有误！！！');
+                                window.parent.location.reload();
+                            }
                         }
-                    }
+                    });
+                    return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
                 });
-                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
-            });
+            }
+
         }
         
     </script>

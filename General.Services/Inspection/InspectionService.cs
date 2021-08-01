@@ -25,7 +25,7 @@ namespace General.Services.Inspection
 
             if (list != null)
                 return list;
-            list = _sysInspectionRepository.Table.Include(p => p.Main).Where(o => o.DateId == account && o.IsDeleted != true).ToList();
+            list = _sysInspectionRepository.Table.Include(p => p.Main).Where(o => o.DateId == account).ToList();
             return list;
         }
         /// <summary>

@@ -20,6 +20,7 @@ namespace General.Services.Order
         Entities.Order getAccount(string account); 
              Entities.Order getOrder(string a, string b);
         List<Entities.Order> getPlan(string account);
+        List<Entities.Order> getMain(int account);
         /// <summary>
         /// 验证账号是否已经存在getPlan
         /// </summary>

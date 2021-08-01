@@ -28,7 +28,7 @@
         <div class="col-sm-12">
             <div class="panel panel-default">
                 <div class="panel-body">
-                    <form asp-route="inspectionjhy" method="get" class="form-inline">
+                    <form asp-route="inspectionjyy" method="get" class="form-inline">
                         <label>关键字</label>
                         <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="送检单号" />
                         <button type="submit" class="btn btn-purple btn-sm">
@@ -40,7 +40,7 @@
             </div>
         </div>
     </div>
-    <form asp-route="inspectionjhy" method="post" id="formitConfirmedCustoms" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="inspectionjyy" method="post" id="formitConfirmedCustoms" class="form-horizontal" onsubmit="return false;">
         
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
             <div class="form-group">
@@ -49,15 +49,15 @@
                     <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="table-layout:fixed;margin-left:20px;">
                         <thead>
                             <tr>
-                             
-                                <th width="100px"></th>
-                                <th width="200px">送检单号</th>
+
+                                <th width="200px"></th>
+                                <th width="220px">送检单号</th>
                                 <th width="200px">所有者</th>
                                 <th width="200px">计划员</th>
                                 <th width="200px">状态</th>
                                 <th width="200px">运单号</th>
                                 <th width="200px">订单号</th>
-
+                                <th width="200px">计划审批时间</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -68,7 +68,16 @@
 
 
                                 <td>
-                                    <a href="@Url.RouteUrl("inspectionjyysch", new { id = item.Id })" class="btn btn-xs btn-yellow">审批</a>
+                                    @if (item.flag > 4)
+                                    {
+                                        <a href="@Url.RouteUrl("inspectionjyysch", new { id = item.Id })" class="btn btn-xs btn-yellow">已审批</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.RouteUrl("inspectionjyysch", new { id = item.Id })" class="btn btn-xs btn-yellow">审批</a>
+                                    }
+
+                                    <a href="@Url.RouteUrl("JyyZbdAttachment", new { id = item.Id })" class="btn btn-info btn-xs">质保单</a>
                                     <a href="@Url.RouteUrl("InspectionSjdList", new { id = item.Id })" class="btn btn-xs btn-grey">导出</a>
                                 </td>
 
@@ -102,6 +111,7 @@
                                 }
                                 <td>@item.Waybill</td>
                                 <td>@item.OrderNo</td>
+                                <td>@item.JhTime</td>
                             </tr>
                             }
                         </tbody>

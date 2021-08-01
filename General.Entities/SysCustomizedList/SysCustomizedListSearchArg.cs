@@ -21,6 +21,7 @@ namespace General.Entities
         public string pono { get; set; }//发运条目合同号
         public string invcurr { get; set; }//发运条目货币类型
         public string materiel { get; set; }
+        public string waybill { get; set; }
         public DateTime? realreceivingdatestrat { get; set; }//发运条目货币类型
         public DateTime? realreceivingdateend { get; set; }//发运条目货币类型
     }

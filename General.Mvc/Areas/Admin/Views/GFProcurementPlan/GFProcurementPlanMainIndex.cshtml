@@ -71,11 +71,10 @@
               <form asp-route="gfProcurementPlanMainIndex" method="post" id="formitInventoryInput" class="form-horizontal">
                   <div class="panel panel-default">
                       <div class="form-inline">
+                          <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
                           <button class="btn btn-info btn-sm" type="submit">
-                              <i class="ace-icon fa fa-check bigger-110"></i>
-                              生成采购计划执行跟踪表
+                              计划状态概览汇总
                           </button>
-                           <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
                       </div>
                   </div>
                   <div class="form-group">
@@ -115,9 +114,9 @@
 
                                       <td>@item.Project</td>
                                       <td>
-                                          <a href="@Url.RouteUrl("gfProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple"><i class="fa fa-bolt"></i>计划数据</a>
-                                          <a href="@Url.RouteUrl("excelimportgf", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>采购计划执行状态</a>
-                                          <a href="@Url.RouteUrl("GfOrderText", new { id = item.Id })" class="btn btn-xs btn-info"><i class="glyphicon glyphicon-pencil"></i>采购订单执行状态</a>
+                                          <a href="@Url.RouteUrl("gfProcurementPlanIndex", new { id = item.Id })" class="btn btn-xs btn-purple">计划数据</a>
+                                          <a href="@Url.RouteUrl("GfOrderText", new { id = item.Id })" class="btn btn-xs btn-info">GT016汇总</a>
+                                          <a href="@Url.RouteUrl("excelimportgf", new { id = item.Id })" class="btn btn-xs btn-info">计划状态概览汇总</a>
                                       </td>
                                   </tr>
                                   }

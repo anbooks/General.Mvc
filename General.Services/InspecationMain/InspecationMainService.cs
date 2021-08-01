@@ -107,7 +107,7 @@ namespace General.Services.InspecationMain
 
             if (list != null)
                 return list; 
-            list =  _sysInspecationMainRepository.Table.Where(o => o.DateId == account && o.IsDeleted!=true).ToList();
+            list =  _sysInspecationMainRepository.Table.Where(o => o.DateId == account).ToList();
             return list;
         }
         

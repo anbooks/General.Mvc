@@ -246,11 +246,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (u.Hbl != "") {model.Hbl = u.Hbl;}
                     if (u.Measurement != "") { model.Measurement = u.Measurement;}
                     if (u.Status != "") { model.Status = u.Status; }
-                    if (model.Dest != u.Dest) {model.Dest = u.Dest;}else {u.Dest = null;}
+                    if (model.Dest != u.Dest) {model.Dest = u.Dest;}else {}
                     if (u.MeasurementUnit != ""){ model.MeasurementUnit = u.MeasurementUnit; }
                     if (u.Ata != null) { model.Ata = u.Ata;}
                     if (u.Atd != null) {model.Atd = u.Atd;}
-                    if (model.Forwarder!=null && model.Forwarder!="" && u.Dest!= null) {
+                    if ((model.Forwarder==null || model.Forwarder=="") && u.Dest!= null) {
                        // var c = _forwardChooseService.existAccount(u.Dest);
                       
                         var a = _forwardChooseService.getForwarda(u.Dest);

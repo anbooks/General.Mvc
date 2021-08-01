@@ -29,7 +29,7 @@ namespace General.Services.Order
         /// <returns></returns>
         public IPagedList<Entities.Order> searchOrder(SysCustomizedListSearchArg arg, int page, int size, int id)
         {
-            var query = _sysOrderRepository.Table.Include(p=>p.Main).Where(o=>o.Main.IsDeleted != true && o.MainId == id);
+            var query = _sysOrderRepository.Table.Include(p=>p.Main).Where(o=>o.Main.IsDeleted != true && o.MainId == id&&o.IsDeleted != true);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
@@ -46,19 +46,18 @@ namespace General.Services.Order
         }
         public IPagedList<Entities.Order> searchOrderD(SysCustomizedListSearchArg arg, int page, int size, string orderno)
         {
-            var query = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.Main.IsDeleted != true && o.Main.OrderNo == orderno);
+            var query = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.Main.IsDeleted != true && o.Main.OrderNo == orderno && o.IsDeleted != true);
             if (arg != null)
             {
                 if (!String.IsNullOrEmpty(arg.itemno))
-                    query = query.Where(o => o.OrderNo.Contains(arg.itemno));
+                    query = query.Where(o => o.Item.Contains(arg.itemno));
                 if (!String.IsNullOrEmpty(arg.shipper))
-                    query = query.Where(o => o.SupplierCode.Contains(arg.shipper));
+                    query = query.Where(o => o.PartNo.Contains(arg.shipper));
                 if (!String.IsNullOrEmpty(arg.pono))
-                    query = query.Where(o => o.Main.Buyer.Contains(arg.pono));
-                if (!String.IsNullOrEmpty(arg.invcurr))
-                    query = query.Where(o => o.Project.Contains(arg.invcurr));
+                    query = query.Where(o => o.Specification.Contains(arg.pono));
+               
             }
-            query = query.OrderBy(o => o.Name);
+            query = query.OrderBy(o => o.Id);
             return new PagedList<Entities.Order>(query, page, size);
         }
 
@@ -70,7 +69,7 @@ namespace General.Services.Order
         /// <returns></returns>
         public bool existAccount(string account)
         {
-            return _sysOrderRepository.Table.Any(o => o.Name == account && o.IsDeleted != true);
+            return _sysOrderRepository.Table.Any(o => o.Name == account && o.IsDeleted != true && o.Main.IsDeleted != true);
         }
         /// <summary>
         /// 获取用户详情
@@ -84,11 +83,11 @@ namespace General.Services.Order
 
         public Entities.Order getAccount(string account)
         {
-            return _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.Main.IsDeleted != true).FirstOrDefault(o => o.PlanItem == account && o.IsDeleted != true);
+            return _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.Main.IsDeleted != true && o.IsDeleted != true).FirstOrDefault(o => o.PlanItem == account && o.IsDeleted != true);
         }
         public Entities.Order getOrder(string a,string b)
         {
-            return _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.Main.IsDeleted != true).FirstOrDefault(o => o.OrderNo == a && o.Item == b && o.IsDeleted != true);
+            return _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.Main.IsDeleted != true && o.IsDeleted != true).FirstOrDefault(o => o.OrderNo == a && o.Item == b && o.IsDeleted != true);
         }
         public List<Entities.Order> getPlan(string account)
         {
@@ -96,9 +95,19 @@ namespace General.Services.Order
 
             if (list != null)
                 return list;
-            list = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.PlanItem == account&& o.Main.IsDeleted != true).ToList();
+            list = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.PlanItem == account && o.IsDeleted != true && o.Main.IsDeleted != true).ToList();
             return list;
-            
+
+        }
+        public List<Entities.Order> getMain(int  account)
+        {
+            List<Entities.Order> list = null;
+
+            if (list != null)
+                return list;
+            list = _sysOrderRepository.Table.Include(p => p.Main).Where(o => o.MainId == account && o.IsDeleted != true && o.Main.IsDeleted != true).ToList();
+            return list;
+
         }
         /// <summary>
         /// 新增，插入

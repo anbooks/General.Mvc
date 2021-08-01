@@ -69,12 +69,12 @@
                             <td>
                                 <input type="checkbox" name="checkboxId" value="@item.Id" />
                             </td>
-                            @if (item.flag > 0)
+                            @if (item.flag>1)
                             {
                                 <td>
-                                    <button href="@Url.RouteUrl("inspectionscha", new { id = item.Id })" class="btn btn-xs btn-purple">查看</button>
-                                    <a href="@Url.RouteUrl("InspectionSjdList", new { id = item.Id })" class="btn btn-xs btn-grey">导出</a>
+                                    <a href="@Url.RouteUrl("inspectionscha", new { id = item.Id })" class="btn btn-xs btn-purple">查看</a>
                                     <a href="@Url.RouteUrl("ZbdAttachment", new { id = item.Id })" class="btn btn-info btn-xs">质保单</a>
+                                    <a href="@Url.RouteUrl("InspectionSjdList", new { id = item.Id })" class="btn btn-xs btn-grey">导出</a>
                                 </td>
                             }
                             else

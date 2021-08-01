@@ -38,14 +38,15 @@
                         <input type="text" class="form-control" name="itemno" style="width:100px;" value="@Model.Paging.RouteArg.itemno" placeholder="编号" />
                         <input type="text" class="form-control" name="shipper" style="width:100px;" value="@Model.Paging.RouteArg.shipper" placeholder="供应商名称" />
                         <input type="text" class="form-control" name="pono" style="width:100px;" value="@Model.Paging.RouteArg.pono" placeholder="订单号" />
+                        <input type="text" class="form-control" name="waybill" style="width:100px;" value="@Model.Paging.RouteArg.waybill" placeholder="运单号" />
                         @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
                         {
                             <label>实际到货日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
                             <label>----</label> <input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdateend.ToString("yyyy-MM-dd")" placeholder="" />
                         }
                         else
-                        {   <label>实际到货日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
-                            <label>----</label><input type="date" class="form-control" name="realreceivingdateend" style="width:120px;"  placeholder="" />
+                        { <label>实际到货日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" placeholder="" />
+                            <label>----</label><input type="date" class="form-control" name="realreceivingdateend" style="width:120px;" placeholder="" />
                         }
                         <button type="submit" class="btn btn-purple btn-sm">
                             查询
@@ -100,6 +101,7 @@
                                 <th style="width:100px">选择自行送货或外部提货</th>
                                 <th style="width:100px">实际提/送货日期</th>
                                 <th style="width:100px">是否核放</th>
+                                <th style="width:100px">核放日期</th>
                                 <th style="width:100px">是否已生成报检单</th>
 
                             </tr>
@@ -151,7 +153,15 @@
                                 <td style="width:80px">@item.DeliveryRequiredDate</td>
                                 <td style="width:80px">@item.ChooseDelivery</td>
                                 <td style="width:80px">@item.ActualDeliveryDate</td>
-                                <td style="width:80px">@item.CheckAndPass</td>
+                                <td style="width:80px">@item.CheckAndPass</td>  
+                                @if (item.CheckPassTime != null)
+                                {
+                                    <td style="width:90px">@item.CheckPassTime.Value.ToString("yyyy-MM-dd")</td>
+                                }
+                                else
+                                {
+                                    <td style="width:90px">@item.CheckPassTime</td>
+                                }
                                 <td style="width:80px">@item.Declaration</td>
                             </tr>
                             }

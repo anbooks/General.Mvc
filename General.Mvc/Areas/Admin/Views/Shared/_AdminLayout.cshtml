@@ -31,7 +31,7 @@
     <link href="/assets/css/bootstrap-editable.css" rel="stylesheet" />
     <link href="/assets/css/datepicker.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
-
+    <link href="~/css/blue.css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-3.3.4.css">
     <link rel="stylesheet" type="text/css" href="~/assets/css/bootstrap-3.3.4.css">
     <link rel="stylesheet" type="text/css" href="~/assets/font-awesome/4.6.0/css/font-awesome.4.6.0.css">
@@ -44,7 +44,6 @@
     <link rel="stylesheet" href="~/assets/css/ace-rtl.min.css" />
 
     <script src="~/assets/js/ace-extra.min.js"></script>
-
     <script src="~/assets/js/jquery.min.js"></script>
 </head>
 <body class="no-skin">
@@ -67,7 +66,7 @@
             @{ Html.RenderPartial("_LoginPartial");}
         </div>
     </div>
-    <div class="main-container" id="main-container">
+    <div class="main-container">
         @{ Html.RenderPartial("_NavbarPartial");}
         <div class="main-content">
             @RenderBody()
@@ -78,13 +77,13 @@
             <!-- #section:basics/footer -->
             <div class="footer-content">
                 <span class="bigger-120">
-                    <span class="blue bolder">Ace</span>
-                    采购执行管理系统 © 2020-@DateTime.Now.Year
+                    <span class="blue bolder">OPS</span>
+                    采购订单执行管理系统 © 2020-@DateTime.Now.Year
                 </span>
             </div>
             <!-- /section:basics/footer -->
         </div>
-    </div>
+    </div><!---->
     <script src="~/assets/js/bootstrap.min.js"></script>
     <script src="~/assets/js/ace.min.js"></script>
     <script src="~/assets/js/ace-elements.min.js"></script>

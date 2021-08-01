@@ -46,7 +46,9 @@
         <div class="panel panel-default">
             <div class="form-inline">
                 <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="baocun()" value="保存" />  <input type="button" id="btnSelectAll" value="全选" class="btn btn-info btn-sm" onclick="quanxuan()" />
-                <a href="@Url.RouteUrl("InspectionjhyList",new { id = ViewBag.QX })" class="btn btn-info btn-sm">接收</a>   <a href="@Url.RouteUrl("InspectionjhythList",new { id = ViewBag.QX })" class="btn btn-info btn-sm">退回</a>
+                 <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="tijiao()" value="提交" />
+                <input type="text" class="form-control" name="remark" style="width:180px;"  placeholder="退回原因" /> 
+                <input class="btn btn-info btn-sm" type="submit" name="sumbit " onclick="tuihui()" value="退回" />
             </div>
         </div>
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
@@ -74,8 +76,9 @@
                             <th width="80px">入厂日期</th>
                             <th width="80px">材料规范</th>
                             <th width="80px">采购数量</th>
-
-
+                            <th width="80px">实收数量</th>
+                            <th width="80px">保管员</th>
+                            <th width="80px">实收时间</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,7 +87,7 @@
                             {
                         <tr>
                             <td>
-                                <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                <input type="checkbox" name="checkboxId" value="@item.Id" checked />
                             </td>
                             <td>
                                 <a href="@Url.RouteUrl("inspectionjhyschupdate", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete"><i class="fa fa-bolt"></i>复制</a>
@@ -113,11 +116,26 @@
                             <td>@item.Size</td>
                             <td>
                                 <input type="text" name="Batch" value="@item.Batch" />
-                            </td>
-                            <td>@item.ReceivedDate</td>
-                            <td>@item.Specification</td>
-                            <td>@item.Qty</td>
+                            </td> @if (@item.ReceivedDate != null)
+                            {
+                                <td>@item.ReceivedDate.Value.ToString("yyyy-MM-dd")</td>
+                            }
+                            else
+                            {
+                                <td>@item.ReceivedDate</td>
+                            }
 
+                            <td>@item.Specification</td>
+                            <td> <input type="number" name="Qty" value="@item.Qty" step="0.00000000000001" style="width:80px" /></td>
+                            <td>
+                                @item.AcceptQty
+                            </td>
+                            <td>
+                                @item.Keeper
+                            </td>
+                            <td>
+                                @item.AcceptTime
+                            </td>
 
                         </tr>
                             }
@@ -143,7 +161,45 @@
             }
         }
     </script>
-    <script>
+    <script>function tuihui() {
+            confirm('您确定退回送检单?');
+    $('#formitConfirmedCustoms').submit(function () {
+                var form = $(this);
+                var subArray = [];
+
+
+                var remark = $(this).closest("div").find("div").eq(3).find("input:text");
+
+                var mSub = {
+                    remark: remark.val(),
+
+
+                };
+                subArray.push(mSub);
+
+                //alert(JSON.stringify(subArray));
+                var _url = "/admin/inspection/InspectionjhythList"
+
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "remark": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                            window.location.href = 'inspectionjhy';
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+            });
+        }
         function baocun() {
             $('#formitConfirmedCustoms').submit(function () {
                 var form = $(this);
@@ -153,12 +209,13 @@
                     var remark = $(this).closest("tr").find("td").eq(3).find("input:text");
                     var manufacturer = $(this).closest("tr").find("td").eq(8).find("input:text");
                     var batch = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var qty = $(this).closest("tr").find("td").eq(17).find("input:data");
                     var mSub = {
                         id: id.val(),
                         remark: remark.val(),
                         manufacturer: manufacturer.val(),
                         batch: batch.val(),
-                       
+                        qty: qty.val(),
                     };
                     subArray.push(mSub);
                 });
@@ -182,6 +239,51 @@
                     }
                 });
                 return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+            });
+        } function tijiao() {
+            $('#formitConfirmedCustoms').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                
+               
+                $("input[name='checkboxId']:checked").each(function () {
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var remark = $(this).closest("tr").find("td").eq(3).find("input:text");
+                    var manufacturer = $(this).closest("tr").find("td").eq(8).find("input:text");
+                    var batch = $(this).closest("tr").find("td").eq(14).find("input:text");
+                    var qty = $(this).closest("tr").find("td").eq(17).find("input:data");
+                    var mSub = {
+                        id: id.val(),
+                        remark: remark.val(),
+                        manufacturer: manufacturer.val(),
+                        batch: batch.val(),
+                        qty: qty.val(),
+                    };
+                    subArray.push(mSub);
+                });
+
+                var _url = "/admin/inspection/InspectionjhyList"
+                form.ajaxSubmit({
+                    type: 'get', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: {  "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('提交成功！');
+                            window.location.href = 'inspectionjhy';
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
+                    }
+                });
+
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+
+
             });
         }
     </script>

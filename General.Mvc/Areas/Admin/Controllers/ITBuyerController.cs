@@ -107,7 +107,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             RolePermissionViewModel model = new RolePermissionViewModel();
             var pageList = _scheduleService.searchList(arg, page, size, importid);
             var item = _importTrans_main_recordService.getById(importid);
-            if (pageList.Count > 0)
+            if (pageList.Count > 0&& item.F_ShippingModeGiven!=true)
             {
                 item.F_ShippingModeGiven = true;
 
@@ -123,12 +123,23 @@ namespace General.Mvc.Areas.Admin.Controllers
         [Function("订单数据导入明细表", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
         public IActionResult ITOrderBuyerIndex(string orderno, SysCustomizedListSearchArg arg, int page = 1, int size = 20)
         {
+            string  ida = orderno;
+            if (ida == null)
+            {
+                ida = HttpContext.Session.GetString("orderno");
+                
+            }
+            else
+            {
+                HttpContext.Session.SetString("orderno", orderno);
+                ida = orderno;
+            }
             RolePermissionViewModel model = new RolePermissionViewModel();
             var customizedList = _sysCustomizedListService.getByAccount("货币类型");
             ViewData["Companys"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-            var pageList = _sysOrderService.searchOrderD(arg, page, size, orderno);
+            var pageList = _sysOrderService.searchOrderD(arg, page, size, ida);
             ViewBag.Arg = arg;//传参数
-            var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderImportIndex", arg);
+            var dataSource = pageList.toDataSourceResult<Entities.Order, SysCustomizedListSearchArg>("itOrderBuyerIndex", arg);
             return View(dataSource);//sysImport
         }
         [Route("excelimportasj", Name = "excelimportasj")]
@@ -242,7 +253,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 18].Value = "单价";
                 worksheet.Cells[1, 19].Value = "总价";
                 worksheet.Cells[1, 20].Value = "发票号";
-                worksheet.Cells[1, 21].Value = "计划数量";
+                worksheet.Cells[1, 21].Value = "计划单位";
                 worksheet.Cells[1, 22].Value = "折算关系";
                 worksheet.Cells[1, 23].Value = "实际提/送货日期";
                 worksheet.Cells[1, 24].Value = "制造商";
@@ -312,7 +323,7 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (list[i].InvoiceNo != null)
                     { worksheet.Cells[i + 2, 20].Value = list[i].InvoiceNo.ToString(); }
                     if (list[i].PlanNo != null)
-                    { worksheet.Cells[i + 2, 21].Value = list[i].PlanNo.ToString(); }
+                    { worksheet.Cells[i + 2, 21].Value = list[i].PlanUnit.ToString(); }
                     if (list[i].Reduced != null)
                     { worksheet.Cells[i + 2, 22].Value = list[i].Reduced.ToString(); }
 
@@ -376,16 +387,17 @@ namespace General.Mvc.Areas.Admin.Controllers
                 worksheet.Cells[1, 18].Value = "总价";
                 worksheet.Cells[1, 19].Value = "发票号";
                 worksheet.Cells[1, 20].Value = "计划数量";
-                worksheet.Cells[1, 21].Value = "折算关系";
-                worksheet.Cells[1, 22].Value = "实际提/送货日期";
-                worksheet.Cells[1, 23].Value = "制造商";
-                worksheet.Cells[1, 24].Value = "原产国";
-                worksheet.Cells[1, 25].Value = "运单号";
-                worksheet.Cells[1, 26].Value = "账册号";
-                worksheet.Cells[1, 27].Value = "账册项号";
-                worksheet.Cells[1, 28].Value = "申报单位";
-                worksheet.Cells[1, 29].Value = "法定单位1";
-                worksheet.Cells[1, 30].Value = "法定单位2";
+                worksheet.Cells[1, 21].Value = "计划单位";
+                worksheet.Cells[1, 22].Value = "折算关系";
+                worksheet.Cells[1, 23].Value = "实际提/送货日期";
+                worksheet.Cells[1, 24].Value = "制造商";
+                worksheet.Cells[1, 25].Value = "原产国";
+                worksheet.Cells[1, 26].Value = "运单号";
+                worksheet.Cells[1, 27].Value = "账册号";
+                worksheet.Cells[1, 28].Value = "账册项号";
+                worksheet.Cells[1, 29].Value = "申报单位";
+                worksheet.Cells[1, 30].Value = "法定单位1";
+                worksheet.Cells[1, 31].Value = "法定单位2";
                 // xlSheet1.Range("A2:E2").Borders.LineStyle = 1
                 for (int a = 1; a <= 31; a++)
                 {
@@ -449,11 +461,12 @@ namespace General.Mvc.Areas.Admin.Controllers
                 int qualification = 0;//合格证号 
                 int planno = 0;//合格证号
                 int reduced = 0;//合格证号
-                int codeno = 0;
+                int planunit = 0;
+                int codeno = 0; 
                 for (int columns = 1; columns <= ColCount; columns++)
                 {
                     //Entities.Order model = new Entities.Order();
-                    if (worksheet.Cells[1, columns].Value == null) {
+                    if (worksheet.Cells[1, columns].Value != null) {
                     if (worksheet.Cells[1, columns].Value.ToString() == "供应商") { buyer = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "订单号") { orderno = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "订单行号") { orderline = columns; }
@@ -483,7 +496,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { qualification = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "发票号") { legalunitereducedprice = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "计划数量") { planno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "折算关系") { reduced = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "计划单位") { planunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "折算关系") { reduced = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "打码号") { codeno = columns; }
                     }
                 }
@@ -615,6 +629,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                         {
                             model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);//按法定单位折算单价
                         }
+                        if (planunit > 0 && worksheet.Cells[row, planunit].Value != null)
+                        {
+                            model.PlanUnit =worksheet.Cells[row, planunit].Value.ToString();//按法定单位折算单价
+                        }
                         model.Creator = WorkContext.CurrentUser.Id;
                         model.CreationTime = DateTime.Now;
                         _scheduleService.insertSchedule(model);
@@ -680,6 +698,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                 int planno = 0;//合格证号
                 int reduced = 0;//合格证号
                 int codeno = 0;
+                int planunit = 0;
+                
                 for (int columns = 1; columns <= ColCount; columns++)
                 {
                     //Entities.Order model = new Entities.Order();
@@ -714,7 +734,8 @@ namespace General.Mvc.Areas.Admin.Controllers
                     if (worksheet.Cells[1, columns].Value.ToString() == "包装规格") { qualification = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "发票号") { legalunitereducedprice = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "计划数量") { planno = columns; }
-                    if (worksheet.Cells[1, columns].Value.ToString() == "折算关系") { reduced = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "计划单位") { planunit = columns; }
+                        if (worksheet.Cells[1, columns].Value.ToString() == "折算关系") { reduced = columns; }
                     if (worksheet.Cells[1, columns].Value.ToString() == "打码号") { codeno = columns; }
                     }
                 }
@@ -850,7 +871,11 @@ namespace General.Mvc.Areas.Admin.Controllers
                         }
                         if (reduced > 0 && worksheet.Cells[row, reduced].Value != null)
                         {
-                            model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);//按法定单位折算单价
+                            model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);//按法定单位折算单价planunit
+                        }
+                        if (planunit > 0 && worksheet.Cells[row, planunit].Value != null)
+                        {
+                            model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();//按法定单位折算单价
                         }
                         model.Modifier = WorkContext.CurrentUser.Id;
                         model.ModifiedTime = DateTime.Now;
@@ -893,6 +918,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             record.OriginCountry = model.OriginCountry;
             record.Package = model.Package;
             record.PlanNo = model.PlanNo;
+            record.PlanUnit = model.PlanUnit;
             record.PurchaseQuantity = model.PurchaseQuantity;
             record.PurchaseUnit = model.PurchaseUnit;
             record.Qualification = model.Qualification;
@@ -953,26 +979,86 @@ namespace General.Mvc.Areas.Admin.Controllers
                 foreach (Entities.Schedule u in jsonlist)
                 {
                     var model = _scheduleService.getById(u.Id);
+                    if (u.PurchaseQuantity!="")
+                    {
+                        model.PurchaseQuantity = u.PurchaseQuantity;
+                    }
+                    if (u.UnitPrice != "")
+                    {
+                        model.UnitPrice = u.UnitPrice;
+                    }
+                    if (u.PurchaseUnit != "")
+                    {
+                        model.PurchaseUnit = u.PurchaseUnit;
+                    }
+                   
+                    
+                    if(u.TotalPrice== model.TotalPrice&& model.PurchaseQuantity != null&& model.PurchaseUnit != null) {
+                        model.TotalPrice =Convert.ToString(Convert.ToDouble(model.PurchaseQuantity) * Convert.ToDouble(model.UnitPrice));
+                    }
+                    else {
+                        model.TotalPrice = u.TotalPrice;
+                    }
+                    if (u.ShipmentDate != null)
+                    {
+                        model.ShipmentDate = u.ShipmentDate;
+                    }
+                   
+                    if (u.Manufacturers != "")
+                    {
 
-                    model.PurchaseQuantity = u.PurchaseQuantity;
-                    model.PurchaseUnit = u.PurchaseUnit;
-                    model.UnitPrice = u.UnitPrice;
-                    model.TotalPrice = u.TotalPrice;
-                    model.ShipmentDate = u.ShipmentDate;
-                    model.Consignor = u.Consignor;
-                    model.Manufacturers = u.Manufacturers;
-                    model.OriginCountry = u.OriginCountry;
-                    model.Books = u.Books;
-                    model.BooksItem = u.BooksItem;
-                    model.Waybill = u.Waybill;
-                    model.BatchNo = u.BatchNo;
-                    model.RecordUnit = u.RecordUnit;
-                    model.RecordUnitReducedPrice = u.RecordUnitReducedPrice;
-                    model.LegalUnits = u.LegalUnits;
-                    model.LegalUniteReducedPrice = u.LegalUniteReducedPrice;
-                    model.Qualification = u.Qualification;
-                    model.PlanNo = u.PlanNo;
-                    model.Reduced = u.Reduced;
+                        model.Manufacturers = u.Manufacturers;
+                    }
+                    if (u.OriginCountry != "")
+                    {
+                        model.OriginCountry = u.OriginCountry;
+                    }
+                    if (u.Books != "")
+                    {
+                        model.Books = u.Books;
+                    }
+                    if (u.BooksItem != "")
+                    {
+                         model.BooksItem = u.BooksItem;
+                    }
+                    if (u.Waybill != "")
+                    {
+                        model.Waybill = u.Waybill;
+                    }
+                    if (u.BatchNo != "")
+                    {
+                        model.BatchNo = u.BatchNo;
+                    }
+                    if (u.RecordUnit != "")
+                    {
+                        model.RecordUnit = u.RecordUnit;
+                    }
+                    if (u.RecordUnitReducedPrice != "")
+                    {
+                        model.RecordUnitReducedPrice = u.RecordUnitReducedPrice;
+                    }
+                    if (u.LegalUnits != "")
+                    {
+                        model.LegalUnits = u.LegalUnits;
+                    }
+                    if (u.LegalUniteReducedPrice != "")
+                    {
+                        model.LegalUniteReducedPrice = u.LegalUniteReducedPrice;
+                    }
+                    if (u.Qualification != "")
+                    {
+                        model.Qualification = u.Qualification;
+                    }
+                    if (u.PlanUnit != "")
+                    {
+                        model.PlanUnit = u.PlanUnit;
+                    }
+                    if (u.Reduced != 0)
+                    {
+                        model.Reduced = u.Reduced;
+                    }
+                    
+
                     if (model.PlanNo > 0 && model.Reduced > 0)
                     {
                         double number = Convert.ToDouble(model.Reduced * model.PlanNo);
@@ -1288,7 +1374,10 @@ namespace General.Mvc.Areas.Admin.Controllers
                     model.Length = item.Length;
                     model.Width = item.Width;
                     model.Package = item.Package;
-                    //model.PlanNo = item.PlanUnit;
+                    model.PartNo = item.PartNo;
+                    model.PurchaseQuantity = item.Qty;
+                    model.PurchaseUnit = item.Unit;
+                    model.PlanUnit = item.PlanUnit;
                     var itema = _sysOrderMainService.getById(item.MainId);
                     model.Consignor = itema.SupplierName;
                     model.CodeNo = itema.CodeNo;
@@ -1332,25 +1421,7 @@ namespace General.Mvc.Areas.Admin.Controllers
             }
             return View();
         }
-        //[HttpGet]
-        //[Route("editce", Name = "editBuyerce")]
-        //[Function("编辑发运条目", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITBuyerController.ITBuyerIndex")]
-        //public IActionResult EditBuyerce(int? id, string returnUrl = null)
-        //{
-        //    ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itBuyer");
-        //    var customizedList = _sysCustomizedListService.getByAccount("货币类型");
-        //    ViewData["Invcurrlist"] = new SelectList(customizedList, "CustomizedValue", "CustomizedValue");
-        //    ViewBag.Itemo = "1234";
-        //    if (id != null)
-        //    {
-        //        var model = _scheduleService.getById(id.Value);
-
-        //        if (model == null)
-        //            return Redirect(ViewBag.ReturnUrl);
-        //        return View(model);
-        //    }
-        //    return View();
-        //}
+        
         [HttpPost]
         [Route("edit")]
         public ActionResult EditBuyer(Entities.ImportTrans_main_record model, string returnUrl = null)

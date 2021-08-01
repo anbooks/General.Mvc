@@ -22,7 +22,8 @@ namespace General.Entities
         public string Specification { get; set; }//规范
         public string Thickness { get; set; }//厚度
         public string Length { get; set; }//长
-        public string Width { get; set; }//宽
+        public string Width { get; set; }//宽  
+        public string PartNo { get; set; }//宽
         public string PurchaseQuantity { get; set; }//采购数量
         public string PurchaseUnit { get; set; }//采购单位
         public string UnitPrice { get; set; }//单价
@@ -46,6 +47,8 @@ namespace General.Entities
         public double? Reduced { get; set; }//折算关系
         public string ReducedNo { get; set; }//折算数量
         public string InvoiceNo { get; set; }//发票号
+        public string PlanUnit { get; set; }
+        
         public int MainId { get; set; }
         public Guid Creator { get; set; }
 
@@ -55,6 +58,6 @@ namespace General.Entities
 
          public DateTime? ModifiedTime { get; set; }
          public bool IsDeleted { get; set; }
-       
+        public bool Sjflag { get; set; }
     }
 }

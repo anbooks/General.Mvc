@@ -28,6 +28,7 @@ namespace General.Entities
         public int? flag { get; set; }
         public DateTime? CreationTime { get; set; }//JhTime
         public DateTime? JhTime { get; set; }
+        public int FytmId { get; set; }
         public virtual ICollection<Inspection> inspecationMain { get; set; }
     }
 }

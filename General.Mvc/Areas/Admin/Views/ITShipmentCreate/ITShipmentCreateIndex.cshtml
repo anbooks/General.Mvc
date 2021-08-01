@@ -40,6 +40,7 @@
                         <input type="text" class="form-control" name="pono" style="width:100px;" value="@Model.Paging.RouteArg.pono" placeholder="订单号" />
                         <input type="text" class="form-control" name="keyword" style="width:100px;" value="@Model.Paging.RouteArg.keyword" placeholder="运输代理" />
                         <input type="text" class="form-control" name="buy" style="width:100px;" value="@Model.Paging.RouteArg.buy" placeholder="采购员" />
+                        <input type="text" class="form-control" name="waybill" style="width:100px;" value="@Model.Paging.RouteArg.waybill" placeholder="运单号" />
                         @if (@Model.Paging.RouteArg.realreceivingdatestrat != null)
                         {
                             <label>实际到货日期</label><input type="date" class="form-control" name="realreceivingdatestrat" style="width:120px;" value="@Model.Paging.RouteArg.realreceivingdatestrat.ToString("yyyy-MM-dd")" placeholder="" />
@@ -58,9 +59,9 @@
             </div>
         </div>
     </div>
-    <form asp-route="itShipmentCreate" method="post" id="formitShipmentCreate" class="form-horizontal" onsubmit="return false;">
+    <form asp-route="itShipmentCreate" method="post" id="formitShipmentCreate" class="form-horizontal " onsubmit="return false;">
         <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
-            <div class="form-group">
+            <div class="form-group ">
                 @if (Model != null)
                 {
                     <table id="user_datatable" style="table-layout:fixed;margin-left:20px;" class="table table-striped table-bordered table-hover dataTable no-footer">
@@ -70,7 +71,9 @@
                                 @if (ViewBag.QX == "管理员")
                                 {
                                     <th style="width:80px"></th>}
-
+                                @if (ViewBag.QX == "采购员")
+                                {
+                                    <th style="width:120px"></th>}
                                 <th style="width:100px">编号</th>
                                 <th style="width:100px">运输代理</th>
                                 <th style="width:100px">供应商名称</th>
@@ -89,13 +92,13 @@
                                 <th style="width:100px">航班号/船名</th>
                                 <th style="width:100px">起运港</th>
                                 <th style="width:100px">目的港</th>
-                                <th style="width:100px">主单号</th>
+                                <th style="width:120px">主单号</th>
                                 <th style="width:100px">分单号</th>
                                 <th style="width:100px">计费重量</th>
                                 <th style="width:100px">实际发运日期</th>
                                 <th style="width:100px">实际到港日期</th>
                                 <th style="width:100px">（口岸）报关行</th>
-                                <th style="width:100px">核注清单号</th>
+                                <th style="width:150px">核注清单号</th>
                                 <th style="width:100px">提单日期</th>
                                 <th style="width:100px">申报日期</th>
                                 <th style="width:100px">放行日期</th>
@@ -103,11 +106,12 @@
                                 <th style="width:100px">报检单号</th>
                                 <th style="width:100px">生成二检明细</th>
                                 <th style="width:100px">要求送货日期</th>
-                                <th style="width:100px">选择自行送货或外部提货</th>
+                                <th style="width:150px">选择自行送货或外部提货</th>
                                 <th style="width:100px">实际提/送货日期</th>
                                 <th style="width:100px">是否核放</th>
+                                <th style="width:100px">核放日期</th>
                                 <th style="width:100px">是否已生成报检单</th>
-                                
+
                             </tr>
                         </thead>
                         <tbody>
@@ -115,7 +119,7 @@
                             @foreach (var item in Model.Data)
                             {
                             <tr>
-                                @if (item.CheckAndPass == null)
+                                @if (item.CheckAndPass != "是")
                                 {
                                     <td style="width:80px;color:red;font-size:20px">   ★</td>
                                 }
@@ -127,7 +131,31 @@
                                     <td>
                                         <a href="@Url.RouteUrl("itShipmentDelete", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete" onclick="javascript:return confirm('您确定删除这条记录吗！')"><i class="fa fa-bolt"></i>删除</a>
                                     </td>
-                                }
+                                }@if (ViewBag.QX == "采购员")
+                                {
+                                    @if (@item.F_ShippingModeGiven != true)
+                                    {
+                                        <td>
+
+                                            <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-danger btnDelete">明细</a>
+                                            @if (@item.InventoryAttachment != null || (@item.HblAttachment != null && @item.HblAttachment != "") || (@item.MblAttachment != null && @item.MblAttachment != ""))
+                                            {
+
+                                                <a href="@Url.RouteUrl("BuyerAttachment", new { id = item.Id })" class="btn btn-xs btn-info">单据</a>
+                                            }
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td>
+
+                                            <a href="@Url.RouteUrl("itBuyerSchedule", new { id = item.Id })" class="btn btn-xs btn-pink">明细</a>
+                                            @if (@item.InventoryAttachment != null || (@item.HblAttachment != null && @item.HblAttachment != "") || (@item.MblAttachment != null && @item.MblAttachment != ""))
+                                            {
+                                                <a href="@Url.RouteUrl("BuyerAttachment", new { id = item.Id })" class="btn btn-xs btn-info">单据</a>
+                                            }
+                                        </td>
+                                    }}
                                 <td style="width:80px">@item.Id</td>
                                 <td style="width:80px">@item.Transportation</td>
                                 <td style="width:80px">@item.Shipper</td>
@@ -223,8 +251,16 @@
                                 {
                                     <td style="width:90px">@item.ActualDeliveryDate</td>
                                 }
-                             
+
                                 <td style="width:80px">@item.CheckAndPass</td>
+                                @if (item.CheckPassTime != null)
+                                {
+                                    <td style="width:90px">@item.CheckPassTime.Value.ToString("yyyy-MM-dd")</td>
+                                }
+                                else
+                                {
+                                    <td style="width:90px">@item.CheckPassTime</td>
+                                }
                                 <td style="width:80px">@item.Declaration</td>
 
                             </tr>
@@ -238,7 +274,28 @@
         </div>
        
     </form>
+    <style>
+        .table{
+            width:100%;
+            max-width:100%;
+        }
+        .table>thead>tr>th {
+            white-space: nowrap;
+           padding: 8px;
+           line-height:1.42857143
+        }
+        .table-cont {
+            max-height:800px;
+            overflow:auto;
+           
+            margin:20px 10px;
+            border:1px solid #ddd;
+            width: 100%;
+            max-width: 100%;
+        }
+    </style>
     <script>
+       
         $(function () {
             $('#formitShipmentCreate').submit(function () {
                 var form = $(this);

@@ -255,9 +255,632 @@ namespace General.Mvc.Areas.Admin.Controllers
             return File("\\Files\\importfile\\" + sFileName, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", sFileName);
         }
         [HttpPost]
+        [Route("editorder", Name = "editorder")]
+        [Function("采购订单重传", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
+        public ActionResult ImportOrder( IFormFile excelfile, IFormFile excelfilecr, string returnUrl = null)
+        {
+            ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportIndex");
+            string s;
+            Request.Cookies.TryGetValue("Order", out s);
+            int ida = Convert.ToInt32(s);
+            string submit = Request.Form["submit"];
+
+          
+            if (submit == "订单明细重传")
+            {
+                if (excelfile == null)
+                {
+                    Response.WriteAsync("<script>alert('未添加导入模板!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                    return Redirect(ViewBag.ReturnUrl);
+                }
+                string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                try
+                {
+                    var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+                    string sFileName = Guid.NewGuid().ToString() + excelfile.FileName;
+                    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                    {
+                        excelfile.CopyTo(fs);
+                        fs.Flush();
+                    }
+                    using (ExcelPackage package = new ExcelPackage(file))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                        int rowCount = worksheet.Dimension.Rows;
+                        int ColCount = worksheet.Dimension.Columns;
+                        int materialno = 0; int partno = 0; int technical = 0; int item = 0; int lineitem = 0;
+                        int width = 0; int name = 0; int size = 0;
+                        int length = 0; int orderno = 0; int orderunit = 0; int packages = 0; int currency = 0; int unitprice = 0;
+                        int totamount = 0; int deliverydate = 0; int manufacturer = 0; int origin = 0; int planunit = 0; int reduced = 0;
+                        for (int columns = 1; columns <= ColCount; columns++)
+                        {
+                            //Entities.Order model = new Entities.Order();
+                            if (worksheet.Cells[1, columns].Value != null)
+                            {
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("订单行号")) { item = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("索引号")) { lineitem = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("物料代码")) { materialno = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("名称")) { name = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("牌号")) { partno = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("规范")) { technical = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("规格")) { size = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("宽")) { width = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("长")) { length = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("包装规格")) { packages = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("订单数量")) { orderno = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("订单单位")) { orderunit = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("币种")) { currency = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("单价")) { unitprice = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("总价")) { totamount = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("交货日期")) { deliverydate = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("制造商")) { manufacturer = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("原产国")) { origin = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("计划单位")) { planunit = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("折算关系")) { reduced = columns; }
+                            }
+                        }
+                        var oder = _sysOrderService.getMain(ida);
+                        foreach (Order u in oder)
+                        {
+                            var odera = _sysOrderService.getById(u.Id);
+                            odera.IsDeleted = true;
+                            _sysOrderService.updateOrder(odera);
+                        }
+                        var main = _sysOrderMainService.getById(ida);
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+                            try
+                            {
+                                if (lineitem > 0)
+                                {
+                                    if (worksheet.Cells[row, lineitem].Value == null)
+                                    {
+
+                                        Response.WriteAsync("<script>alert('excel第'" + row + "'行数据，索引号不能为空!');window.location.href ='editITOrderImportMain'</script>", Encoding.GetEncoding("GB2312"));
+                                    }
+
+                                }
+                                int a = 0;
+                                Entities.Order model = new Entities.Order();
+                                model.MainId = main.Id;
+                                model.OrderNo = main.OrderNo;
+                                model.OrderConfirmDate = main.OrderConfirmDate;
+                                model.OrderSigner = main.OrderSigner;
+                                model.SignerCard = main.SignerCard;
+                                model.SupplierCode = main.SupplierCode;
+                                model.SupplierName = main.SupplierName;
+                                model.TradeTerms = main.TradeTerms;
+                                model.Transport = main.Transport;
+                                //var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
+                                model.Project = main.Project;
+                                //var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
+                                model.MaterialCategory = main.MaterialCategory;
+                                if (item > 0 && worksheet.Cells[row, item].Value != null)
+                                {
+                                    model.Item = worksheet.Cells[row, item].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (materialno > 0 && worksheet.Cells[row, materialno].Value != null)
+                                {
+                                    model.MaterialCode = worksheet.Cells[row, materialno].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (name > 0 && worksheet.Cells[row, name].Value != null)
+                                {
+                                    model.Name = worksheet.Cells[row, name].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (lineitem > 0 && worksheet.Cells[row, lineitem].Value != null)
+                                {
+                                    model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (technical > 0 && worksheet.Cells[row, technical].Value != null)
+                                {
+                                    model.Specification = worksheet.Cells[row, technical].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (width > 0 && worksheet.Cells[row, width].Value != null)
+                                {
+                                    model.Width = worksheet.Cells[row, width].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (size > 0 && worksheet.Cells[row, size].Value != null)
+                                {
+                                    model.Size = worksheet.Cells[row, size].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (length > 0 && worksheet.Cells[row, length].Value != null)
+                                {
+                                    model.Length = worksheet.Cells[row, length].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (packages > 0 && worksheet.Cells[row, packages].Value != null)
+                                {
+                                    model.Package = worksheet.Cells[row, packages].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                try
+                                {
+                                    int number = Convert.ToInt32(worksheet.Cells[row, orderno].Value);
+                                    if (orderno > 0 && worksheet.Cells[row, orderno].Value != null)
+                                    {
+                                        model.Qty = worksheet.Cells[row, orderno].Value.ToString();
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
+                                }
+                                catch
+                                {
+
+                                    Response.WriteAsync("<script>alert('采购数量填写错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+
+                                if (orderunit > 0 && worksheet.Cells[row, orderunit].Value != null)
+                                {
+                                    model.Unit = worksheet.Cells[row, orderunit].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (unitprice > 0 && worksheet.Cells[row, unitprice].Value != null)
+                                {
+                                    model.UnitPrice = worksheet.Cells[row, unitprice].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (totamount > 0 && worksheet.Cells[row, totamount].Value != null)
+                                {
+                                    model.TotalPrice = worksheet.Cells[row, totamount].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (currency > 0 && worksheet.Cells[row, currency].Value != null)
+                                {
+                                    model.Currency = worksheet.Cells[row, currency].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                try
+                                {
+                                    if (deliverydate > 0 && worksheet.Cells[row, deliverydate].Value != null)
+                                    {
+                                        model.LeadTime = Convert.ToDateTime(worksheet.Cells[row, deliverydate].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
+                                }
+                                catch
+                                {
+
+                                    Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+
+                                if (manufacturer > 0 && worksheet.Cells[row, manufacturer].Value != null)
+                                {
+                                    model.Manufacturer = worksheet.Cells[row, manufacturer].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (origin > 0 && worksheet.Cells[row, origin].Value != null)
+                                {
+                                    model.Origin = worksheet.Cells[row, origin].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (partno > 0 && worksheet.Cells[row, partno].Value != null)
+                                {
+                                    model.PartNo = worksheet.Cells[row, partno].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (planunit > 0 && worksheet.Cells[row, planunit].Value != null)
+                                {
+                                    model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                try
+                                {
+                                    if (reduced > 0 && worksheet.Cells[row, reduced].Value != null)
+                                    {
+                                        model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
+                                }
+                                catch
+                                {
+
+                                    Response.WriteAsync("<script>alert('折算关系填写错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+
+                                model.CreationTime = DateTime.Now;
+                                model.Creator = WorkContext.CurrentUser.Id;
+                                if (a != 20)
+                                {
+                                    _sysOrderService.insertOrder(model);
+                                }
+
+                            }
+                            catch (Exception e)
+                            {
+                                if (e.Message == "String was not recognized as a valid DateTime.")
+                                {
+                                    Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+                                if (e.Message == "Input string was not in a correct format.")
+                                {
+                                    Response.WriteAsync("<script>alert('计划单位或折算关系错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    Response.WriteAsync("<script>alert('请将文件名中的空格或特殊字符去掉!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                }
+            }
+            else if (submit == "订单明细插入")
+            {
+                if (excelfile == null)
+                {
+                    Response.WriteAsync("<script>alert('未添加导入模板!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                    return Redirect(ViewBag.ReturnUrl);
+                }
+                string sWebRootFolder = _hostingEnvironment.WebRootPath;
+                try
+                {
+                    var fileProfile = sWebRootFolder + "\\Files\\importfile\\";
+                    string sFileName = Guid.NewGuid().ToString() + excelfile.FileName;
+                    FileInfo file = new FileInfo(Path.Combine(fileProfile, sFileName));
+                    using (FileStream fs = new FileStream(file.ToString(), FileMode.Create))
+                    {
+                        excelfile.CopyTo(fs);
+                        fs.Flush();
+                    }
+                    using (ExcelPackage package = new ExcelPackage(file))
+                    {
+                        StringBuilder sb = new StringBuilder();
+                        ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                        int rowCount = worksheet.Dimension.Rows;
+                        int ColCount = worksheet.Dimension.Columns;
+                        int materialno = 0; int partno = 0; int technical = 0; int item = 0; int lineitem = 0;
+                        int width = 0; int name = 0; int size = 0;
+                        int length = 0; int orderno = 0; int orderunit = 0; int packages = 0; int currency = 0; int unitprice = 0;
+                        int totamount = 0; int deliverydate = 0; int manufacturer = 0; int origin = 0; int planunit = 0; int reduced = 0;
+                        for (int columns = 1; columns <= ColCount; columns++)
+                        {
+                            //Entities.Order model = new Entities.Order();
+                            if (worksheet.Cells[1, columns].Value != null)
+                            {
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("订单行号")) { item = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("索引号")) { lineitem = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("物料代码")) { materialno = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("名称")) { name = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("牌号")) { partno = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("规范")) { technical = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("规格")) { size = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("宽")) { width = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("长")) { length = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("包装规格")) { packages = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("订单数量")) { orderno = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("订单单位")) { orderunit = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("币种")) { currency = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("单价")) { unitprice = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("总价")) { totamount = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("交货日期")) { deliverydate = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("制造商")) { manufacturer = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("原产国")) { origin = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("计划单位")) { planunit = columns; }
+                                if (worksheet.Cells[1, columns].Value.ToString().Contains("折算关系")) { reduced = columns; }
+                            }
+                        }
+                       
+                        var main = _sysOrderMainService.getById(ida);
+                        for (int row = 2; row <= rowCount; row++)
+                        {
+                            try
+                            {
+                                if (lineitem > 0)
+                                {
+                                    if (worksheet.Cells[row, lineitem].Value == null)
+                                    {
+
+                                        Response.WriteAsync("<script>alert('excel第'" + row + "'行数据，索引号不能为空!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                    }
+
+                                }
+                                int a = 0;
+                                Entities.Order model = new Entities.Order();
+                                model.MainId = main.Id;
+                                model.OrderNo = main.OrderNo;
+                                model.OrderConfirmDate = main.OrderConfirmDate;
+                                model.OrderSigner = main.OrderSigner;
+                                model.SignerCard = main.SignerCard;
+                                model.SupplierCode = main.SupplierCode;
+                                model.SupplierName = main.SupplierName;
+                                model.TradeTerms = main.TradeTerms;
+                                model.Transport = main.Transport;
+                                //var modelproject = _sysProjectService.getByAccount(modelplan.OrderNo.Substring(0, 1));
+                                model.Project = main.Project;
+                                //var modelMaterial = _sysMaterialService.getByAccount(modelplan.OrderNo.Substring(3, 1));
+                                model.MaterialCategory = main.MaterialCategory;
+                                if (item > 0 && worksheet.Cells[row, item].Value != null)
+                                {
+                                    model.Item = worksheet.Cells[row, item].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (materialno > 0 && worksheet.Cells[row, materialno].Value != null)
+                                {
+                                    model.MaterialCode = worksheet.Cells[row, materialno].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (name > 0 && worksheet.Cells[row, name].Value != null)
+                                {
+                                    model.Name = worksheet.Cells[row, name].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (lineitem > 0 && worksheet.Cells[row, lineitem].Value != null)
+                                {
+                                    model.PlanItem = worksheet.Cells[row, lineitem].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (technical > 0 && worksheet.Cells[row, technical].Value != null)
+                                {
+                                    model.Specification = worksheet.Cells[row, technical].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (width > 0 && worksheet.Cells[row, width].Value != null)
+                                {
+                                    model.Width = worksheet.Cells[row, width].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (size > 0 && worksheet.Cells[row, size].Value != null)
+                                {
+                                    model.Size = worksheet.Cells[row, size].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (length > 0 && worksheet.Cells[row, length].Value != null)
+                                {
+                                    model.Length = worksheet.Cells[row, length].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (packages > 0 && worksheet.Cells[row, packages].Value != null)
+                                {
+                                    model.Package = worksheet.Cells[row, packages].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                try
+                                {
+                                    int number = Convert.ToInt32(worksheet.Cells[row, orderno].Value);
+                                    if (orderno > 0 && worksheet.Cells[row, orderno].Value != null)
+                                    {
+                                        model.Qty = worksheet.Cells[row, orderno].Value.ToString();
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
+                                }
+                                catch
+                                {
+
+                                    Response.WriteAsync("<script>alert('采购数量填写错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+
+                                if (orderunit > 0 && worksheet.Cells[row, orderunit].Value != null)
+                                {
+                                    model.Unit = worksheet.Cells[row, orderunit].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (unitprice > 0 && worksheet.Cells[row, unitprice].Value != null)
+                                {
+                                    model.UnitPrice = worksheet.Cells[row, unitprice].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (totamount > 0 && worksheet.Cells[row, totamount].Value != null)
+                                {
+                                    model.TotalPrice = worksheet.Cells[row, totamount].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (currency > 0 && worksheet.Cells[row, currency].Value != null)
+                                {
+                                    model.Currency = worksheet.Cells[row, currency].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                try
+                                {
+                                    if (deliverydate > 0 && worksheet.Cells[row, deliverydate].Value != null)
+                                    {
+                                        model.LeadTime = Convert.ToDateTime(worksheet.Cells[row, deliverydate].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
+                                }
+                                catch
+                                {
+
+                                    Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+
+                                if (manufacturer > 0 && worksheet.Cells[row, manufacturer].Value != null)
+                                {
+                                    model.Manufacturer = worksheet.Cells[row, manufacturer].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (origin > 0 && worksheet.Cells[row, origin].Value != null)
+                                {
+                                    model.Origin = worksheet.Cells[row, origin].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (partno > 0 && worksheet.Cells[row, partno].Value != null)
+                                {
+                                    model.PartNo = worksheet.Cells[row, partno].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                if (planunit > 0 && worksheet.Cells[row, planunit].Value != null)
+                                {
+                                    model.PlanUnit = worksheet.Cells[row, planunit].Value.ToString();
+                                }
+                                else
+                                {
+                                    a = a + 1;
+                                }
+                                try
+                                {
+                                    if (reduced > 0 && worksheet.Cells[row, reduced].Value != null)
+                                    {
+                                        model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
+                                }
+                                catch
+                                {
+
+                                    Response.WriteAsync("<script>alert('折算关系填写错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+
+                                model.CreationTime = DateTime.Now;
+                                model.Creator = WorkContext.CurrentUser.Id;
+                                if (a != 20)
+                                {
+                                    _sysOrderService.insertOrder(model);
+                                }
+
+                            }
+                            catch (Exception e)
+                            {
+                                if (e.Message == "String was not recognized as a valid DateTime.")
+                                {
+                                    Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+                                if (e.Message == "Input string was not in a correct format.")
+                                {
+                                    Response.WriteAsync("<script>alert('计划单位或折算关系错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                }
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    Response.WriteAsync("<script>alert('请将文件名中的空格或特殊字符去掉!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                }
+            }
+               
+            
+           
+            return Redirect(ViewBag.ReturnUrl);
+        }
+        [HttpPost]
         [Route("edit", Name = "importexcelorder")]
         [Function("采购订单修改、批量导入", false, FatherResource = "General.Mvc.Areas.Admin.Controllers.ITOrderImportController.ITOrderImportMainIndex")]
-        public ActionResult Import(Entities.OrderMain modelplan, IFormFile excelfile, string excelbh, string returnUrl = null)
+        public ActionResult Import(Entities.OrderMain modelplan, IFormFile excelfile, string returnUrl = null)
         {
             ViewBag.ReturnUrl = Url.IsLocalUrl(returnUrl) ? returnUrl : Url.RouteUrl("itOrderImportMainIndex");
             if (modelplan.Id.Equals(0))
@@ -350,6 +973,18 @@ namespace General.Mvc.Areas.Admin.Controllers
                         {
                             try
                             {
+                                if (lineitem > 0 )
+                                {
+                                    if (worksheet.Cells[row, lineitem].Value == null)
+                                    {
+                                        main.IsDeleted = true;
+                                        _sysOrderMainService.updateOrderMain(main);
+                                        string num = Convert.ToString(row);
+                                        //Response.WriteAsync("<script>alert('excel第'" + num + "'行数据，索引号不能为空!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                        Response.WriteAsync("<script>alert('索引号不能为空!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
+                                    }
+
+                                }
                                 int a = 0;
                                 Entities.Order model = new Entities.Order();
                                 model.MainId = main.Id;
@@ -437,14 +1072,25 @@ namespace General.Mvc.Areas.Admin.Controllers
                                 {
                                     a = a + 1;
                                 }
-                                if (orderno > 0 && worksheet.Cells[row, orderno].Value != null)
+                                try
                                 {
-                                    model.Qty = worksheet.Cells[row, orderno].Value.ToString();
+                                    int number=  Convert.ToInt32(worksheet.Cells[row, orderno].Value);
+                                    if (orderno > 0 && worksheet.Cells[row, orderno].Value != null)
+                                    {
+                                        model.Qty = worksheet.Cells[row, orderno].Value.ToString();
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
                                 }
-                                else
+                                catch
                                 {
-                                    a = a + 1;
+                                    main.IsDeleted = true;
+                                    _sysOrderMainService.updateOrderMain(main);
+                                    Response.WriteAsync("<script>alert('采购数量填写错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                                 }
+                               
                                 if (orderunit > 0 && worksheet.Cells[row, orderunit].Value != null)
                                 {
                                     model.Unit = worksheet.Cells[row, orderunit].Value.ToString();
@@ -477,14 +1123,24 @@ namespace General.Mvc.Areas.Admin.Controllers
                                 {
                                     a = a + 1;
                                 }
-                                if (deliverydate > 0 && worksheet.Cells[row, deliverydate].Value != null)
+                                try
                                 {
-                                    model.LeadTime = Convert.ToDateTime(worksheet.Cells[row, deliverydate].Value.ToString());
+                                    if (deliverydate > 0 && worksheet.Cells[row, deliverydate].Value != null)
+                                    {
+                                        model.LeadTime = Convert.ToDateTime(worksheet.Cells[row, deliverydate].Value.ToString());
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
                                 }
-                                else
+                                catch
                                 {
-                                    a = a + 1;
+                                    main.IsDeleted = true;
+                                    _sysOrderMainService.updateOrderMain(main);
+                                    Response.WriteAsync("<script>alert('日期格式错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                                 }
+                                
                                 if (manufacturer > 0 && worksheet.Cells[row, manufacturer].Value != null)
                                 {
                                     model.Manufacturer = worksheet.Cells[row, manufacturer].Value.ToString();
@@ -517,14 +1173,24 @@ namespace General.Mvc.Areas.Admin.Controllers
                                 {
                                     a = a + 1;
                                 }
-                                if (reduced > 0 && worksheet.Cells[row, reduced].Value != null)
+                                try
                                 {
-                                    model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);
+                                    if (reduced > 0 && worksheet.Cells[row, reduced].Value != null)
+                                    {
+                                        model.Reduced = Convert.ToDouble(worksheet.Cells[row, reduced].Value);
+                                    }
+                                    else
+                                    {
+                                        a = a + 1;
+                                    }
                                 }
-                                else
+                                catch
                                 {
-                                    a = a + 1;
+                                    main.IsDeleted = true;
+                                    _sysOrderMainService.updateOrderMain(main);
+                                    Response.WriteAsync("<script>alert('折算关系错误!');window.location.href ='edit'</script>", Encoding.GetEncoding("GB2312"));
                                 }
+                                model.IsDeleted = false;
                                 model.CreationTime = DateTime.Now;
                                 model.Creator = WorkContext.CurrentUser.Id;
                                 if (a!=20)

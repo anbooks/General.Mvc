@@ -108,9 +108,17 @@
                         <tr>
                             <td>
                                 <input type="hidden" name="hidden" value="@item.Id" />
-                                <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                @if (item.Sjflag == true)
+                                {
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" disabled/>
+                                }
+                                else
+                                {
+                                    <input type="checkbox" name="checkboxId" value="@item.Id" />
+                                }
+
                             </td>
-                         
+
                             <td>
                                 @item.Consignor
                             </td>
@@ -121,23 +129,23 @@
                             <td>@item.MaterialCode</td>
                             <td> </td>
                             <td>@item.Description</td>
-                            <td>@item.Type</td>
+                            <td>@item.PartNo</td>
                             <td>@item.Specification</td>
                             <td>@item.Thickness</td>
                             <td>@item.Length</td>
                             <td>@item.Width</td>
                             <td>
-                               @item.BatchNo
+                                @item.BatchNo
                             </td>
                             <td>
                                 @item.Package
                             </td>
                             <td>
-                             @item.PurchaseQuantity
+                                @item.PurchaseQuantity
                             </td>
 
                             <td>
-                              @item.PurchaseUnit
+                                @item.PurchaseUnit
                             </td>
 
                             <td>
@@ -159,12 +167,15 @@
                             <td>
                                 @item.ReducedNo
                             </td>
-                            
-                                <td>
-                                    @item.ShipmentDate
-                                </td>
-
-
+                            @if (@item.ShipmentDate != null)
+                            {
+                                <td>@item.ShipmentDate.Value.ToString("yyyy-MM-dd")</td>
+                            }
+                            else
+                            {
+                                <td>@item.ShipmentDate</td>
+                            }
+                           
                             <td>
                                 @item.Manufacturers
                             </td>
@@ -173,15 +184,15 @@
                             </td>
 
                             <td>
-                               @item.Waybill
+                                @item.Waybill
                             </td>
 
                             <td>
-                               @item.Books
+                                @item.Books
                             </td>
 
                             <td>
-                               @item.BooksItem
+                                @item.BooksItem
                             </td>
 
                             <td>
@@ -193,7 +204,7 @@
                             </td>
 
                             <td>
-                               @item.LegalUnits
+                                @item.LegalUnits
                             </td>
 
                         </tr>

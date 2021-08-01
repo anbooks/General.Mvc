@@ -343,6 +343,15 @@
     <Content Update="Areas\Admin\Views\CCPaymentInvoice\InvoiceSchIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
+    <Content Update="Areas\Admin\Views\InspectionBg\InspectionBgAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionBg\InspectionBgIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\InspectionBg\InspectionBgSchIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Areas\Admin\Views\InspectionJyy\EditInspectionjyy.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
@@ -371,6 +380,9 @@
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\Inspection\InspectionAttachmentIndex.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Areas\Admin\Views\Inspection\InspectionSchBIndex.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Areas\Admin\Views\ITBuyer\ITBuyerAttachmentIndex.cshtml">
@@ -528,6 +540,6 @@
     </Content>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JSONSchema="" appsettings_1json__JSONSchema="http://json.schemastore.org/ansible-stable-2.9" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties bundleconfig_1json__JSONSchema="" appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

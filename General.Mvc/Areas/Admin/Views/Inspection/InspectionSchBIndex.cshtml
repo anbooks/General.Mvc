@@ -1,0 +1,233 @@
+﻿@using General.Framework.Menu
+@using General.Framework.Datatable
+@using General.Entities
+@model DataSourceResult<Inspection, SysCustomizedListSearchArg>
+@{
+    ViewData["Title"] = "送检单查看";
+}
+<div class="breadcrumbs" id="breadcrumbs">
+    <ul class="breadcrumb">
+        <li>
+            <i class="ace-icon fa fa-home home-icon"></i>
+            <a href="@Url.RouteUrl("mainIndex")">首页</a>
+        </li>
+        <li>
+            <a href="">送检审批</a>
+        </li>
+        <li class="active">送检单查看</li>
+    </ul>
+</div>
+<div class="page-content">
+    <div class="page-header">
+        <h1>
+            @ViewData["Title"]
+        </h1>
+    </div>
+    <div class="space-2"></div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <form asp-route="inspectionschb" method="get" class="form-inline">
+                        <label>关键字</label>
+                        <input type="text" class="form-control" name="itemno" style="width:180px;" value="@Model.Paging.RouteArg.itemno" placeholder="订单号" />
+                        <input type="text" class="form-control" name="shipper" style="width:180px;" value="@Model.Paging.RouteArg.shipper" placeholder="质量编号" />
+                        <input type="text" class="form-control" name="pono" style="width:180px;" value="@Model.Paging.RouteArg.pono" placeholder="物料代码" />
+                        <button type="submit" class="btn btn-purple btn-sm">
+                            查询
+                            <i class="ace-icon fa fa-search icon-on-right bigger-110"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form asp-route="inspectionschb" method="post" id="formitConfirmedCustoms" class="form-horizontal" onsubmit="return false;">
+
+        <div id='hello' style="z-index: 102; left: 240px; overflow: auto; width: 1670px;">
+            <div class="form-group">
+                @if (Model != null)
+                {
+                    <table id="user_datatable" class="table table-striped table-bordered table-hover dataTable no-footer" style="margin-left:20px;">
+                        <thead>
+                            <tr>
+
+                                <th width="80px">送检单号</th>
+                                <th width="80px">订单号</th>
+                                <th width="80px">订单行号</th>
+                                <th width="80px">项目</th>
+                                <th width="80px">备注</th>
+                                <th width="80px">供应商</th>
+                                <th width="80px">制造商</th>
+                                <th width="80px">合格证号</th>
+                                <th width="80px">材料名称</th>
+                                <th width="80px">物料代码</th>
+                                <th width="80px">牌号/图号</th>
+                                <th width="80px">规格</th>
+                                <th width="80px">质量编号</th>
+                                <th width="80px">入厂日期</th>
+                                <th width="80px">材料规范</th>
+                                <th width="80px">采购数量</th>
+                                <th width="80px">实收数量</th>
+                                <th width="80px">保管员</th>
+                                <th width="80px">实收时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model.Data)
+                            {
+                            <tr>
+
+                                <td>
+                                    @item.Main.InspecationMainId
+                                </td>
+                                <td>
+                                    @item.ContractNo
+                                </td>
+                                <td>
+                                    @item.Item
+                                </td>
+                                <td>
+                                    @item.Project
+                                </td>
+                                <td>
+                                    @item.Remark
+                                </td>
+                                <td>
+                                    @item.Supplier
+                                </td>
+                                <td>
+                                    @item.Manufacturer
+                                </td>
+                                <td>
+                                    @item.CofC
+                                </td>
+                                <td>
+                                    @item.Description
+                                </td>
+                                <td>
+                                    @item.MaterialCode
+                                </td>
+                                <td>
+                                    @item.Type
+                                </td>
+                                <td>
+                                    @item.Size
+                                </td>
+                                <td>
+                                    @item.Batch
+                                </td>
+                                @if (@item.ReceivedDate != null)
+                                {
+                                    <td>@item.ReceivedDate.Value.ToString("yyyy-MM-dd")</td>
+                                }
+                                else
+                                {
+                                    <td>@item.ReceivedDate</td>
+                                }
+                                <td>
+                                    @item.Specification
+                                </td>
+                                <td>
+                                    @item.Qty
+                                </td>
+                                <td>
+                                    @item.AcceptQty
+                                </td>
+                                <td>
+                                    @item.Keeper
+                                </td>
+                                <td>
+                                    @item.AcceptTime
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <pager page-value="Model.Paging"></pager>
+
+                }
+            </div>
+        </div>
+
+    </form>
+    <script>
+        function quanxuan() {
+            var obj = document.getElementById("btnSelectAll");
+            if (obj.value == "全选") {
+                $("input:checkbox").prop("checked", true);//全部设置为选中
+                obj.value = "取消全选"
+            }
+            else {
+                $("input:checkbox").prop("checked", false);//全部设置为未选中
+                obj.value = "全选"
+            }
+        }
+    </script>
+    <script>
+        function baocun() {
+            $('#formitConfirmedCustoms').submit(function () {
+                var form = $(this);
+                var subArray = [];
+                $("input[name='checkboxId']:checked").each(function () {
+                    var id = $(this).closest("tr").find("td").eq(0).find("input:checkbox");
+                    var contractNo = $(this).closest("tr").find("td").eq(3).find("input:text");
+                    var supplier = $(this).closest("tr").find("td").eq(4).find("input:text");
+                    var manufacturer = $(this).closest("tr").find("td").eq(5).find("input:text");
+                    var cofC = $(this).closest("tr").find("td").eq(6).find("input:text");
+                    var description = $(this).closest("tr").find("td").eq(7).find("input:text");
+                    var materialCode = $(this).closest("tr").find("td").eq(8).find("input:text");
+                    var type = $(this).closest("tr").find("td").eq(9).find("input:text");
+                    var size = $(this).closest("tr").find("td").eq(10).find("input:text");
+                    var batch = $(this).closest("tr").find("td").eq(11).find("input:text");
+                    var receivedDate = $(this).closest("tr").find("td").eq(12).find("input:data");
+                    var specification = $(this).closest("tr").find("td").eq(13).find("input:text");
+                    var qty = $(this).closest("tr").find("td").eq(14).find("input:data");
+                    var placeQty = $(this).closest("tr").find("td").eq(15).find("input:data");
+                    var mSub = {
+                        id: id.val(),
+                        contractNo: contractNo.val(),
+                        supplier: supplier.val(),
+                        manufacturer: manufacturer.val(),
+                        cofC: cofC.val(),
+                        description: description.val(),
+                        materialCode: materialCode.val(),
+                        type: type.val(),
+                        size: size.val(),
+                        batch: batch.val(),
+                        receivedDate: receivedDate.val(),
+                        specification: specification.val(),
+                        qty: qty.val(),
+                        placeQty: placeQty.val(),
+                    };
+                    subArray.push(mSub);
+                });
+                alert(JSON.stringify(subArray));
+                var _url = "/admin/inspection/InspectionxgList"
+                form.ajaxSubmit({
+                    type: 'post', // 提交方式 get/post
+                    url: _url, // 需要提交的 url
+                    dataType: "json", //数据类型 注意这里！！！！！
+                    data: { "kevin": JSON.stringify(subArray) },
+                    success: function (data) { // data 保存提交后返回的数据，一般为 json 数据
+                        // 此处可对 data 作相关处理
+                        var rs = data;
+                        if (rs.status == true) {
+                            alert('保存成功！');
+                        } else {
+                            alert('提交失败！数据有误！！！');
+                            window.parent.location.reload();
+                        }
+                    }
+                });
+                return false; // 阻止表单自动提交事件，必须返回false，否则表单会自己再做一次提交操作，并且页面跳转
+            });
+        }
+    </script>
+</div>
+
+
+
+
+
